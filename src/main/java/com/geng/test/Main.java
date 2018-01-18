@@ -24,15 +24,7 @@ class Main {
 		ByteBuffer m = ByteBuffer.allocate(1);
 		m.flip();
 
-		//单元测试 EmmbededChannel
-		ByteBuf buff = Unpooled.buffer();
-		for (int i=0;i<9;i++){
-			buff.writeByte(i);
-		}
 
-		ByteBuf input = buff.duplicate();
-
-		EmbeddedChannel channel = new EmbeddedChannel(new FixedLengthFrameDecoder(3));
 
 
 

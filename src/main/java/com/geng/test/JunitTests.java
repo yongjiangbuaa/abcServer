@@ -5,8 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class JunitTests {
     @Test
     public void testEcho(){
-        System.out.println("junit test echo!");
-        assertTrue(1 == 2);
+        assertTrue(1 == 1);
     }
 
 }

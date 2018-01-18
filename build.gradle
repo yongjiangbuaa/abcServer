@@ -1,4 +1,5 @@
 apply plugin:'java'
+
 repositories {
     mavenCentral()
 }
@@ -9,3 +10,38 @@ dependencies {
     compile 'net.logstash.logback:logstash-logback-encoder:4.3'
 
 }
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'org.junit.platform:junit-platform-gradle-plugin:1.0.3'
+    }
+}
+
+apply plugin: 'org.junit.platform.gradle.plugin'
+
+junitPlatform {
+    // platformVersion '1.0.3'
+    filters {
+        engines {
+            // include 'junit-jupiter', 'junit-vintage'
+            // exclude 'custom-engine'
+        }
+        tags {
+            // include 'fast'
+            exclude 'slow'
+        }
+        // includeClassNamePattern '.*Test'
+    }
+    // enableStandardTestTask true
+    // reportsDir file('build/test-results/junit-platform') // this is the default
+    //logManager 'org.apache.logging.log4j.jul.LogManager' //cannot load this as said in user guide
+}
+
+dependencies {
+    compile("org.junit.jupiter:junit-jupiter-api:5.0.3")
+    testRuntime("org.junit.jupiter:junit-jupiter-engine:5.0.3")
+}
+

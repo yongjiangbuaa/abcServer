@@ -11,6 +11,10 @@ import io.netty.util.CharsetUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.nio.charset.Charset;
+import java.util.List;
+import java.util.Map;
+
 import static io.netty.buffer.Unpooled.copiedBuffer;
 
 public class AbcServerHandler extends ChannelInboundHandlerAdapter {
@@ -35,7 +39,21 @@ public class AbcServerHandler extends ChannelInboundHandlerAdapter {
         //业务逻辑开始
         if(msg instanceof FullHttpRequest){
              final FullHttpRequest request = (FullHttpRequest) msg;
-             final String responseMessage = "gengyongjiang has got yout http post!! params is deviceId:";
+             logger.error("HTTP");
+//             if(!request.method().equals(HttpMethod.POST)){
+//                throw new Exception("only accept post method");
+//             }
+             logger.error("HTTP METHOD: {}",request.method());
+             logger.error("URI: {}",request.getUri());
+            QueryStringDecoder queryDecoder = new QueryStringDecoder(request.getUri(),
+                    true);
+            Map<String, List<String>> parameters = queryDecoder.parameters();
+            String deviceId = parameters.containsKey("device") ? parameters.get(
+                    "device").get(0) : "";
+             String data =request.content().toString(Charset.forName("UTF-8"));
+            logger.error("content: {}",data);
+
+             final String responseMessage = "gengyongjiang has got your http post!! data is deviceId:".concat(deviceId);
 //            String content = request.content();
             FullHttpResponse response = new DefaultFullHttpResponse(
                     HttpVersion.HTTP_1_1,
@@ -60,7 +78,7 @@ public class AbcServerHandler extends ChannelInboundHandlerAdapter {
             super.channelRead(ctx,msg);
         }
 //        ByteBuf in = (ByteBuf)msg;
-//        logger.info("recieved data:{}",in.toString(CharsetUtil.UTF_8));
+//        logger.error("recieved data:{}",in.toString(CharsetUtil.UTF_8));
 //        ctx.write(in);
     }
 

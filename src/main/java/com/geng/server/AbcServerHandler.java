@@ -7,6 +7,7 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.codec.http.*;
+import io.netty.handler.codec.http.multipart.*;
 import io.netty.util.CharsetUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +20,7 @@ import static io.netty.buffer.Unpooled.copiedBuffer;
 
 public class AbcServerHandler extends ChannelInboundHandlerAdapter {
     private  final Logger logger = LoggerFactory.getLogger(AbcServerHandler.class);
+    private static final HttpDataFactory factory = new DefaultHttpDataFactory(DefaultHttpDataFactory.MINSIZE); //Disk
 
 //    @Override
 //    public void channelActive(ChannelHandlerContext ctx){
@@ -45,20 +47,56 @@ public class AbcServerHandler extends ChannelInboundHandlerAdapter {
 //             }
              logger.error("HTTP METHOD: {}",request.method());
              logger.error("URI: {}",request.getUri());
-            QueryStringDecoder queryDecoder = new QueryStringDecoder(request.getUri(),
-                    true);
-            Map<String, List<String>> parameters = queryDecoder.parameters();
-            String deviceId = parameters.containsKey("device") ? parameters.get(
-                    "device").get(0) : "";
-             String data =request.content().toString(Charset.forName("UTF-8"));
-            logger.error("content: {}",data);
+             String deviceId="";
+              StringBuilder responseMessage = new StringBuilder();
 
-             final String responseMessage = "gengyongjiang has got your http post!! data is deviceId:".concat(deviceId);
-//            String content = request.content();
+             //处理GET
+//             QueryStringDecoder queryDecoder = new QueryStringDecoder(request.getUri(),
+//                    true);
+//            Map<String, List<String>> parameters = queryDecoder.parameters();
+//            String deviceId = parameters.containsKey("device") ? parameters.get(
+//                    "device").get(0) : "";
+//             String data =request.content().toString(Charset.forName("UTF-8"));
+//            logger.error("content: {}",data);
+
+
+
+            //处理POST
+            if(request.method().equals(HttpMethod.POST)) {
+                HttpPostRequestDecoder decoder = new HttpPostRequestDecoder(factory, request);
+                try {
+
+                    while (decoder.hasNext()) {
+                        InterfaceHttpData httpData = decoder.next();
+                        if (httpData != null && httpData.getHttpDataType().equals(InterfaceHttpData.HttpDataType.Attribute)) {
+                            try {
+                                Attribute att = (Attribute) httpData;
+                                if (att.getName().equals("device")) {
+                                    deviceId = att.getValue();
+                                }
+                            } finally {
+                                httpData.release();
+                            }
+                        }
+                    }
+                }catch (HttpPostRequestDecoder.EndOfDataDecoderException e1) {
+                    responseMessage.append("\r\n\r\nEND OF CONTENT CHUNK BY CHUNK\r\n\r\n");
+                }
+            }
+
+             responseMessage.append( "gengyongjiang has got your http post!! data is deviceId:".concat(deviceId));
+
+
+
+
+
+
+            //设置h†tp
+            //            String content = request.content();
             FullHttpResponse response = new DefaultFullHttpResponse(
                     HttpVersion.HTTP_1_1,
                     HttpResponseStatus.OK,
-                    copiedBuffer(responseMessage.getBytes()));
+                    copiedBuffer(responseMessage.toString().getBytes()));
             if (HttpHeaders.isKeepAlive(request))
             {
                 response.headers().set(

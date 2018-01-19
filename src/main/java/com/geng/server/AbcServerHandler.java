@@ -41,6 +41,7 @@ public class AbcServerHandler extends ChannelInboundHandlerAdapter {
         //业务逻辑开始
         if(msg instanceof FullHttpRequest){
              final FullHttpRequest request = (FullHttpRequest) msg;
+             System.out.println("11111111");
              logger.error("HTTP");
 //             if(!request.method().equals(HttpMethod.POST)){
 //                throw new Exception("only accept post method");
@@ -71,8 +72,10 @@ public class AbcServerHandler extends ChannelInboundHandlerAdapter {
                         if (httpData != null && httpData.getHttpDataType().equals(InterfaceHttpData.HttpDataType.Attribute)) {
                             try {
                                 Attribute att = (Attribute) httpData;
+                                System.out.println("attr=".concat(att.getName()).concat(" value=").concat(att.getValue()));
                                 if (att.getName().equals("device")) {
                                     deviceId = att.getValue();
+                                    break;
                                 }
                             } finally {
                                 httpData.release();
@@ -80,7 +83,7 @@ public class AbcServerHandler extends ChannelInboundHandlerAdapter {
                         }
                     }
                 }catch (HttpPostRequestDecoder.EndOfDataDecoderException e1) {
-                    responseMessage.append("\r\n\r\nEND OF CONTENT CHUNK BY CHUNK\r\n\r\n");
+                    System.out.println();
                 }
             }
 

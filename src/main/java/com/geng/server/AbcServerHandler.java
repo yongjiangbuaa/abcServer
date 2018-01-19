@@ -41,27 +41,8 @@ public class AbcServerHandler extends ChannelInboundHandlerAdapter {
         //业务逻辑开始
         if(msg instanceof FullHttpRequest){
              final FullHttpRequest request = (FullHttpRequest) msg;
-             System.out.println("11111111");
-             logger.error("HTTP");
-//             if(!request.method().equals(HttpMethod.POST)){
-//                throw new Exception("only accept post method");
-//             }
-             logger.error("HTTP METHOD: {}",request.method());
-             logger.error("URI: {}",request.getUri());
              String deviceId="";
               StringBuilder responseMessage = new StringBuilder();
-
-             //处理GET
-//             QueryStringDecoder queryDecoder = new QueryStringDecoder(request.getUri(),
-//                    true);
-//            Map<String, List<String>> parameters = queryDecoder.parameters();
-//            String deviceId = parameters.containsKey("device") ? parameters.get(
-//                    "device").get(0) : "";
-//             String data =request.content().toString(Charset.forName("UTF-8"));
-//            logger.error("content: {}",data);
-
-
-
             //处理POST
             if(request.method().equals(HttpMethod.POST)) {
                 HttpPostRequestDecoder decoder = new HttpPostRequestDecoder(factory, request);
@@ -91,9 +72,6 @@ public class AbcServerHandler extends ChannelInboundHandlerAdapter {
 
 
 
-
-
-
             //设置h†tp
             //            String content = request.content();
             FullHttpResponse response = new DefaultFullHttpResponse(
@@ -116,7 +94,8 @@ public class AbcServerHandler extends ChannelInboundHandlerAdapter {
 
 
         }else{
-            super.channelRead(ctx,msg);
+            System.out.println("not a FullHttpRequest!!");
+//            super.channelRead(ctx,msg);
         }
 //        ByteBuf in = (ByteBuf)msg;
 //        logger.error("recieved data:{}",in.toString(CharsetUtil.UTF_8));

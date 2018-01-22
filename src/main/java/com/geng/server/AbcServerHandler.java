@@ -43,6 +43,7 @@ public class AbcServerHandler extends ChannelInboundHandlerAdapter {
              final FullHttpRequest request = (FullHttpRequest) msg;
              String deviceId="";
               StringBuilder responseMessage = new StringBuilder();
+              logger.info("FullHttpRequest got method={} uri={}",request.method(),request.uri());
             //处理POST
             if(request.method().equals(HttpMethod.POST)) {
                 HttpPostRequestDecoder decoder = new HttpPostRequestDecoder(factory, request);
@@ -53,6 +54,7 @@ public class AbcServerHandler extends ChannelInboundHandlerAdapter {
                         if (httpData != null && httpData.getHttpDataType().equals(InterfaceHttpData.HttpDataType.Attribute)) {
                             try {
                                 Attribute att = (Attribute) httpData;
+                                logger.info("attr={} value={}",att.getName(),att.getValue());
                                 System.out.println("attr=".concat(att.getName()).concat(" value=").concat(att.getValue()));
                                 if (att.getName().equals("device")) {
                                     deviceId = att.getValue();
@@ -66,6 +68,7 @@ public class AbcServerHandler extends ChannelInboundHandlerAdapter {
                 }catch (HttpPostRequestDecoder.EndOfDataDecoderException e1) {
                     System.out.println();
                 }
+                decoder.destroy();
             }
 
              responseMessage.append( "gengyongjiang has got your http post!! data is deviceId:".concat(deviceId));
@@ -94,6 +97,7 @@ public class AbcServerHandler extends ChannelInboundHandlerAdapter {
 
 
         }else{
+            logger.info("not a FullHttpRequest!!");
             System.out.println("not a FullHttpRequest!!");
 //            super.channelRead(ctx,msg);
         }

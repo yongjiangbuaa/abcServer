@@ -7,6 +7,9 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.codec.http.HttpClientCodec;
+import io.netty.handler.codec.http.HttpObjectAggregator;
+import io.netty.handler.codec.http.HttpServerCodec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,7 +35,9 @@ public class EchoClient {
                     .handler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         protected void initChannel(SocketChannel ch) throws Exception {
-                            ch.pipeline().addLast(new EchoChannelHandler());
+                            ch.pipeline().addLast("codec",new HttpClientCodec());
+                            ch.pipeline().addLast("aggregator",new HttpObjectAggregator(512*1024));
+                            ch.pipeline().addLast("request",new EchoChannelHandler());
                         }
                     });
             ChannelFuture f = b.connect().sync();

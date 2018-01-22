@@ -1,23 +1,17 @@
 package com.geng.server;
 
-import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.codec.http.*;
 import io.netty.handler.codec.http.multipart.*;
-import io.netty.util.CharsetUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.nio.charset.Charset;
-import java.util.List;
-import java.util.Map;
-
 import static io.netty.buffer.Unpooled.copiedBuffer;
-
+@ChannelHandler.Sharable
 public class AbcServerHandler extends ChannelInboundHandlerAdapter {
     private  final Logger logger = LoggerFactory.getLogger(AbcServerHandler.class);
     private static final HttpDataFactory factory = new DefaultHttpDataFactory(DefaultHttpDataFactory.MINSIZE); //Disk
@@ -76,7 +70,6 @@ public class AbcServerHandler extends ChannelInboundHandlerAdapter {
 
 
             //设置h†tp
-            //            String content = request.content();
             FullHttpResponse response = new DefaultFullHttpResponse(
                     HttpVersion.HTTP_1_1,
                     HttpResponseStatus.OK,
@@ -98,12 +91,7 @@ public class AbcServerHandler extends ChannelInboundHandlerAdapter {
 
         }else{
             logger.info("not a FullHttpRequest!!");
-            System.out.println("not a FullHttpRequest!!");
-//            super.channelRead(ctx,msg);
         }
-//        ByteBuf in = (ByteBuf)msg;
-//        logger.error("recieved data:{}",in.toString(CharsetUtil.UTF_8));
-//        ctx.write(in);
     }
 
     @Override

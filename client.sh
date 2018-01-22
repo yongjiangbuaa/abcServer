@@ -1,0 +1,1 @@
+java -cp  .:./config/logback.xml:./lib/logback-classic-1.2.3.jar:./lib/logback-core-1.2.3.jar:./lib/slf4j-api-1.7.25.jar:./lib/netty-all-4.1.19.Final.jar:build/classes/main com.geng.server.EchoClient 127.0.0.1 9090

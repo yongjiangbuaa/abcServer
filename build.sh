@@ -1,1 +1,1 @@
-gradle clean build -x test
+gradle  build -x test

@@ -1,0 +1,1 @@
+"%JAVA_HOME%\bin\java.exe" -jar "D:\workspace\elex\gow_backend\install\MyBatisGenerator\lib\mybatis-generator-core-1.3.2.jar" -configfile D:\workspace\elex\gow_backend\install\MyBatisGenerator\conf\generate.xml -overwrite

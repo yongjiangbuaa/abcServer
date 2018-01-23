@@ -61,6 +61,7 @@ public class UserProfile {
         try {
             UserProfileMapper mapper = session.getMapper(UserProfileMapper.class);
             mapper.insert(userProfile);
+            session.commit();
         } finally {
             session.close();//注意一定要finally   close!!
         }
@@ -71,6 +72,7 @@ public class UserProfile {
         try {
             UserProfileMapper mapper = session.getMapper(UserProfileMapper.class);
             mapper.updateByPrimaryKey(userProfile);
+            session.commit();
         } finally {
             session.close();
         }
@@ -87,4 +89,13 @@ public class UserProfile {
         }
     }
 
+    public static UserProfile newInstance(String uid,int gold,int heart,int star,long heartTime) {
+        UserProfile u = new UserProfile();
+        u.setUid(uid);
+        u.setGold(gold);
+        u.setHeart(heart);
+        u.setStar(star);
+        u.setHearttime(heartTime);
+        return u;
+    }
 }

@@ -22,12 +22,11 @@ class Main {
 		logger.info("objectParams are {},{},{} and {}",objectParam);
 		LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
 		StatusPrinter.print(lc);
-		ByteBuffer m = ByteBuffer.allocate(1);
-		m.flip();
 
 
-		UserProfile userProfile = new UserProfile();
-		UserProfile.insert(userProfile);
+		UserProfile u = UserProfile.newInstance("genggeng",1000,5,1,System.currentTimeMillis() + 5*60*1000);
+
+		UserProfile.insert(u);
 
 
 

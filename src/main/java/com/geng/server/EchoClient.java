@@ -1,5 +1,7 @@
 package com.geng.server;
 
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.core.util.StatusPrinter;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -58,6 +60,9 @@ public class EchoClient {
         String host = args[0];
         int port = Integer.parseInt(args[1]);
         new EchoClient(host,port).start();
+        LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+        StatusPrinter.print(lc);
+
 
     }
 }

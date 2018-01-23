@@ -10,6 +10,7 @@ dependencies {
     compile 'net.logstash.logback:logstash-logback-encoder:4.3'
     compile 'org.mybatis:mybatis:3.4.5'
     compile 'org.apache.commons:commons-lang3:3.7'
+    compile 'mysql:mysql-connector-java:5.1.45'
 }
 
 configurations {

@@ -1,31 +1,45 @@
 package com.geng.db;
 
-import org.apache.ibatis.io.Resources;
+import com.geng.server.GameEngine;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
-import java.io.IOException;
 import java.io.InputStream;
+import java.util.Properties;
 
 public class MybatisSessionUtil {
-    public  void init(){
-        String resource = "resources/mybatis.xml";
-        InputStream inputStream = null;
-        try {
-            inputStream = Resources.getResourceAsStream(resource);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+    private static SqlSessionFactory sqlSessionFactory ;
 
-        //使用映射
-        SqlSession session = sqlSessionFactory.openSession();
-        try {
-            BlogMapper mapper = session.getMapper(BlogMapper.class);
-            Blog blog = mapper.selectBlog(101);
-        } finally {
-            session.close();
+    private MybatisSessionUtil(){
+        init();
+    }
+
+    private void init(){
+        if(null == sqlSessionFactory ){
+            InputStream in = getClass().getResourceAsStream("/mybatis.xml");
+//            Properties p = GameEngine.getInstance().getConfigProperties();
+            sqlSessionFactory = new SqlSessionFactoryBuilder().build(in);
         }
     }
+
+    private  SqlSessionFactory getSqlSessionFactory() {
+        if(null == sqlSessionFactory) init();
+
+        return sqlSessionFactory;
+    }
+
+    static class LAZY_LOAD{
+        public static MybatisSessionUtil instance = new MybatisSessionUtil();
+    }
+
+    public static  MybatisSessionUtil getInstance(){
+        return LAZY_LOAD.instance;
+    }
+
+    public static SqlSession getSession(){
+        return       MybatisSessionUtil.getInstance().getSqlSessionFactory().openSession();
+    }
+
+
 }

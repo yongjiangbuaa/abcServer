@@ -11,6 +11,7 @@ public class LoginRequestHandler implements IRequestHandler{
     public void handle(String deviceId, String uid, String data, StringBuilder sb) {
         UserProfile userProfile = null;
         if(!StringUtils.isEmpty(deviceId) && StringUtils.isEmpty(uid)){
+            //TODO find deviceMapping uid
             userProfile = UserService.Register(deviceId,data);//注册
 
         }else if(!StringUtils.isEmpty(uid)){

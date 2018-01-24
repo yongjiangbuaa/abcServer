@@ -73,7 +73,7 @@ public class UserProfile {
         SqlSession session = MybatisSessionUtil.getSession();
         try {
             UserProfileMapper mapper = session.getMapper(UserProfileMapper.class);
-            mapper.updateByPrimaryKey(userProfile);
+            mapper.updateByPrimaryKeySelective(userProfile);
             session.commit();
         } finally {
             session.close();

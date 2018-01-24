@@ -9,5 +9,6 @@ public class SaveRequestHandler implements IRequestHandler{
     public void handle(String deviceId, String uid, String data, StringBuilder sb) {
             UserProfile userProfile = new Gson().fromJson(data, UserProfile.class);
             UserProfile.update(userProfile);//TODO 倒计时
+        sb.append(new Gson().toJson(userProfile));
     }
 }

@@ -46,8 +46,8 @@ public class Server {
 
     public static void main(String[] args) throws Exception {
         int port;
-        if(args.length > 0) port = Integer.parseInt(args[1]);
-        else port = 9090;
+        if(args.length > 0) port = Integer.parseInt(args[0]);
+        else port = 8080;
         Server s = new Server(port);
         s.run();
         LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();

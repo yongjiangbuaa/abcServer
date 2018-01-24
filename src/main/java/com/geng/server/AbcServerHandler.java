@@ -64,7 +64,7 @@ public class AbcServerHandler extends SimpleChannelInboundHandler<Object> {
                     GameEngine.getInstance().protocal(params, sb);
                 }
                 buf.append(sb.toString());
-
+                logger.info("{}|{}",content.toString(CharsetUtil.UTF_8),sb.toString());
                 appendDecoderResult(buf, request);
             }
 

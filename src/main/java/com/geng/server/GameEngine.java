@@ -1,9 +1,12 @@
 package com.geng.server;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 public class GameEngine {
@@ -33,4 +36,49 @@ public class GameEngine {
         };
         return config;
     }
+
+    private void handleLogin(String deviceId,StringBuilder sb) {
+        sb.append("uid=").append("cmd=login").append("device=").append(deviceId).append("data=");
+        logger.info(sb.toString());
+        //返回 uid。返回数据  。做别的事 记录等等。
+        sb.append("gengyongjiang has got your http post!! data is deviceId:".concat(deviceId));
+
+    }
+
+    private void dispatchOp(String cmd, String data, String uid, String deviceId,StringBuilder sb) {
+        sb.append("uid=").append(uid).append("cmd=").append(cmd).append("device=").append(deviceId).append("data=").append(data);
+        logger.info(sb.toString());
+        sb.delete(0,sb.length() - 1);
+        //操作派发到相应类
+        //组织返回
+    }
+
+    public void protocal(Map<String,List<String>> params,StringBuilder sb){
+            protocal(params.get("cmd").get(0),params.get("device").get(0),params.get("uid").get(0),params.get("data").get(0),sb);
+    }
+
+    /**
+     * return {"err":"errorCode","errMsg":"","heart":1,"gold":0,"star":23,"heartTime":"1234324234"}
+     * @param cmd
+     * @param deviceId
+     * @param uid
+     * @param data
+     * @param sb
+     */
+    public void protocal(String cmd,String deviceId,String uid,String data,StringBuilder sb){
+        if(StringUtils.isEmpty(cmd) ||
+                (StringUtils.isEmpty(uid)&&StringUtils.isEmpty(deviceId))){
+            sb.append("invalid params ! todo with error code");
+            return;
+//            TODO throw new GameException(GameException.ERROR_CODE,"invalid op!");
+        }
+
+        if(StringUtils.isEmpty(uid) && cmd.equals("login")) {
+            handleLogin(deviceId,sb);//好像咩有这个逻辑 无状态
+        }else{
+            dispatchOp(cmd,data,uid,deviceId,sb);
+        }
+
+    }
+
 }

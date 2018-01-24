@@ -9,6 +9,7 @@ import io.netty.handler.codec.http.cookie.ServerCookieDecoder;
 import io.netty.handler.codec.http.cookie.ServerCookieEncoder;
 import io.netty.handler.codec.http.multipart.*;
 import io.netty.util.CharsetUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,7 +25,7 @@ import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 
 @ChannelHandler.Sharable
 public class AbcServerHandler extends SimpleChannelInboundHandler<Object> {
-
+    private Logger logger = LoggerFactory.getLogger(AbcServerHandler.class);
     private HttpRequest request;
     /** Buffer that stores the response content */
     private final StringBuilder buf = new StringBuilder();
@@ -44,36 +45,6 @@ public class AbcServerHandler extends SimpleChannelInboundHandler<Object> {
             }
 
             buf.setLength(0);
-            buf.append("WELCOME TO THE WILD WILD WEB SERVER\r\n");
-            buf.append("===================================\r\n");
-
-            buf.append("VERSION: ").append(request.protocolVersion()).append("\r\n");
-            buf.append("HOSTNAME: ").append(request.headers().get(HttpHeaderNames.HOST, "unknown")).append("\r\n");
-            buf.append("REQUEST_URI: ").append(request.uri()).append("\r\n\r\n");
-
-            HttpHeaders headers = request.headers();
-            if (!headers.isEmpty()) {
-                for (Map.Entry<String, String> h: headers) {
-                    CharSequence key = h.getKey();
-                    CharSequence value = h.getValue();
-                    buf.append("HEADER: ").append(key).append(" = ").append(value).append("\r\n");
-                }
-                buf.append("\r\n");
-            }
-
-            QueryStringDecoder queryStringDecoder = new QueryStringDecoder(request.uri());
-            Map<String, List<String>> params = queryStringDecoder.parameters();
-            if (!params.isEmpty()) {
-                for (Map.Entry<String, List<String>> p: params.entrySet()) {
-                    String key = p.getKey();
-                    List<String> vals = p.getValue();
-                    for (String val : vals) {
-                        buf.append("PARAM: ").append(key).append(" = ").append(val).append("\r\n");
-                    }
-                }
-                buf.append("\r\n");
-            }
-
             appendDecoderResult(buf, request);
         }
 
@@ -82,42 +53,25 @@ public class AbcServerHandler extends SimpleChannelInboundHandler<Object> {
 
             ByteBuf content = httpContent.content();
             if (content.isReadable()) {
-                buf.append("CONTENT: ");
-                buf.append(content.toString(CharsetUtil.UTF_8));
-                buf.append("\r\n");
-                appendDecoderResult(buf, request);
+                logger.info("CONTENT: {}",content.toString(CharsetUtil.UTF_8));
+
+                StringBuilder sb = new StringBuilder();
                 QueryStringDecoder queryStringDecoder = new QueryStringDecoder(content.toString(CharsetUtil.UTF_8),false);
                 Map<String, List<String>> params = queryStringDecoder.parameters();
-                if (!params.isEmpty()) {
-                    for (Map.Entry<String, List<String>> p: params.entrySet()) {
-                        String key = p.getKey();
-                        List<String> vals = p.getValue();
-                        for (String val : vals) {
-                            buf.append("PARAM: ").append(key).append(" = ").append(val).append("\r\n");
-                        }
-                    }
-                    buf.append("\r\n");
+
+                //TODO GAME logic
+                if(!params.isEmpty() && params.containsKey("cmd") && params.containsKey("data")) {
+                    GameEngine.getInstance().protocal(params, sb);
                 }
+                buf.append(sb.toString());
 
                 appendDecoderResult(buf, request);
             }
 
 
             if (msg instanceof LastHttpContent) {
-                buf.append("END OF CONTENT\r\n");
 
                 LastHttpContent trailer = (LastHttpContent) msg;
-                if (!trailer.trailingHeaders().isEmpty()) {
-                    buf.append("\r\n");
-                    for (CharSequence name: trailer.trailingHeaders().names()) {
-                        for (CharSequence value: trailer.trailingHeaders().getAll(name)) {
-                            buf.append("TRAILING HEADER: ");
-                            buf.append(name).append(" = ").append(value).append("\r\n");
-                        }
-                    }
-                    buf.append("\r\n");
-                }
-
                 if (!writeResponse(trailer, ctx)) {
                     // If keep-alive is off, close the connection once the content is fully written.
                     ctx.writeAndFlush(Unpooled.EMPTY_BUFFER).addListener(ChannelFutureListener.CLOSE);
@@ -132,7 +86,7 @@ public class AbcServerHandler extends SimpleChannelInboundHandler<Object> {
             return;
         }
 
-        buf.append(".. WITH DECODER FAILURE: ");
+        buf.append(".. DECODER FAILURE: ");
         buf.append(result.cause());
         buf.append("\r\n");
     }

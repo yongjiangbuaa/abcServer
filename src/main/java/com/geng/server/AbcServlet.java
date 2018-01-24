@@ -25,37 +25,15 @@ public final class AbcServlet extends HttpServlet {
         String data = request.getParameter("data");
         StringBuilder sb = new StringBuilder();
         PrintWriter writer = response.getWriter();
-        if(StringUtils.isEmpty(cmd) ||
-                (StringUtils.isEmpty(uid)&&StringUtils.isEmpty(deviceId))){
-            writer.println(sb.toString());
-//            throw new GameException(GameException.ERROR_CODE,"invalid op!");
-        }
-        if(StringUtils.isEmpty(uid) && cmd.equals("login")) {
-            handleLogin(deviceId,sb);//好像咩有这个逻辑 无状态
-        }else{
-            dispatchOp(cmd,data,uid,deviceId,sb);
-        }
+
+        GameEngine.getInstance().protocal(cmd,deviceId,uid,data,sb);
+
         logger.info("deviceId={}",deviceId);
         response.setContentType("text/plain");
 
         writer.println(sb.toString());
     }
 
-    private void handleLogin(String deviceId,StringBuilder sb) {
-        sb.append("uid=").append("cmd=login").append("device=").append(deviceId).append("data=");
-        logger.info(sb.toString());
-        //返回 uid。返回数据  。做别的事 记录等等。
-        sb.append("gengyongjiang has got your http post!! data is deviceId:".concat(deviceId));
-
-    }
-
-    private void dispatchOp(String cmd, String data, String uid, String deviceId,StringBuilder sb) {
-        sb.append("uid=").append(uid).append("cmd=").append(cmd).append("device=").append(deviceId).append("data=").append(data);
-        logger.info(sb.toString());
-        sb.delete(0,sb.length() - 1);
-        //操作派发到相应类
-        //组织返回
-    }
 
 
 

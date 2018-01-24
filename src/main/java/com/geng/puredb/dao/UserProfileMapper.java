@@ -14,4 +14,6 @@ public interface UserProfileMapper {
     int updateByPrimaryKeySelective(UserProfile record);
 
     int updateByPrimaryKey(UserProfile record);
+
+    int getMaxNameIndex();
 }

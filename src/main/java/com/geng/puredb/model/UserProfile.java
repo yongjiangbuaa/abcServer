@@ -4,6 +4,8 @@ import com.geng.db.MybatisSessionUtil;
 import com.geng.puredb.dao.UserProfileMapper;
 import org.apache.ibatis.session.SqlSession;
 
+import java.util.concurrent.atomic.AtomicLong;
+
 public class UserProfile {
     private String uid;
 
@@ -97,5 +99,17 @@ public class UserProfile {
         u.setStar(star);
         u.setHearttime(heartTime);
         return u;
+    }
+
+    public static long getMaxNameIndex() {
+        long idx= 0 ;
+        SqlSession session = MybatisSessionUtil.getSession();
+        try {
+            UserProfileMapper mapper = session.getMapper(UserProfileMapper.class);
+             idx = mapper.getMaxNameIndex();
+        } finally {
+            session.close();
+        }
+        return idx;
     }
 }

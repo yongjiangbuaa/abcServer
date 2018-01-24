@@ -1,5 +1,8 @@
 package com.geng.server;
 
+import com.geng.handlers.IRequestHandler;
+import com.geng.handlers.LoginRequestHandler;
+import com.geng.handlers.SaveRequestHandler;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,12 +11,17 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Handler;
 
 public class GameEngine {
     Properties config ;
     private Logger logger = LoggerFactory.getLogger(GameEngine.class);
+    ConcurrentHashMap<String,Object> handlerRegisterMap = new ConcurrentHashMap<>();
 
     private GameEngine(){
+        handlerRegisterMap.put(LoginRequestHandler.ID,LoginRequestHandler.class);
+        handlerRegisterMap.put(SaveRequestHandler.ID,SaveRequestHandler.class);
 
     }
 
@@ -50,7 +58,22 @@ public class GameEngine {
         logger.info(sb.toString());
         sb.delete(0,sb.length() - 1);
         //操作派发到相应类
+        try {
+            IRequestHandler handler = (IRequestHandler) findHandlerInstance(cmd);
+            if(null != handler)
+                handler.handle(deviceId, uid, data, sb);
+        } catch (Exception e) {
+            logger.info(e.getMessage());
+        } finally {
+
+        }
         //组织返回
+    }
+
+    private Object findHandlerInstance(String cmd) throws IllegalAccessException, InstantiationException {
+        Class handlerClass = (Class)handlerRegisterMap.get(cmd);
+        if(null == handlerClass)  return  null;
+        return handlerClass.newInstance();
     }
 
     public void protocal(Map<String,List<String>> params,StringBuilder sb){

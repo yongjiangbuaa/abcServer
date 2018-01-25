@@ -1,5 +1,7 @@
 package com.geng.exception;
 
+import com.google.gson.GsonBuilder;
+
 public class GameException extends Throwable {
     private int err;
     private String errMsg;
@@ -22,5 +24,15 @@ public class GameException extends Throwable {
         GameExceptionCode(int i) {
             this.value = i;
         }
+    }
+
+    public String toJson(){
+        StringBuilder sb = new StringBuilder();
+        sb.append("{\"err\":")
+                .append(err)
+                .append(",\"errMsg\":\"")
+                .append(errMsg)
+                .append("\"}");
+        return sb.toString();
     }
 }

@@ -57,10 +57,11 @@ public class GameEngine {
                 handler.handle(deviceId, uid, data, sb);
         } catch (GameException e) {
             logger.error(e.getMessage());
-            sb.append(new Gson().toJson(e,GameException.class));
+            sb.append(e.toJson());
+            logger.info(sb.toString());
         } catch (IllegalAccessException|InstantiationException e) {
             logger.error(e.getMessage());
-            sb.append(new GameException(GameException.GameExceptionCode.ACCESS_CONFIG_FILE_ERROR,"error in access config file"));
+            sb.append(new GameException(GameException.GameExceptionCode.ACCESS_CONFIG_FILE_ERROR,"error in access config file").toJson());
         }  finally {
 
         }

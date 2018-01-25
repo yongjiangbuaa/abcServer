@@ -1,9 +1,7 @@
 package com.geng.server;
 
 import com.geng.exception.GameException;
-import com.geng.handlers.IRequestHandler;
-import com.geng.handlers.LoginRequestHandler;
-import com.geng.handlers.SaveRequestHandler;
+import com.geng.handlers.*;
 import com.google.gson.Gson;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -24,6 +22,8 @@ public class GameEngine {
     private GameEngine(){
         handlerRegisterMap.put(LoginRequestHandler.ID,LoginRequestHandler.class);
         handlerRegisterMap.put(SaveRequestHandler.ID,SaveRequestHandler.class);
+        handlerRegisterMap.put(LevelUpRequestHandler.ID,LevelUpRequestHandler.class);
+        handlerRegisterMap.put(LevelFailRequestHandler.ID,LevelFailRequestHandler.class);
 
     }
 

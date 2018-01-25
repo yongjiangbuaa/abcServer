@@ -3,7 +3,7 @@ package com.geng.handlers;
 import com.geng.exception.GameException;
 import com.geng.puredb.model.UserProfile;
 import com.geng.service.UserService;
-import com.google.gson.Gson;
+import com.geng.utils.G;
 import org.apache.commons.lang3.StringUtils;
 
 public class LoginRequestHandler implements IRequestHandler{
@@ -19,7 +19,7 @@ public class LoginRequestHandler implements IRequestHandler{
              userProfile = UserProfile.getWithUid(uid);
              if (null == userProfile) throw new GameException(GameException.GameExceptionCode.UID_NOT_EXIST,"uid not exist!");
         }
-        sb.append(new Gson().toJson(userProfile));
+        sb.append(G.toJson(userProfile));
 
     }
 }

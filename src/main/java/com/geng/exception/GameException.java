@@ -14,7 +14,7 @@ public class GameException extends Throwable {
     public enum GameExceptionCode {
         UID_NOT_EXIST(1),
         ACCESS_CONFIG_FILE_ERROR(999999),
-        ;
+        INVALID_OPTION(2);
 
         public int getValue() {
             return value;

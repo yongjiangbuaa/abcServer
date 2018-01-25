@@ -69,23 +69,23 @@ public class UserProfile {
     }
 
 
-    public  static void insert(UserProfile userProfile){
+    public   void insert(){
 
         SqlSession session = MybatisSessionUtil.getSession();
         try {
             UserProfileMapper mapper = session.getMapper(UserProfileMapper.class);
-            mapper.insert(userProfile);
+            mapper.insert(this);
             session.commit();
         } finally {
             session.close();//注意一定要finally   close!!
         }
     }
 
-    public  static void update(UserProfile userProfile){
+    public   void update(){
         SqlSession session = MybatisSessionUtil.getSession();
         try {
             UserProfileMapper mapper = session.getMapper(UserProfileMapper.class);
-            mapper.updateByPrimaryKeySelective(userProfile);
+            mapper.updateByPrimaryKeySelective(this);
             session.commit();
         } finally {
             session.close();

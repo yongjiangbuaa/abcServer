@@ -26,7 +26,7 @@ class Main {
 
 		UserProfile u = UserProfile.newInstance("genggeng",1000,5,1,System.currentTimeMillis() + 5*60*1000,1);
 
-		UserProfile.insert(u);
+		u.insert();
 
 
 

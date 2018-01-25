@@ -18,7 +18,7 @@ public class UserService {
         int gold = 1000;//config.get("g");
         int star = 0;//config.get("s");
         UserProfile userProfile = UserProfile.newInstance(uid,gold,heart,star,0L,1);
-        UserProfile.insert(userProfile);
+        userProfile.insert();
         return userProfile;
 
     }

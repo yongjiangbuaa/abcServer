@@ -1,8 +1,10 @@
 package com.geng.server;
 
+import com.geng.exception.GameException;
 import com.geng.handlers.IRequestHandler;
 import com.geng.handlers.LoginRequestHandler;
 import com.geng.handlers.SaveRequestHandler;
+import com.google.gson.Gson;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,9 +55,13 @@ public class GameEngine {
             IRequestHandler handler = (IRequestHandler) findHandlerInstance(cmd);
             if(null != handler)
                 handler.handle(deviceId, uid, data, sb);
-        } catch (Exception e) {
-            logger.info(e.getMessage());
-        } finally {
+        } catch (GameException e) {
+            logger.error(e.getMessage());
+            sb.append(new Gson().toJson(e,GameException.class));
+        } catch (IllegalAccessException|InstantiationException e) {
+            logger.error(e.getMessage());
+            sb.append(new GameException(GameException.GameExceptionCode.ACCESS_CONFIG_FILE_ERROR,"error in access config file"));
+        }  finally {
 
         }
         //组织返回

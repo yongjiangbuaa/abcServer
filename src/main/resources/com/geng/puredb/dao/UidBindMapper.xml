@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.geng.puredb.dao.UidBindMapper" >
+  <resultMap id="BaseResultMap" type="com.geng.puredb.model.UidBind" >
+    <id column="bindId" property="bindid" jdbcType="VARCHAR" />
+    <result column="uid" property="uid" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="INTEGER" />
+    <result column="time" property="time" jdbcType="BIGINT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    bindId, uid, type, time
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from uid_bind
+    where bindId = #{bindid,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from uid_bind
+    where bindId = #{bindid,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.geng.puredb.model.UidBind" >
+    insert into uid_bind (bindId, uid, type, 
+      time)
+    values (#{bindid,jdbcType=VARCHAR}, #{uid,jdbcType=VARCHAR}, #{type,jdbcType=INTEGER}, 
+      #{time,jdbcType=BIGINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.geng.puredb.model.UidBind" >
+    insert into uid_bind
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="bindid != null" >
+        bindId,
+      </if>
+      <if test="uid != null" >
+        uid,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+      <if test="time != null" >
+        time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="bindid != null" >
+        #{bindid,jdbcType=VARCHAR},
+      </if>
+      <if test="uid != null" >
+        #{uid,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=INTEGER},
+      </if>
+      <if test="time != null" >
+        #{time,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.geng.puredb.model.UidBind" >
+    update uid_bind
+    <set >
+      <if test="uid != null" >
+        uid = #{uid,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=INTEGER},
+      </if>
+      <if test="time != null" >
+        time = #{time,jdbcType=BIGINT},
+      </if>
+    </set>
+    where bindId = #{bindid,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.geng.puredb.model.UidBind" >
+    update uid_bind
+    set uid = #{uid,jdbcType=VARCHAR},
+      type = #{type,jdbcType=INTEGER},
+      time = #{time,jdbcType=BIGINT}
+    where bindId = #{bindid,jdbcType=VARCHAR}
+  </update>
+</mapper>

@@ -1,5 +1,6 @@
 package com.geng.service;
 
+import com.geng.puredb.model.UidBind;
 import com.geng.puredb.model.UserProfile;
 
 import java.util.concurrent.atomic.AtomicLong;
@@ -10,7 +11,8 @@ public class UserService {
         defaultNameIndex = new AtomicLong(UserProfile.getMaxNameIndex());//"select count(uid) from user_profile;"
         long id = defaultNameIndex.incrementAndGet();
         String uid = String .valueOf(id);
-//        deviceMapping.add(deviceId,uid);
+        UidBind bind = UidBind.newInstance(uid,deviceId,1,System.currentTimeMillis());
+        UidBind.insert(bind);
 
         int heart = 5;//TODO config.get("h");
         int gold = 1000;//config.get("g");

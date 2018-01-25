@@ -18,7 +18,7 @@
    
   <javaClientGenerator targetPackage="com.geng.puredb.dao" targetProject="/var/root/Documents/netty-server/src/main/java" type="XMLMAPPER">
   </javaClientGenerator>
-  <table  tableName="uid_bind" enableCountByExample="false" enableDeleteByExample="false" enableSelectByExample="false" enableUpdateByExample="false"/>
+  <table  tableName="user_profile" enableCountByExample="false" enableDeleteByExample="false" enableSelectByExample="false" enableUpdateByExample="false"/>
   
  </context>
 </generatorConfiguration>

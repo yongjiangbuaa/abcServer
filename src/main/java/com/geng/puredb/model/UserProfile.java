@@ -17,6 +17,9 @@ public class UserProfile {
 
     private Long hearttime;
 
+
+    private Integer level;
+
     public String getUid() {
         return uid;
     }
@@ -57,6 +60,15 @@ public class UserProfile {
         this.hearttime = hearttime;
     }
 
+    public Integer getLevel() {
+        return level;
+    }
+
+    public void setLevel(Integer level) {
+        this.level = level;
+    }
+
+
     public  static void insert(UserProfile userProfile){
 
         SqlSession session = MybatisSessionUtil.getSession();
@@ -91,13 +103,14 @@ public class UserProfile {
         }
     }
 
-    public static UserProfile newInstance(String uid,int gold,int heart,int star,long heartTime) {
+    public static UserProfile newInstance(String uid,int gold,int heart,int star,long heartTime,int l) {
         UserProfile u = new UserProfile();
         u.setUid(uid);
         u.setGold(gold);
         u.setHeart(heart);
         u.setStar(star);
         u.setHearttime(heartTime);
+        u.setLevel(l);
         return u;
     }
 

@@ -11,7 +11,7 @@ public class LevelFailRequestHandler implements IRequestHandler{
         UserProfile userProfile = UserProfile.getWithUid(uid);
         if(null == userProfile) throw new GameException(GameException.GameExceptionCode.UID_NOT_EXIST,"");
         long now = System.currentTimeMillis();
-        if(userProfile.getHearttime() >= now ){
+        if(userProfile.getHearttime() <= now ){
             userProfile.setHearttime(0L);
             if(userProfile.getHeart() < 5) userProfile.setHeart(userProfile.getHeart() + 1);
             userProfile.update();

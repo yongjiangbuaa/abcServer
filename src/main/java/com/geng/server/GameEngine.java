@@ -7,6 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -39,7 +40,11 @@ public class GameEngine {
         if(null != config) return config;
         config = new Properties();
         try {
-            config.load(getClass().getResourceAsStream("config.properties"));
+            Map<String,String> env = System.getenv();
+            logger.debug("env={}",env);
+            Properties properties = System.getProperties();
+            logger.debug("properties={}",properties.toString());
+            config.load(new FileInputStream("config/config.properties"));
         } catch (IOException e) {
             e.printStackTrace();
             logger.error("error when load config.properties");
@@ -50,6 +55,7 @@ public class GameEngine {
 
     private void dispatchOp(String cmd, String data, String uid, String deviceId,StringBuilder sb) {
         logger.info("uid={} cmd={} device={} data={}",uid,cmd,deviceId,data);
+        logger.debug("uid={} cmd={} device={} data={}",uid,cmd,deviceId,data);
         //操作派发到相应类
         try {
             IRequestHandler handler = (IRequestHandler) findHandlerInstance(cmd);

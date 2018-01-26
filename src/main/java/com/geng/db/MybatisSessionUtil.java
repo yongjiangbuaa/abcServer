@@ -18,8 +18,8 @@ public class MybatisSessionUtil {
     private void init(){
         if(null == sqlSessionFactory ){
             InputStream in = getClass().getResourceAsStream("/mybatis.xml");
-//            Properties p = GameEngine.getInstance().getConfigProperties();
-            sqlSessionFactory = new SqlSessionFactoryBuilder().build(in);
+            Properties p = GameEngine.getInstance().getConfigProperties();
+            sqlSessionFactory = new SqlSessionFactoryBuilder().build(in,p);
         }
     }
 

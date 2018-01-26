@@ -1,6 +1,7 @@
 package com.geng.handlers;
 
 import com.geng.exception.GameException;
+import com.geng.puredb.model.UidBind;
 import com.geng.puredb.model.UserProfile;
 import com.geng.service.UserService;
 import com.geng.utils.G;
@@ -12,8 +13,13 @@ public class LoginRequestHandler implements IRequestHandler{
     public void handle(String deviceId, String uid, String data, StringBuilder sb) throws GameException {
         UserProfile userProfile = null;
         if(!StringUtils.isEmpty(deviceId) && StringUtils.isEmpty(uid)){
-            //TODO find deviceMapping uid
-            userProfile = UserService.Register(deviceId,data);//注册
+            UidBind bind = UidBind.getWithbindId(deviceId);
+            if(null == bind) {
+                //TODO find deviceMapping uid
+                userProfile = UserService.Register(deviceId, data);//注册
+            }else{
+                userProfile = UserProfile.getWithUid(bind.getUid());
+            }
 
         }else if(!StringUtils.isEmpty(uid)){
              userProfile = UserProfile.getWithUid(uid);

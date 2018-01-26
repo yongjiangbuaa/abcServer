@@ -6,6 +6,8 @@ import com.geng.puredb.model.UserProfile;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class UserService {
+    public static final int maxHeart = 5;
+    public static final long recoverTime = 30 * 60 * 1000L;
     private static AtomicLong defaultNameIndex = new AtomicLong();
     public static UserProfile Register(String deviceId, String data) {
         defaultNameIndex = new AtomicLong(UserProfile.getMaxNameIndex());//"select count(uid) from user_profile;"
@@ -25,8 +27,12 @@ public class UserService {
 
     public static void checkHeartTime(UserProfile userProfile) {
         if(userProfile.getHearttime() <= System.currentTimeMillis() ){
-            userProfile.setHearttime(0L);
-            if(userProfile.getHeart() < 5) userProfile.setHeart(userProfile.getHeart() + 1);
+            if(userProfile.getHeart() + 1 >= maxHeart)
+                userProfile.setHearttime(0L);
+            else
+                userProfile.setHearttime(System.currentTimeMillis() + recoverTime);
+            if(userProfile.getHeart() < maxHeart)
+                userProfile.setHeart(userProfile.getHeart() + 1);
             userProfile.update();
         }
 

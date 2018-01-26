@@ -13,7 +13,7 @@ public class LevelFailRequestHandler implements IRequestHandler{
         if(null == userProfile) throw new GameException(GameException.GameExceptionCode.UID_NOT_EXIST,"");
         UserService.checkHeartTime(userProfile);
         userProfile.setHeart(userProfile.getHeart() -  1);
-        if(userProfile.getHearttime() == 0L) userProfile.setHearttime(System.currentTimeMillis() + 30 * 60 *1000L);
+        if(userProfile.getHearttime() == 0L) userProfile.setHearttime(System.currentTimeMillis() + UserService.recoverTime);
         userProfile.update();
         sb.append(G.toJson(userProfile));
     }

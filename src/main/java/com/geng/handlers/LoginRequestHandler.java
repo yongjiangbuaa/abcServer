@@ -25,6 +25,7 @@ public class LoginRequestHandler implements IRequestHandler{
              userProfile = UserProfile.getWithUid(uid);
              if (null == userProfile) throw new GameException(GameException.GameExceptionCode.UID_NOT_EXIST,"uid not exist!");
         }
+        UserService.checkHeartTime(userProfile);
         sb.append(G.toJson(userProfile));
 
     }

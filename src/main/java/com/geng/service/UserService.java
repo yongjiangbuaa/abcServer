@@ -22,4 +22,13 @@ public class UserService {
         return userProfile;
 
     }
+
+    public static void checkHeartTime(UserProfile userProfile) {
+        if(userProfile.getHearttime() <= System.currentTimeMillis() ){
+            userProfile.setHearttime(0L);
+            if(userProfile.getHeart() < 5) userProfile.setHeart(userProfile.getHeart() + 1);
+            userProfile.update();
+        }
+
+    }
 }

@@ -102,6 +102,7 @@ public class AbcServerHandler extends SimpleChannelInboundHandler<Object> {
         response.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/plain; charset=UTF-8");
 
         if (keepAlive) {
+            logger.error("request is set to keep alive !!");
             // Add 'Content-Length' header only for a keep-alive connection.
             response.headers().setInt(HttpHeaderNames.CONTENT_LENGTH, response.content().readableBytes());
             // Add keep alive header as per:

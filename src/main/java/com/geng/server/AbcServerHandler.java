@@ -93,7 +93,7 @@ public class AbcServerHandler extends SimpleChannelInboundHandler<Object> {
 
     private boolean writeResponse(HttpObject currentObj, ChannelHandlerContext ctx) {
         // Decide whether to close the connection or not.
-        boolean keepAlive = HttpUtil.isKeepAlive(request);
+        boolean keepAlive = false;// HttpUtil.isKeepAlive(request);
         // Build the response object.
         FullHttpResponse response = new DefaultFullHttpResponse(
                 HTTP_1_1, currentObj.decoderResult().isSuccess()? OK : BAD_REQUEST,

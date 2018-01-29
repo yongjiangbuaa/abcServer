@@ -29,6 +29,7 @@ public class AbcServerHandler extends SimpleChannelInboundHandler<Object> {
     private HttpRequest request;
     /** Buffer that stores the response content */
     private final StringBuilder buf = new StringBuilder();
+    private final StringBuilder buf1 = new StringBuilder();
 
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) {
@@ -45,7 +46,24 @@ public class AbcServerHandler extends SimpleChannelInboundHandler<Object> {
             }
 
             buf.setLength(0);
-            appendDecoderResult(buf, request);
+
+            //log of http access
+            buf1.setLength(0);
+            buf1.append("VERSION: ").append(request.protocolVersion()).append("\r\n");
+            buf1.append("HOSTNAME: ").append(request.headers().get(HttpHeaderNames.HOST, "unknown")).append("\r\n");
+            buf1.append("REQUEST_URI: ").append(request.uri()).append("\r\n\r\n");
+            HttpHeaders headers1 = request.headers();
+            if (!headers1.isEmpty()) {
+                for (Map.Entry<String, String> h: headers1) {
+                    CharSequence k = h.getKey();
+                    CharSequence v = h.getValue();
+                    buf1.append("HEADER: ").append(k).append(" = ").append(v).append("\r\n");
+                }
+                buf1.append("\r\n");
+            }
+            logger.info(buf1.toString());
+            //log of http access  end
+
         }
 
         if (msg instanceof HttpContent) {
@@ -55,16 +73,14 @@ public class AbcServerHandler extends SimpleChannelInboundHandler<Object> {
             if (content.isReadable()) {
                 logger.info("CONTENT: {}",content.toString(CharsetUtil.UTF_8));
 
-                StringBuilder sb = new StringBuilder();
                 QueryStringDecoder queryStringDecoder = new QueryStringDecoder(content.toString(CharsetUtil.UTF_8),false);
                 Map<String, List<String>> params = queryStringDecoder.parameters();
 
                 //TODO GAME logic
                 if(!params.isEmpty() && params.containsKey("cmd") && params.containsKey("data")) {
-                    GameEngine.getInstance().protocal(params, sb);
+                    GameEngine.getInstance().protocal(params, buf);
                 }
-                buf.append(sb.toString());
-                logger.info("{}|{}",content.toString(CharsetUtil.UTF_8),sb.toString());
+                logger.info("{}|{}",content.toString(CharsetUtil.UTF_8),buf.toString());
                 appendDecoderResult(buf, request);
             }
 

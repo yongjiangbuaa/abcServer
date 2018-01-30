@@ -18,13 +18,9 @@ import java.util.logging.Handler;
 public class GameEngine {
     Properties config ;
     private Logger logger = LoggerFactory.getLogger(GameEngine.class);
-    ConcurrentHashMap<String,Object> handlerRegisterMap = new ConcurrentHashMap<>();
 
     private GameEngine(){
-        handlerRegisterMap.put(LoginRequestHandler.ID,LoginRequestHandler.class);
-        handlerRegisterMap.put(SaveRequestHandler.ID,SaveRequestHandler.class);
-        handlerRegisterMap.put(LevelUpRequestHandler.ID,LevelUpRequestHandler.class);
-        handlerRegisterMap.put(LevelFailRequestHandler.ID,LevelFailRequestHandler.class);
+        HandlerRegisterCenter.getInstance();
 
     }
 
@@ -58,7 +54,7 @@ public class GameEngine {
         logger.debug("uid={} cmd={} device={} data={}",uid,cmd,deviceId,data);
         //操作派发到相应类
         try {
-            IRequestHandler handler = (IRequestHandler) findHandlerInstance(cmd);
+            IRequestHandler handler = (IRequestHandler) HandlerRegisterCenter.getInstance().findHandlerInstance(cmd);
             if(null != handler)
                 handler.handle(deviceId, uid, data, sb);
         } catch (GameException e) {
@@ -74,11 +70,6 @@ public class GameEngine {
         //组织返回
     }
 
-    private Object findHandlerInstance(String cmd) throws IllegalAccessException, InstantiationException {
-        Class handlerClass = (Class)handlerRegisterMap.get(cmd);
-        if(null == handlerClass)  return  null;
-        return handlerClass.newInstance();
-    }
 
     public void protocal(Map<String,List<String>> params,StringBuilder sb){
             protocal(params.get("cmd").get(0),

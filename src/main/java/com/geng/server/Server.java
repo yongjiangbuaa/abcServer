@@ -19,6 +19,7 @@ public class Server {
     public Server(int port){
 //        Runtime.getRuntime().addShutdownHook();//JVM关闭时关闭资源？
         this.port = port;
+        GameEngine.getInstance().init();
     }
     public void run() throws Exception {
         NioEventLoopGroup bossGroup = new NioEventLoopGroup();

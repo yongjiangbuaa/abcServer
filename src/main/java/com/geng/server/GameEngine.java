@@ -2,6 +2,7 @@ package com.geng.server;
 
 import com.geng.exception.GameException;
 import com.geng.handlers.*;
+import com.geng.utils.xml.GameConfigManager;
 import com.google.gson.Gson;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -20,16 +21,14 @@ public class GameEngine {
     private Logger logger = LoggerFactory.getLogger(GameEngine.class);
 
     private GameEngine(){
+
+    }
+
+    //确定的初始化逻辑 在服务初始化时调用
+    public void init(){
         HandlerRegisterCenter.getInstance();
+        GameConfigManager.init();
 
-    }
-
-    static class LAZY_LOAD{
-        public static GameEngine instance = new GameEngine();
-    }
-
-    public static GameEngine getInstance() {
-        return LAZY_LOAD.instance;
     }
 
     public Properties getConfigProperties() {
@@ -47,6 +46,21 @@ public class GameEngine {
         };
         return config;
     }
+
+    public String getConfigValue(String key) {
+        String configValue = getConfigProperties().getProperty(key);
+        return configValue;
+    }
+
+    static class LAZY_LOAD{
+        public static GameEngine instance = new GameEngine();
+    }
+
+    public static GameEngine getInstance() {
+        return LAZY_LOAD.instance;
+    }
+
+
 
 
     private void dispatchOp(String cmd, String data, String uid, String deviceId,StringBuilder sb) {

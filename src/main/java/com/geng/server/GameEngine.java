@@ -68,6 +68,9 @@ public class GameEngine {
         logger.debug("uid={} cmd={} device={} data={}",uid,cmd,deviceId,data);
         //操作派发到相应类
         try {
+            if(StringUtils.isBlank(data))
+                    throw new GameException(GameException.GameExceptionCode.INVALID_OPTION,"param not valid!! no data!");
+
             IRequestHandler handler = (IRequestHandler) HandlerRegisterCenter.getInstance().findHandlerInstance(cmd);
             if(null != handler)
                 handler.handle(deviceId, uid, data, sb);

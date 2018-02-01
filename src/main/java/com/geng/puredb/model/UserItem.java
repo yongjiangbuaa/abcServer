@@ -5,6 +5,8 @@ import com.geng.puredb.dao.UserItemMapper;
 import com.geng.utils.GameService;
 import org.apache.ibatis.session.SqlSession;
 
+import java.util.List;
+
 public class UserItem {
     private String uuid;
 
@@ -77,11 +79,15 @@ public class UserItem {
         }
     }
 
-    public  static void update(UserItem i){
+    public   void update(){
         SqlSession session = MybatisSessionUtil.getSession();
         try {
-            UserItem mapper = session.getMapper(UserItem.class);
-            mapper.update(i);
+            UserItemMapper mapper = session.getMapper(UserItemMapper.class);
+            if(this.getCount() <= 0){
+                mapper.delete(this.getUuid());
+            }else {
+                mapper.updateByPrimaryKey(this);
+            }
         } finally {
             session.close();
         }
@@ -98,5 +104,26 @@ public class UserItem {
         u.setValue(0);
         u.setVanishtime(Long.MAX_VALUE);
         return u;
+    }
+
+    public static List<UserItem> getMutiItemByItemIds(String uid, List<String> itemIdList){
+        SqlSession session = MybatisSessionUtil.getInstance().getSession();
+        try {
+            UserItemMapper userItemMapper = session.getMapper(UserItemMapper.class);
+            return userItemMapper.selectItemListByItemIds(uid, itemIdList);
+        } finally {
+            session.close();
+        }
+    }
+
+    public static List<UserItem> getItemByOwnerid(String uid) {
+
+        SqlSession session = MybatisSessionUtil.getInstance().getSession();
+        try {
+            UserItemMapper userItemMapper = session.getMapper(UserItemMapper.class);
+            return userItemMapper.select(uid);
+        } finally {
+            session.close();
+        }
     }
 }

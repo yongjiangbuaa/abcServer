@@ -103,4 +103,43 @@
       vanishTime = #{vanishtime,jdbcType=BIGINT}
     where uuid = #{uuid,jdbcType=VARCHAR}
   </update>
+
+  <update id="updateByOwnerIdAndItemId" parameterType="com.geng.puredb.model.UserItem" >
+    update user_item
+    set ownerId = #{ownerid,jdbcType=VARCHAR},
+    itemId = #{itemid,jdbcType=VARCHAR},
+    count = #{count,jdbcType=INTEGER},
+    value = #{value,jdbcType=INTEGER},
+    vanishTime = #{vanishtime,jdbcType=BIGINT}
+    where uuid = #{uuid,jdbcType=VARCHAR}
+  </update>
+
+  <select id="select" resultMap="UserItemMap" parameterType="java.lang.String">
+    select
+    *
+    from user_item
+    where ownerId = #{ownerId, jdbcType=VARCHAR}
+  </select>
+
+
+
+
+  <insert id="insertBatch" parameterType="java.util.List">
+    insert into user_item (uuid, ownerId, itemId, count, value, vanishTime)
+    values
+    <foreach collection="list" index="index" item="item" separator=",">
+      (
+      #{item.uuid,jdbcType=VARCHAR}, #{item.ownerId,jdbcType=VARCHAR}, #{item.itemId,jdbcType=VARCHAR},
+      #{item.count,jdbcType=INTEGER}, #{item.value,jdbcType=INTEGER}, #{item.vanishTime,jdbcType=BIGINT}
+      )
+    </foreach>
+  </insert>
+
+
+  <delete id="deleteByOwnerIdAndItemId">
+    delete from user_item WHERE  ownerId = #{ownerId, jdbcType=VARCHAR} and itemId in
+    <foreach item="item" index="index" collection="itemIdList" open="(" separator="," close=")">
+      #{item,jdbcType=VARCHAR}
+    </foreach>
+  </delete>
 </mapper>

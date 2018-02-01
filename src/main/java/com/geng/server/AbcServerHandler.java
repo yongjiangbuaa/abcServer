@@ -1,5 +1,6 @@
 package com.geng.server;
 
+import com.geng.exception.GameException;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.*;

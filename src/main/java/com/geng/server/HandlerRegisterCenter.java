@@ -1,9 +1,6 @@
 package com.geng.server;
 
-import com.geng.handlers.LevelFailRequestHandler;
-import com.geng.handlers.LevelUpRequestHandler;
-import com.geng.handlers.LoginRequestHandler;
-import com.geng.handlers.SaveRequestHandler;
+import com.geng.handlers.*;
 
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -23,7 +20,7 @@ public class HandlerRegisterCenter {
         handlerRegisterMap.put(SaveRequestHandler.ID,SaveRequestHandler.class);
         handlerRegisterMap.put(LevelUpRequestHandler.ID,LevelUpRequestHandler.class);
         handlerRegisterMap.put(LevelFailRequestHandler.ID,LevelFailRequestHandler.class);
-
+        handlerRegisterMap.put(DelItemRequestHandler.ID,DelItemRequestHandler.class);
     }
 
     public Object findHandlerInstance(String cmd) throws IllegalAccessException, InstantiationException {

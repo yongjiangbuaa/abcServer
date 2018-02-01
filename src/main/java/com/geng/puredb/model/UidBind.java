@@ -51,7 +51,6 @@ public class UidBind {
         try {
             UidBindMapper mapper = session.getMapper(UidBindMapper.class);
             mapper.insert(bind);
-            session.commit();//TODO 全局autocommit
         } finally {
             session.close();//注意一定要finally   close!!
         }
@@ -62,7 +61,6 @@ public class UidBind {
         try {
             UidBindMapper mapper = session.getMapper(UidBindMapper.class);
             mapper.updateByPrimaryKeySelective(UidBind);
-            session.commit();
         } finally {
             session.close();
         }

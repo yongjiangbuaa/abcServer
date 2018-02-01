@@ -75,7 +75,6 @@ public class UserProfile {
         try {
             UserProfileMapper mapper = session.getMapper(UserProfileMapper.class);
             mapper.insert(this);
-            session.commit();
         } finally {
             session.close();//注意一定要finally   close!!
         }
@@ -86,7 +85,6 @@ public class UserProfile {
         try {
             UserProfileMapper mapper = session.getMapper(UserProfileMapper.class);
             mapper.updateByPrimaryKeySelective(this);
-            session.commit();
         } finally {
             session.close();
         }

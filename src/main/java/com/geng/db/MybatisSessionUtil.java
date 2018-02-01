@@ -1,6 +1,7 @@
 package com.geng.db;
 
 import com.geng.server.GameEngine;
+import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
@@ -38,7 +39,7 @@ public class MybatisSessionUtil {
     }
 
     public static SqlSession getSession(){
-        return       MybatisSessionUtil.getInstance().getSqlSessionFactory().openSession();
+        return       MybatisSessionUtil.getInstance().getSqlSessionFactory().openSession(ExecutorType.SIMPLE,true);
     }
 
 

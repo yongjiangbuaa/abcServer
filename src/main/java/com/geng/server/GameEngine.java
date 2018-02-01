@@ -69,14 +69,18 @@ public class GameEngine {
         logger.debug("uid={} cmd={} device={} data={}",uid,cmd,deviceId,data);
         //操作派发到相应类
         try {
-            UserProfile userProfile = UserProfile.getWithUid(uid);
-            if(null == userProfile )
-                throw new GameException(GameException.GameExceptionCode.UID_NOT_EXIST,"uid not exist!");
-
-
             IRequestHandler handler = (IRequestHandler) HandlerRegisterCenter.getInstance().findHandlerInstance(cmd);
-            if(null != handler)
-                handler.handle(deviceId, userProfile, data, sb);
+            if(null != handler) {
+                if( handler instanceof  LoginRequestHandler){
+                    handler.handle(deviceId, uid, data, sb);
+                }else {
+                    UserProfile userProfile = UserProfile.getWithUid(uid);
+                    if(null == userProfile )
+                        throw new GameException(GameException.GameExceptionCode.UID_NOT_EXIST,"uid not exist!");
+
+                    handler.handle(deviceId, userProfile, data, sb);
+                }
+            }
         } catch (GameException e) {
             logger.error(e.getMessage());
             sb.append(e.toJson());

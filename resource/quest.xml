@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
   <Group>
     <ItemSpec id="10001" type="1" gotoId="10002" requireStar="1" requireItem="200001:2" prize="200001:2:100,200003:1:100" storyId="1000101"/>
-    <ItemSpec id="10002" type="2" selectList="100005:1000201,100006:1000202,100007:1000203" gotoId="10003" requireItem="0" prize="0"/>
+    <ItemSpec id="10002" type="2" selectList="100005:1000201,100006:1000202,100007:1000203" gotoId="10003" requireStar="0" requireItem="0" prize="0"/>
     <ItemSpec id="10003" type="1" gotoId="10004" requireStar="1" requireItem="0" prize="0" storyId="0"/>
     <ItemSpec id="10004" type="1" gotoId="10005" requireStar="1" requireItem="0" prize="0" storyId="0"/>
-    <ItemSpec id="10005" type="2" selectList="100010:100101,100011:100103" gotoId="10006" requireItem="0" prize="0"/>
+    <ItemSpec id="10005" type="2" selectList="100010:100101,100011:100103" gotoId="10006" requireStar="0" requireItem="0" prize="0"/>
     <ItemSpec id="10006" type="1" gotoId="10007" requireStar="1" requireItem="200001:2" prize="0" storyId="0"/>
     <ItemSpec id="10007" type="1" gotoId="10008" requireStar="1" requireItem="200001:2" prize="0" storyId="0"/>
   </Group>

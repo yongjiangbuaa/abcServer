@@ -1,5 +1,10 @@
 package com.geng.puredb.model;
 
+import com.geng.db.MybatisSessionUtil;
+import com.geng.puredb.dao.UserItemMapper;
+import com.geng.utils.GameService;
+import org.apache.ibatis.session.SqlSession;
+
 public class UserItem {
     private String uuid;
 
@@ -59,5 +64,39 @@ public class UserItem {
 
     public void setVanishtime(Long vanishtime) {
         this.vanishtime = vanishtime;
+    }
+
+    public  static void insert(UserItem i){
+
+        SqlSession session = MybatisSessionUtil.getSession();
+        try {
+            UserItemMapper mapper = session.getMapper(UserItemMapper.class);
+            mapper.insert(i);
+        } finally {
+            session.close();//注意一定要finally   close!!
+        }
+    }
+
+    public  static void update(UserItem i){
+        SqlSession session = MybatisSessionUtil.getSession();
+        try {
+            UserItem mapper = session.getMapper(UserItem.class);
+            mapper.update(i);
+        } finally {
+            session.close();
+        }
+    }
+
+
+
+    public static UserItem newInstance(String uid,String itemid) {
+        UserItem u = new UserItem();
+        u.setUuid(GameService.getGUID());
+        u.setItemid(itemid);
+        u.setOwnerid(uid);
+        u.setCount(0);
+        u.setValue(0);
+        u.setVanishtime(Long.MAX_VALUE);
+        return u;
     }
 }

@@ -16,8 +16,8 @@ public class LoginRequestHandler implements IRequestHandler{
             UidBind bind = UidBind.getWithbindId(deviceId);
             if(null == bind) {
                 //TODO find deviceMapping uid
-                if(StringUtils.isBlank(data))
-                    throw new GameException(GameException.GameExceptionCode.INVALID_OPTION,"param not valid!! no data!");
+//                if(StringUtils.isBlank(data))
+//                    throw new GameException(GameException.GameExceptionCode.INVALID_OPTION,"param not valid!! no data!");
                 userProfile = UserService.Register(deviceId, data);//注册
             }else{
                 userProfile = UserProfile.getWithUid(bind.getUid());

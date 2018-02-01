@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.geng.puredb.dao.UserStoryMapper" >
+  <resultMap id="BaseResultMap" type="com.geng.puredb.model.UserStory" >
+    <id column="uuid" property="uuid" jdbcType="VARCHAR" />
+    <result column="ownerId" property="ownerid" jdbcType="VARCHAR" />
+    <result column="storyId" property="storyid" jdbcType="VARCHAR" />
+    <result column="subId" property="subid" jdbcType="INTEGER" />
+    <result column="type" property="type" jdbcType="INTEGER" />
+    <result column="updateTime" property="updatetime" jdbcType="BIGINT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    uuid, ownerId, storyId, subId, type, updateTime
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from user_story
+    where uuid = #{uuid,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from user_story
+    where uuid = #{uuid,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.geng.puredb.model.UserStory" >
+    insert into user_story (uuid, ownerId, storyId, 
+      subId, type, updateTime
+      )
+    values (#{uuid,jdbcType=VARCHAR}, #{ownerid,jdbcType=VARCHAR}, #{storyid,jdbcType=VARCHAR}, 
+      #{subid,jdbcType=INTEGER}, #{type,jdbcType=INTEGER}, #{updatetime,jdbcType=BIGINT}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.geng.puredb.model.UserStory" >
+    insert into user_story
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="uuid != null" >
+        uuid,
+      </if>
+      <if test="ownerid != null" >
+        ownerId,
+      </if>
+      <if test="storyid != null" >
+        storyId,
+      </if>
+      <if test="subid != null" >
+        subId,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+      <if test="updatetime != null" >
+        updateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="uuid != null" >
+        #{uuid,jdbcType=VARCHAR},
+      </if>
+      <if test="ownerid != null" >
+        #{ownerid,jdbcType=VARCHAR},
+      </if>
+      <if test="storyid != null" >
+        #{storyid,jdbcType=VARCHAR},
+      </if>
+      <if test="subid != null" >
+        #{subid,jdbcType=INTEGER},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=INTEGER},
+      </if>
+      <if test="updatetime != null" >
+        #{updatetime,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.geng.puredb.model.UserStory" >
+    update user_story
+    <set >
+      <if test="ownerid != null" >
+        ownerId = #{ownerid,jdbcType=VARCHAR},
+      </if>
+      <if test="storyid != null" >
+        storyId = #{storyid,jdbcType=VARCHAR},
+      </if>
+      <if test="subid != null" >
+        subId = #{subid,jdbcType=INTEGER},
+      </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=INTEGER},
+      </if>
+      <if test="updatetime != null" >
+        updateTime = #{updatetime,jdbcType=BIGINT},
+      </if>
+    </set>
+    where uuid = #{uuid,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.geng.puredb.model.UserStory" >
+    update user_story
+    set ownerId = #{ownerid,jdbcType=VARCHAR},
+      storyId = #{storyid,jdbcType=VARCHAR},
+      subId = #{subid,jdbcType=INTEGER},
+      type = #{type,jdbcType=INTEGER},
+      updateTime = #{updatetime,jdbcType=BIGINT}
+    where uuid = #{uuid,jdbcType=VARCHAR}
+  </update>
+</mapper>

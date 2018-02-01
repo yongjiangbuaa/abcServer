@@ -2,6 +2,7 @@ package com.geng.server;
 
 import com.geng.exception.GameException;
 import com.geng.handlers.*;
+import com.geng.puredb.model.UserProfile;
 import com.geng.utils.xml.GameConfigManager;
 import com.google.gson.Gson;
 import org.apache.commons.lang3.StringUtils;
@@ -68,12 +69,14 @@ public class GameEngine {
         logger.debug("uid={} cmd={} device={} data={}",uid,cmd,deviceId,data);
         //操作派发到相应类
         try {
-            if(StringUtils.isBlank(data))
-                    throw new GameException(GameException.GameExceptionCode.INVALID_OPTION,"param not valid!! no data!");
+            UserProfile userProfile = UserProfile.getWithUid(uid);
+            if(null == userProfile )
+                throw new GameException(GameException.GameExceptionCode.UID_NOT_EXIST,"uid not exist!");
+
 
             IRequestHandler handler = (IRequestHandler) HandlerRegisterCenter.getInstance().findHandlerInstance(cmd);
             if(null != handler)
-                handler.handle(deviceId, uid, data, sb);
+                handler.handle(deviceId, userProfile, data, sb);
         } catch (GameException e) {
             logger.error(e.getMessage());
             sb.append(e.toJson());

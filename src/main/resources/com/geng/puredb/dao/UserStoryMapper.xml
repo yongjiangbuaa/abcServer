@@ -18,6 +18,13 @@
     from user_story
     where uuid = #{uuid,jdbcType=VARCHAR}
   </select>
+
+  <select id="selectByUserId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select
+    <include refid="Base_Column_List" />
+    from user_story
+    where ownerId = #{ownerId,jdbcType=VARCHAR}
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
     delete from user_story
     where uuid = #{uuid,jdbcType=VARCHAR}

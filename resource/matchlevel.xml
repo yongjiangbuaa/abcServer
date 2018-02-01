@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<Group id="matchlevel">
+  <Group>
     <ItemSpec id="1000001" level="1" hard="1" star="1" coin="50" itemReward="200003:1:100,200001:1:100"/>
     <ItemSpec id="1000002" level="2" hard="1" star="1" coin="50" itemReward="200001:1:50"/>
     <ItemSpec id="1000003" level="3" hard="1" star="1" coin="50" itemReward="200001:1:50"/>
@@ -119,4 +119,4 @@
     <ItemSpec id="1000117" level="117" hard="2" star="1" coin="50" itemReward="200001:1:50"/>
     <ItemSpec id="1000118" level="118" hard="1" star="1" coin="50" itemReward="200001:1:50"/>
     <ItemSpec id="1000119" level="119" hard="1" star="1" coin="50" itemReward="200001:1:50"/>
-</Group>
+  </Group>

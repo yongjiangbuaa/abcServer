@@ -5,6 +5,7 @@ import com.geng.puredb.model.UserProfile;
 import com.geng.service.UserService;
 import com.geng.utils.G;
 import com.geng.utils.xml.GameConfigManager;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,11 +13,14 @@ public class LevelUpRequestHandler implements IRequestHandler{
     public static final int ADD_GOLD = 200;
     private final Logger logger = LoggerFactory.getLogger(LevelUpRequestHandler.class);
     public static final String ID = "level.up";//传所加star
+
     @Override
     public void handle(String deviceId, String uid, String data, StringBuilder sb) throws GameException {
-        UserProfile userProfile = UserProfile.getWithUid(uid);
-        if(null == userProfile)
-            throw new GameException(GameException.GameExceptionCode.UID_NOT_EXIST,"");
+
+    }
+
+    @Override
+    public void handle(String deviceId, UserProfile userProfile, String data, StringBuilder sb) throws GameException {
         UserService.checkHeartTime(userProfile);
         UserProfile param = G.fromJson(data,UserProfile.class);
         if(null == param || param.getStar() == null)

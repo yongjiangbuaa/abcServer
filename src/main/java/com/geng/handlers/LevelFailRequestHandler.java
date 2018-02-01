@@ -7,10 +7,14 @@ import com.geng.utils.G;
 
 public class LevelFailRequestHandler implements IRequestHandler{
     public static final String ID = "level.fail";
+
     @Override
     public void handle(String deviceId, String uid, String data, StringBuilder sb) throws GameException {
-        UserProfile userProfile = UserProfile.getWithUid(uid);
-        if(null == userProfile) throw new GameException(GameException.GameExceptionCode.UID_NOT_EXIST,"");
+
+    }
+
+    @Override
+    public void handle(String deviceId, UserProfile userProfile, String data, StringBuilder sb) throws GameException {
         UserService.checkHeartTime(userProfile);
         userProfile.setHeart(userProfile.getHeart() -  1);
         if(userProfile.getHearttime() == 0L) userProfile.setHearttime(System.currentTimeMillis() + UserService.recoverTime);

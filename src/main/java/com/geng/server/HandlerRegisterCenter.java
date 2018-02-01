@@ -21,6 +21,8 @@ public class HandlerRegisterCenter {
         handlerRegisterMap.put(LevelUpRequestHandler.ID,LevelUpRequestHandler.class);
         handlerRegisterMap.put(LevelFailRequestHandler.ID,LevelFailRequestHandler.class);
         handlerRegisterMap.put(DelItemRequestHandler.ID,DelItemRequestHandler.class);
+        handlerRegisterMap.put(DelItemRequestHandler.ID,DelItemRequestHandler.class);
+        handlerRegisterMap.put(UnlockStoryRequestHandler.ID,UnlockStoryRequestHandler.class);
     }
 
     public Object findHandlerInstance(String cmd) throws IllegalAccessException, InstantiationException {

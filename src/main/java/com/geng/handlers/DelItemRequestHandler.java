@@ -2,6 +2,7 @@ package com.geng.handlers;
 
 import com.geng.exception.GameException;
 import com.geng.puredb.model.UserItem;
+import com.geng.puredb.model.UserProfile;
 import com.geng.utils.G;
 import com.geng.utils.MyHttpParam;
 import org.apache.commons.lang3.StringUtils;
@@ -13,6 +14,14 @@ public class DelItemRequestHandler implements IRequestHandler{
 
     @Override
     public void handle(String deviceId, String uid, String data, StringBuilder sb) throws GameException {
+
+    }
+
+    @Override
+    public void handle(String deviceId, UserProfile userProfile, String data, StringBuilder sb) throws GameException {
+        if(StringUtils.isBlank(data))
+            throw new GameException(GameException.GameExceptionCode.INVALID_OPTION,"param not valid!! no data!");
+
         //TODO 解析多参数
         MyHttpParam param  = G.fromJson(data,MyHttpParam.class);
         String item = param.getItem();
@@ -35,7 +44,7 @@ public class DelItemRequestHandler implements IRequestHandler{
         Collections.addAll(itemList,items);
 
         synchronized (this) {
-            List<UserItem> userItemList = UserItem.getMutiItemByItemIds(uid, itemList);
+            List<UserItem> userItemList = UserItem.getMutiItemByItemIds(userProfile.getUid(), itemList);
             if( null == userItemList || userItemList.size() == 0 || userItemList.size() != items.length)
                 throw new GameException(GameException.GameExceptionCode.ITEM_NOT_ENOUGH,"cheating item use!!");
             for(UserItem u : userItemList){
@@ -49,7 +58,7 @@ public class DelItemRequestHandler implements IRequestHandler{
                 userItem.update();
             }
 
-            List<UserItem> res = UserItem.getItemByOwnerid(uid);
+            List<UserItem> res = UserItem.getItemByOwnerid(userProfile.getUid());
             sb.append("{\"items\":").append(G.toJson(res)).append("}");
         }
     }

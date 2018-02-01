@@ -5,6 +5,9 @@ import com.geng.puredb.dao.UserStoryMapper;
 import com.geng.utils.GameService;
 import org.apache.ibatis.session.SqlSession;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class UserStory {
     private String uuid;
 
@@ -66,22 +69,22 @@ public class UserStory {
         this.updatetime = updatetime;
     }
 
-    public  static void insert(UserStory i){
+    public   void insert(){
 
         SqlSession session = MybatisSessionUtil.getSession();
         try {
             UserStoryMapper mapper = session.getMapper(UserStoryMapper.class);
-            mapper.insert(i);
+            mapper.insert(this);
         } finally {
             session.close();//注意一定要finally   close!!
         }
     }
 
-    public  static void update(UserStory i){
+    public   void update(){
         SqlSession session = MybatisSessionUtil.getSession();
         try {
-            UserStory mapper = session.getMapper(UserStory.class);
-            mapper.update(i);
+            UserStoryMapper mapper = session.getMapper(UserStoryMapper.class);
+            mapper.updateByPrimaryKeySelective(this);
         } finally {
             session.close();
         }
@@ -98,5 +101,17 @@ public class UserStory {
         u.setType(0);
         u.setUpdatetime(System.currentTimeMillis());
         return u;
+    }
+
+    public static List<UserStory> getByUserId(String uid){
+        List<UserStory> list = null;
+        SqlSession session = MybatisSessionUtil.getSession();
+        try {
+            UserStoryMapper mapper = session.getMapper(UserStoryMapper.class);
+            list = mapper.selectByUserId(uid);
+        } finally {
+            session.close();
+        }
+        return list;
     }
 }

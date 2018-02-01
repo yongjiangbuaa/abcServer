@@ -4,7 +4,7 @@ import com.geng.puredb.model.UserProfile;
 import com.geng.utils.G;
 import com.google.gson.Gson;
 
-public class SaveRequestHandler implements IRequestHandler{
+public abstract class SaveRequestHandler implements IRequestHandler{
     public static final String ID="user.save";
     @Override
     public void handle(String deviceId, String uid, String data, StringBuilder sb) {

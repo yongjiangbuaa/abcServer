@@ -1,6 +1,9 @@
 package com.geng.puredb.dao;
 
 import com.geng.puredb.model.UserStory;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 public interface UserStoryMapper {
     int deleteByPrimaryKey(String uuid);
@@ -14,4 +17,6 @@ public interface UserStoryMapper {
     int updateByPrimaryKeySelective(UserStory record);
 
     int updateByPrimaryKey(UserStory record);
+
+    List<UserStory> selectByUserId(@Param("ownerId")String ownerId);
 }

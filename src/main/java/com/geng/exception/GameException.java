@@ -1,9 +1,7 @@
 package com.geng.exception;
 
-import com.google.gson.GsonBuilder;
-
 public class GameException extends Throwable {
-    private int err;
+    private String err;
     private String errMsg;
 
     public GameException(GameExceptionCode code, String str) {
@@ -12,26 +10,28 @@ public class GameException extends Throwable {
     }
 
     public enum GameExceptionCode {
-        UID_NOT_EXIST(1),
-        ACCESS_CONFIG_FILE_ERROR(999999),
-        INVALID_OPTION(2),
-        ITEM_NOT_ENOUGH(3);
+        UID_NOT_EXIST("10001"),
+        INVALID_OPTION("E00000"),
+        ITEM_NOT_ENOUGH("10003"),
+        LIFE_NOT_ENOUGH("10004"),
+        ACCESS_CONFIG_FILE_ERROR("999999"),
+        ;
 
-        public int getValue() {
+        public String getValue() {
             return value;
         }
 
-        private int value;
-        GameExceptionCode(int i) {
+        private String value;
+        GameExceptionCode(String i) {
             this.value = i;
         }
     }
 
     public String toJson(){
         StringBuilder sb = new StringBuilder();
-        sb.append("{\"err\":")
+        sb.append("{\"err\":\"")
                 .append(err)
-                .append(",\"errMsg\":\"")
+                .append("\",\"errMsg\":\"")
                 .append(errMsg)
                 .append("\"}");
         return sb.toString();

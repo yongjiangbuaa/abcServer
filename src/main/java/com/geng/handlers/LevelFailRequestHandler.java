@@ -16,6 +16,8 @@ public class LevelFailRequestHandler implements IRequestHandler{
     @Override
     public void handle(String deviceId, UserProfile userProfile, String data, StringBuilder sb) throws GameException {
         UserService.checkHeartTime(userProfile);
+        if(userProfile.getHeart() < 1)
+            throw new GameException(GameException.GameExceptionCode.LIFE_NOT_ENOUGH,"heart not enough!!");
         userProfile.setHeart(userProfile.getHeart() -  1);
         if(userProfile.getHearttime() == 0L) userProfile.setHearttime(System.currentTimeMillis() + UserService.recoverTime);
         userProfile.update();

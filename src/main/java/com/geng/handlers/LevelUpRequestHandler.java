@@ -25,8 +25,8 @@ public class LevelUpRequestHandler implements IRequestHandler{
         UserProfile param = G.fromJson(data,UserProfile.class);
         if(null == param || param.getStar() == null)
             throw new GameException(GameException.GameExceptionCode.INVALID_OPTION,"params invalid");
-        userProfile.setGold(userProfile.getGold() +         new GameConfigManager("matchlevel").getItem(String.valueOf(1000000+userProfile.getLevel())).getInt("coin",ADD_GOLD));
-        userProfile.setStar(userProfile.getStar() + param.getStar());
+        userProfile.setGold(userProfile.getGold() + new GameConfigManager("matchlevel").getItem(String.valueOf(1000000+userProfile.getLevel())).getInt("coin",ADD_GOLD));
+        userProfile.setStar(userProfile.getStar() + new GameConfigManager("matchlevel").getItem(String.valueOf(1000000+userProfile.getLevel())).getInt("star",1));
         userProfile.setLevel(userProfile.getLevel() + 1);
         userProfile.update();
         sb.append(G.toJson(userProfile));

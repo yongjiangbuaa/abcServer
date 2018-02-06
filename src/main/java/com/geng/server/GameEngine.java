@@ -1,12 +1,14 @@
 package com.geng.server;
 
+import com.geng.core.data.ISFSObject;
+import com.geng.core.data.SFSObject;
+import com.geng.exception.ExceptionMonitorType;
 import com.geng.exception.GameException;
 import com.geng.exception.GameExceptionCode;
 import com.geng.handlers.*;
 import com.geng.puredb.model.UserProfile;
+import com.geng.utils.COKLoggerFactory;
 import com.geng.utils.xml.GameConfigManager;
-import com.google.gson.Gson;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,8 +17,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Handler;
 
 public class GameEngine {
     public static int ZONE_ID;
@@ -90,8 +90,13 @@ public class GameEngine {
         } catch (IllegalAccessException|InstantiationException e) {
             logger.error(e.getMessage());
             sb.append(new GameException(GameExceptionCode.ACCESS_CONFIG_FILE_ERROR,"error in access config file").toJson());
-        } catch (Exception e){
-            logger.error(e.getStackTrace().toString());
+        } catch (Throwable e) {
+            String retStr = "exception";
+                ISFSObject errorObj = new SFSObject();
+                errorObj.putUtfString("err", GameExceptionCode.INVALID_OPT.getCode());
+            String msg = String.format("%s request %s, params: %s", uid, cmd, data);
+            COKLoggerFactory.monitorException(msg, ExceptionMonitorType.CMD, COKLoggerFactory.ExceptionOwner.COMMON, e);
+            sb.append(errorObj.toJson());
         }finally {
 
         }

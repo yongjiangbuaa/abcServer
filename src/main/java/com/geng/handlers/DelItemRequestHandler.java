@@ -1,7 +1,10 @@
 package com.geng.handlers;
 
+import com.geng.core.data.ISFSObject;
+import com.geng.core.data.SFSObject;
 import com.geng.exception.GameException;
 import com.geng.exception.GameExceptionCode;
+import com.geng.gameengine.ItemManager;
 import com.geng.puredb.model.UserItem;
 import com.geng.puredb.model.UserProfile;
 import com.geng.utils.G;
@@ -60,7 +63,12 @@ public class DelItemRequestHandler implements IRequestHandler{
             }
 
             List<UserItem> res = UserItem.getItems(userProfile.getUid());
-            sb.append("{\"items\":").append(G.toJson(res)).append("}");
+//            sb.append("{\"items\":").append(G.toJson(res)).append("}");
         }
+
+        ISFSObject retObj = SFSObject.newInstance();
+        userProfile.fillLoginInfo(retObj);
+        ItemManager.getLoginInfo(userProfile.getUid(),retObj);
+        sb.append(retObj.toJson());
     }
 }

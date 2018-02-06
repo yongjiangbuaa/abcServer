@@ -13,7 +13,8 @@ public class LoggerUtil {
     public enum GoodsUseType {
     }
 
-    public class GoodsGetType {
+    public enum GoodsGetType {
+         LEVEL_UP;
     }
     public static LoggerUtil getInstance() {
         return LazyHolder.INSTANCE;

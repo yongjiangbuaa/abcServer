@@ -60,6 +60,7 @@ public class GameConfigLoader {
 					document = reader.read(file);
 					fileName = fileName.substring(0, fileName.length() - 4);
                     putXMLToCache(fileName, document);
+					logger.info("loading xml is ready {}",fileName);
 				}
                 logger.info("loading xml is ready");
 			} catch (DocumentException e) {

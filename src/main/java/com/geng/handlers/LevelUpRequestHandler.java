@@ -44,7 +44,7 @@ public class LevelUpRequestHandler implements IRequestHandler{
                 String[] item_num_rate = StringUtils.split(desc,":");
                 boolean add  = false;
                 int got = RandomUtils.nextInt(1,100);
-                if( got< Integer.parseInt(item_num_rate[2])) add = true;
+                if( got <= Integer.parseInt(item_num_rate[2])) add = true;
                 else
                     logger.info("rate {} but got {}",item_num_rate[2],got);
 

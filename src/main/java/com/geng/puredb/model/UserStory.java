@@ -118,7 +118,7 @@ public class UserStory {
     public static void getLoginInfo(UserProfile userProfile, ISFSObject initObj) {
         String storyid = "";
         List<UserStory> list = UserStory.getByUserId(userProfile.getUid());
-        if(list != null || list.size() > 0){
+        if(list != null && list.size() > 0 ){
             storyid = list.get(0).getStoryid();
         }
         initObj.putUtfString("storyid",storyid);

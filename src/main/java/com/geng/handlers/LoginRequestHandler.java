@@ -39,7 +39,7 @@ public class LoginRequestHandler implements IRequestHandler{
 
         //组织返回数据
         UserStory.getLoginInfo(userProfile,initObj);
-        ItemManager.getLoginInfo(uid,initObj);
+        ItemManager.getLoginInfo(userProfile.getUid(),initObj);
         userProfile.fillLoginInfo(initObj);
         String json = initObj.toJson();
         sb.append(json);

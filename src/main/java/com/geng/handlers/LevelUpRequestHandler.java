@@ -6,6 +6,7 @@ import com.geng.exception.GameException;
 import com.geng.exception.GameExceptionCode;
 import com.geng.gameengine.ItemManager;
 import com.geng.puredb.model.UserProfile;
+import com.geng.puredb.model.UserStory;
 import com.geng.service.UserService;
 import com.geng.utils.G;
 import com.geng.utils.LoggerUtil;
@@ -57,6 +58,7 @@ public class LevelUpRequestHandler implements IRequestHandler{
 
         ISFSObject retObj = SFSObject.newInstance();
         ItemManager.getLoginInfo(userProfile.getUid(),retObj);
+        UserStory.getLoginInfo(userProfile,retObj);
         userProfile.fillLoginInfo(retObj);
         sb.append(retObj.toJson());
 

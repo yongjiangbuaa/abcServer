@@ -43,6 +43,8 @@ public class UnlockStoryRequestHandler implements IRequestHandler {
         //扣星星
         u.setStar(u.getStar() - new GameConfigManager("quest").getItem(storyid).getInt("requireStar"));
         u.update();
+
+        //组织返回数据
         u.setStoryId(storyid);
         sb.append(G.toJson(u));
     }

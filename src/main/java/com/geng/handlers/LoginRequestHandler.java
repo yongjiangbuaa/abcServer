@@ -32,10 +32,10 @@ public class LoginRequestHandler implements IRequestHandler{
              if (null == userProfile) throw new GameException(GameExceptionCode.UID_NOT_EXIST,"uid not exist!");
         }
         UserService.checkHeartTime(userProfile);
-        List<UserStory> list = UserStory.getByUserId(uid);
-        if(list != null || list.size() > 0){
-            userProfile.setStoryId(list.get(0).getStoryid());
-        }
+
+        //组织返回数据
+        UserStory.getLoginInfo(userProfile,sb);
+
         sb.append(G.toJson(userProfile));
 
     }

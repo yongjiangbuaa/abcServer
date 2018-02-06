@@ -113,4 +113,12 @@ public class UserStory {
         }
         return list;
     }
+
+    public static void getLoginInfo(UserProfile userProfile, StringBuilder sb) {
+        List<UserStory> list = UserStory.getByUserId(userProfile.getUid());
+        if(list != null || list.size() > 0){
+            userProfile.setStoryId(list.get(0).getStoryid());
+        }
+
+    }
 }

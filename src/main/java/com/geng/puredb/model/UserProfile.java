@@ -451,6 +451,7 @@ public class UserProfile {
         initObj.putInt("gold",getGold());
         initObj.putInt("star",getStar());
         initObj.putInt("heart",getHeart());
+        initObj.putInt("level",getLevel());
         initObj.putLong("heartTime",getHearttime());
     }
 }

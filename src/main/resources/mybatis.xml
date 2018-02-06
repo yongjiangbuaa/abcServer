@@ -16,5 +16,6 @@
         <mapper resource="com/geng/puredb/dao/UserProfileMapper.xml"/>
         <mapper resource="com/geng/puredb/dao/UidBindMapper.xml"/>
         <mapper resource="com/geng/puredb/dao/UserStoryMapper.xml"/>
+        <mapper resource="com/geng/puredb/dao/UserItemMapper.xml"/>
     </mappers>
 </configuration>

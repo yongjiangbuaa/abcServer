@@ -1,6 +1,7 @@
 package com.geng.handlers;
 
 import com.geng.exception.GameException;
+import com.geng.exception.GameExceptionCode;
 import com.geng.puredb.model.UserItem;
 import com.geng.puredb.model.UserProfile;
 import com.geng.utils.G;
@@ -20,24 +21,24 @@ public class DelItemRequestHandler implements IRequestHandler{
     @Override
     public void handle(String deviceId, UserProfile userProfile, String data, StringBuilder sb) throws GameException {
         if(StringUtils.isBlank(data))
-            throw new GameException(GameException.GameExceptionCode.INVALID_OPTION,"param not valid!! no data!");
+            throw new GameException(GameExceptionCode.INVALID_OPT,"param not valid!! no data!");
 
         //TODO 解析多参数
         MyHttpParam param  = G.fromJson(data,MyHttpParam.class);
         String item = param.getItem();
         if(StringUtils.isBlank(item) || StringUtils.isBlank(param.getNum()))
-            throw new GameException(GameException.GameExceptionCode.INVALID_OPTION,"param not valid no item or no num!!");
+            throw new GameException(GameExceptionCode.INVALID_OPT,"param not valid no item or no num!!");
 
         String[] items = StringUtils.split(param.getItem(),"|");
         String[] nums = StringUtils.split(param.getNum(),"|");
         if(items.length != nums.length)
-            throw new GameException(GameException.GameExceptionCode.INVALID_OPTION,"item num length not equal!!");
+            throw new GameException(GameExceptionCode.INVALID_OPT,"item num length not equal!!");
         Map<String,Integer> iMap  = new HashMap<>();
         for(int i = 0;i < items.length;i++){
             iMap.put(items[i],Integer.parseInt(nums[i]));
         }
         if(iMap.size() < items.length)
-            throw new GameException(GameException.GameExceptionCode.INVALID_OPTION,"item error or repeat!!");
+            throw new GameException(GameExceptionCode.INVALID_OPT,"item error or repeat!!");
 
 
         List itemList = new ArrayList();
@@ -46,11 +47,11 @@ public class DelItemRequestHandler implements IRequestHandler{
         synchronized (this) {
             List<UserItem> userItemList = UserItem.getMutiItemByItemIds(userProfile.getUid(), itemList);
             if( null == userItemList || userItemList.size() == 0 || userItemList.size() != items.length)
-                throw new GameException(GameException.GameExceptionCode.ITEM_NOT_ENOUGH,"cheating item use!!");
+                throw new GameException(GameExceptionCode.ITEM_NOT_ENOUGH,"cheating item use!!");
             for(UserItem u : userItemList){
-                    if(u.getCount() < iMap.get(u.getItemid()) )
-                        throw new GameException(GameException.GameExceptionCode.INVALID_OPTION,"cheating item use!!");
-                    u.setCount(u.getCount() - iMap.get(u.getItemid()));
+                    if(u.getCount() < iMap.get(u.getItemId()) )
+                        throw new GameException(GameExceptionCode.INVALID_OPT,"cheating item use!!");
+                    u.setCount(u.getCount() - iMap.get(u.getItemId()));
 
             }
             //update
@@ -58,7 +59,7 @@ public class DelItemRequestHandler implements IRequestHandler{
                 userItem.update();
             }
 
-            List<UserItem> res = UserItem.getItemByOwnerid(userProfile.getUid());
+            List<UserItem> res = UserItem.getItems(userProfile.getUid());
             sb.append("{\"items\":").append(G.toJson(res)).append("}");
         }
     }

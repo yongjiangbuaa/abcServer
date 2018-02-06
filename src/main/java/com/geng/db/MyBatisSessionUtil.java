@@ -9,10 +9,10 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import java.io.InputStream;
 import java.util.Properties;
 
-public class MybatisSessionUtil {
+public class MyBatisSessionUtil {
     private static SqlSessionFactory sqlSessionFactory ;
 
-    private MybatisSessionUtil(){
+    private MyBatisSessionUtil(){
         init();
     }
 
@@ -31,15 +31,15 @@ public class MybatisSessionUtil {
     }
 
     static class LAZY_LOAD{
-        public static MybatisSessionUtil instance = new MybatisSessionUtil();
+        public static MyBatisSessionUtil instance = new MyBatisSessionUtil();
     }
 
-    public static  MybatisSessionUtil getInstance(){
+    public static MyBatisSessionUtil getInstance(){
         return LAZY_LOAD.instance;
     }
 
     public static SqlSession getSession(){
-        return       MybatisSessionUtil.getInstance().getSqlSessionFactory().openSession(ExecutorType.SIMPLE,true);
+        return       MyBatisSessionUtil.getInstance().getSqlSessionFactory().openSession(ExecutorType.SIMPLE,true);
     }
 
 

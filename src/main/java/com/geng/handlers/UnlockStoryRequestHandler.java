@@ -1,6 +1,7 @@
 package com.geng.handlers;
 
 import com.geng.exception.GameException;
+import com.geng.exception.GameExceptionCode;
 import com.geng.puredb.model.UserProfile;
 import com.geng.puredb.model.UserStory;
 import com.geng.utils.G;
@@ -20,10 +21,10 @@ public class UnlockStoryRequestHandler implements IRequestHandler {
     @Override
     public void handle(String deviceId, UserProfile u, String data, StringBuilder sb) throws GameException {
         if(StringUtils.isBlank(data))
-            throw new GameException(GameException.GameExceptionCode.INVALID_OPTION,"param not valid!! no data!");
+            throw new GameException(GameExceptionCode.INVALID_OPT,"param not valid!! no data!");
         UserStory param = G.fromJson(data, UserStory.class);
         if(param == null || StringUtils.isBlank(param.getStoryid()) ){
-            throw new GameException(GameException.GameExceptionCode.INVALID_OPTION,"param has no storyid");
+            throw new GameException(GameExceptionCode.INVALID_OPT,"param has no storyid");
         }
         String storyid = param.getStoryid();
         UserStory story = null;

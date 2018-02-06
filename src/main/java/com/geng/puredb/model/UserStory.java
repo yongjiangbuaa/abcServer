@@ -1,11 +1,10 @@
 package com.geng.puredb.model;
 
-import com.geng.db.MybatisSessionUtil;
+import com.geng.db.MyBatisSessionUtil;
 import com.geng.puredb.dao.UserStoryMapper;
 import com.geng.utils.GameService;
 import org.apache.ibatis.session.SqlSession;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class UserStory {
@@ -71,7 +70,7 @@ public class UserStory {
 
     public   void insert(){
 
-        SqlSession session = MybatisSessionUtil.getSession();
+        SqlSession session = MyBatisSessionUtil.getSession();
         try {
             UserStoryMapper mapper = session.getMapper(UserStoryMapper.class);
             mapper.insert(this);
@@ -81,7 +80,7 @@ public class UserStory {
     }
 
     public   void update(){
-        SqlSession session = MybatisSessionUtil.getSession();
+        SqlSession session = MyBatisSessionUtil.getSession();
         try {
             UserStoryMapper mapper = session.getMapper(UserStoryMapper.class);
             mapper.updateByPrimaryKeySelective(this);
@@ -105,7 +104,7 @@ public class UserStory {
 
     public static List<UserStory> getByUserId(String uid){
         List<UserStory> list = null;
-        SqlSession session = MybatisSessionUtil.getSession();
+        SqlSession session = MyBatisSessionUtil.getSession();
         try {
             UserStoryMapper mapper = session.getMapper(UserStoryMapper.class);
             list = mapper.selectByUserId(uid);

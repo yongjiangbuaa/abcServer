@@ -1,6 +1,7 @@
 package com.geng.server;
 
 import com.geng.exception.GameException;
+import com.geng.exception.GameExceptionCode;
 import com.geng.handlers.*;
 import com.geng.puredb.model.UserProfile;
 import com.geng.utils.xml.GameConfigManager;
@@ -18,6 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Handler;
 
 public class GameEngine {
+    public static int ZONE_ID;
     Properties config ;
     private Logger logger = LoggerFactory.getLogger(GameEngine.class);
 
@@ -76,7 +78,7 @@ public class GameEngine {
                 }else {
                     UserProfile userProfile = UserProfile.getWithUid(uid);
                     if(null == userProfile )
-                        throw new GameException(GameException.GameExceptionCode.UID_NOT_EXIST,"uid not exist!");
+                        throw new GameException(GameExceptionCode.UID_NOT_EXIST,"uid not exist!");
 
                     handler.handle(deviceId, userProfile, data, sb);
                 }
@@ -87,7 +89,7 @@ public class GameEngine {
             logger.info(sb.toString());
         } catch (IllegalAccessException|InstantiationException e) {
             logger.error(e.getMessage());
-            sb.append(new GameException(GameException.GameExceptionCode.ACCESS_CONFIG_FILE_ERROR,"error in access config file").toJson());
+            sb.append(new GameException(GameExceptionCode.ACCESS_CONFIG_FILE_ERROR,"error in access config file").toJson());
         }  finally {
 
         }

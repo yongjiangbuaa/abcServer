@@ -1,145 +1,91 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.geng.puredb.dao.UserItemMapper" >
-  <resultMap id="BaseResultMap" type="com.geng.puredb.model.UserItem" >
-    <id column="uuid" property="uuid" jdbcType="VARCHAR" />
-    <result column="ownerId" property="ownerid" jdbcType="VARCHAR" />
-    <result column="itemId" property="itemid" jdbcType="VARCHAR" />
-    <result column="count" property="count" jdbcType="INTEGER" />
-    <result column="value" property="value" jdbcType="INTEGER" />
-    <result column="vanishTime" property="vanishtime" jdbcType="BIGINT" />
-  </resultMap>
-  <sql id="Base_Column_List" >
-    uuid, ownerId, itemId, count, value, vanishTime
-  </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
-    select 
-    <include refid="Base_Column_List" />
-    from user_item
-    where uuid = #{uuid,jdbcType=VARCHAR}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
-    delete from user_item
-    where uuid = #{uuid,jdbcType=VARCHAR}
-  </delete>
-  <insert id="insert" parameterType="com.geng.puredb.model.UserItem" >
-    insert into user_item (uuid, ownerId, itemId, 
-      count, value, vanishTime
-      )
-    values (#{uuid,jdbcType=VARCHAR}, #{ownerid,jdbcType=VARCHAR}, #{itemid,jdbcType=VARCHAR}, 
-      #{count,jdbcType=INTEGER}, #{value,jdbcType=INTEGER}, #{vanishtime,jdbcType=BIGINT}
-      )
-  </insert>
-  <insert id="insertSelective" parameterType="com.geng.puredb.model.UserItem" >
-    insert into user_item
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="uuid != null" >
-        uuid,
-      </if>
-      <if test="ownerid != null" >
-        ownerId,
-      </if>
-      <if test="itemid != null" >
-        itemId,
-      </if>
-      <if test="count != null" >
-        count,
-      </if>
-      <if test="value != null" >
-        value,
-      </if>
-      <if test="vanishtime != null" >
-        vanishTime,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="uuid != null" >
-        #{uuid,jdbcType=VARCHAR},
-      </if>
-      <if test="ownerid != null" >
-        #{ownerid,jdbcType=VARCHAR},
-      </if>
-      <if test="itemid != null" >
-        #{itemid,jdbcType=VARCHAR},
-      </if>
-      <if test="count != null" >
-        #{count,jdbcType=INTEGER},
-      </if>
-      <if test="value != null" >
-        #{value,jdbcType=INTEGER},
-      </if>
-      <if test="vanishtime != null" >
-        #{vanishtime,jdbcType=BIGINT},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.geng.puredb.model.UserItem" >
-    update user_item
-    <set >
-      <if test="ownerid != null" >
-        ownerId = #{ownerid,jdbcType=VARCHAR},
-      </if>
-      <if test="itemid != null" >
-        itemId = #{itemid,jdbcType=VARCHAR},
-      </if>
-      <if test="count != null" >
+<mapper namespace="com.geng.puredb.dao.UserItemMapper">
+    <resultMap id="UserItemMap" type="com.geng.puredb.model.UserItem">
+        <id column="uuid" property="uuid" jdbcType="VARCHAR"/>
+        <result column="ownerId" property="ownerId" jdbcType="VARCHAR"/>
+        <result column="itemId" property="itemId" jdbcType="VARCHAR"/>
+        <result column="count" property="count" jdbcType="INTEGER"/>
+        <result column="value" property="value" jdbcType="INTEGER"/>
+        <result column="vanishTime" property="vanishTime" jdbcType="BIGINT"/>
+    </resultMap>
+
+    <select id="select" resultMap="UserItemMap" parameterType="java.lang.String">
+        select
+        *
+        from user_item
+        where ownerId = #{ownerId, jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectItemById" resultMap="UserItemMap">
+        select
+        *
+        from user_item
+        where ownerId = #{ownerId, jdbcType=VARCHAR}
+        and itemId = #{itemId, jdbcType=VARCHAR}
+        and value = #{value, jdbcType=INTEGER}
+    </select>
+
+    <select id="selectItemByUUID" resultMap="UserItemMap" parameterType="java.lang.String">
+        select
+        *
+        from user_item
+        where uuid = #{uuid, jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectItemListByUUIDs" resultMap="UserItemMap">
+        select * from user_item where uuid in
+        <foreach collection="array" index="index" item="item" open="(" close=")" separator=",">
+            #{item,jdbcType=VARCHAR}
+        </foreach>
+    </select>
+
+    <select id="selectItemListByItemIds" resultMap="UserItemMap">
+        select * from user_item where ownerId = #{ownerId, jdbcType=VARCHAR} and itemId  in
+        <foreach collection="itemIdList" index="index" item="item" open="(" close=")" separator=",">
+            #{item,jdbcType=VARCHAR}
+        </foreach>
+    </select>
+
+    <delete id="delete" parameterType="java.lang.String">
+        delete from user_item
+        where uuid = #{uuid, jdbcType=VARCHAR}
+    </delete>
+
+    <insert id="insert" parameterType="com.geng.puredb.model.UserItem">
+        insert into user_item (uuid, ownerId, itemId, count, value, vanishTime)
+        values
+        (
+        #{uuid,jdbcType=VARCHAR}, #{ownerId,jdbcType=VARCHAR}, #{itemId,jdbcType=VARCHAR},
+        #{count,jdbcType=INTEGER}, #{value,jdbcType=INTEGER}, #{vanishTime,jdbcType=BIGINT}
+        )
+    </insert>
+
+    <insert id="insertBatch" parameterType="java.util.List">
+        insert into user_item (uuid, ownerId, itemId, count, value, vanishTime)
+        values
+        <foreach collection="list" index="index" item="item" separator=",">
+            (
+            #{item.uuid,jdbcType=VARCHAR}, #{item.ownerId,jdbcType=VARCHAR}, #{item.itemId,jdbcType=VARCHAR},
+            #{item.count,jdbcType=INTEGER}, #{item.value,jdbcType=INTEGER}, #{item.vanishTime,jdbcType=BIGINT}
+            )
+        </foreach>
+    </insert>
+
+    <update id="update" parameterType="com.geng.puredb.model.UserItem">
+        update
+        user_item
+        set
         count = #{count,jdbcType=INTEGER},
-      </if>
-      <if test="value != null" >
         value = #{value,jdbcType=INTEGER},
-      </if>
-      <if test="vanishtime != null" >
-        vanishTime = #{vanishtime,jdbcType=BIGINT},
-      </if>
-    </set>
-    where uuid = #{uuid,jdbcType=VARCHAR}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.geng.puredb.model.UserItem" >
-    update user_item
-    set ownerId = #{ownerid,jdbcType=VARCHAR},
-      itemId = #{itemid,jdbcType=VARCHAR},
-      count = #{count,jdbcType=INTEGER},
-      value = #{value,jdbcType=INTEGER},
-      vanishTime = #{vanishtime,jdbcType=BIGINT}
-    where uuid = #{uuid,jdbcType=VARCHAR}
-  </update>
+        vanishTime = #{vanishTime,jdbcType=BIGINT}
+        where uuid = #{uuid,jdbcType=VARCHAR}
+    </update>
 
-  <update id="updateByOwnerIdAndItemId" parameterType="com.geng.puredb.model.UserItem" >
-    update user_item
-    set ownerId = #{ownerid,jdbcType=VARCHAR},
-    itemId = #{itemid,jdbcType=VARCHAR},
-    count = #{count,jdbcType=INTEGER},
-    value = #{value,jdbcType=INTEGER},
-    vanishTime = #{vanishtime,jdbcType=BIGINT}
-    where uuid = #{uuid,jdbcType=VARCHAR}
-  </update>
-
-  <select id="select" resultMap="UserItemMap" parameterType="java.lang.String">
-    select
-    *
-    from user_item
-    where ownerId = #{ownerId, jdbcType=VARCHAR}
-  </select>
-
-
-
-
-  <insert id="insertBatch" parameterType="java.util.List">
-    insert into user_item (uuid, ownerId, itemId, count, value, vanishTime)
-    values
-    <foreach collection="list" index="index" item="item" separator=",">
-      (
-      #{item.uuid,jdbcType=VARCHAR}, #{item.ownerId,jdbcType=VARCHAR}, #{item.itemId,jdbcType=VARCHAR},
-      #{item.count,jdbcType=INTEGER}, #{item.value,jdbcType=INTEGER}, #{item.vanishTime,jdbcType=BIGINT}
-      )
-    </foreach>
-  </insert>
-
-
-  <delete id="deleteByOwnerIdAndItemId">
-    delete from user_item WHERE  ownerId = #{ownerId, jdbcType=VARCHAR} and itemId in
-    <foreach item="item" index="index" collection="itemIdList" open="(" separator="," close=")">
-      #{item,jdbcType=VARCHAR}
-    </foreach>
-  </delete>
+    <delete id="deleteByOwnerIdAndItemId">
+        delete from user_item WHERE  ownerId = #{ownerId, jdbcType=VARCHAR} and itemId in
+        <foreach item="item" index="index" collection="itemIdList" open="(" separator="," close=")">
+            #{item,jdbcType=VARCHAR}
+        </foreach>
+    </delete>
 </mapper>

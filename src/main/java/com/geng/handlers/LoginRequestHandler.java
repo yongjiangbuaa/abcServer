@@ -1,6 +1,7 @@
 package com.geng.handlers;
 
 import com.geng.exception.GameException;
+import com.geng.exception.GameExceptionCode;
 import com.geng.puredb.model.UidBind;
 import com.geng.puredb.model.UserProfile;
 import com.geng.service.UserService;
@@ -17,7 +18,7 @@ public class LoginRequestHandler implements IRequestHandler{
             if(null == bind) {
                 //TODO find deviceMapping uid
 //                if(StringUtils.isBlank(data))
-//                    throw new GameException(GameException.GameExceptionCode.INVALID_OPTION,"param not valid!! no data!");
+//                    throw new GameException(GameExceptionCode.INVALID_OPT,"param not valid!! no data!");
                 userProfile = UserService.Register(deviceId, data);//注册
             }else{
                 userProfile = UserProfile.getWithUid(bind.getUid());
@@ -25,7 +26,7 @@ public class LoginRequestHandler implements IRequestHandler{
 
         }else if(!StringUtils.isEmpty(uid)){
              userProfile = UserProfile.getWithUid(uid);
-             if (null == userProfile) throw new GameException(GameException.GameExceptionCode.UID_NOT_EXIST,"uid not exist!");
+             if (null == userProfile) throw new GameException(GameExceptionCode.UID_NOT_EXIST,"uid not exist!");
         }
         UserService.checkHeartTime(userProfile);
         sb.append(G.toJson(userProfile));

@@ -1,6 +1,7 @@
 package com.geng.handlers;
 
 import com.geng.exception.GameException;
+import com.geng.exception.GameExceptionCode;
 import com.geng.puredb.model.UserProfile;
 import com.geng.service.UserService;
 import com.geng.utils.G;
@@ -24,7 +25,7 @@ public class LevelUpRequestHandler implements IRequestHandler{
         UserService.checkHeartTime(userProfile);
         UserProfile param = G.fromJson(data,UserProfile.class);
         if(null == param || param.getStar() == null)
-            throw new GameException(GameException.GameExceptionCode.INVALID_OPTION,"params invalid");
+            throw new GameException(GameExceptionCode.INVALID_OPT,"params invalid");
         userProfile.setGold(userProfile.getGold() + new GameConfigManager("matchlevel").getItem(String.valueOf(1000000+userProfile.getLevel())).getInt("coin",ADD_GOLD));
         userProfile.setStar(userProfile.getStar() + new GameConfigManager("matchlevel").getItem(String.valueOf(1000000+userProfile.getLevel())).getInt("star",1));
         userProfile.setLevel(userProfile.getLevel() + 1);

@@ -1,10 +1,8 @@
 package com.geng.puredb.model;
 
-import com.geng.db.MybatisSessionUtil;
+import com.geng.db.MyBatisSessionUtil;
 import com.geng.puredb.dao.UserProfileMapper;
 import org.apache.ibatis.session.SqlSession;
-
-import java.util.concurrent.atomic.AtomicLong;
 
 public class UserProfile {
     private String uid;
@@ -19,6 +17,7 @@ public class UserProfile {
 
 
     private Integer level;
+    private Object itemLock = new Object();
 
     public String getUid() {
         return uid;
@@ -71,7 +70,7 @@ public class UserProfile {
 
     public   void insert(){
 
-        SqlSession session = MybatisSessionUtil.getSession();
+        SqlSession session = MyBatisSessionUtil.getSession();
         try {
             UserProfileMapper mapper = session.getMapper(UserProfileMapper.class);
             mapper.insert(this);
@@ -81,7 +80,7 @@ public class UserProfile {
     }
 
     public   void update(){
-        SqlSession session = MybatisSessionUtil.getSession();
+        SqlSession session = MyBatisSessionUtil.getSession();
         try {
             UserProfileMapper mapper = session.getMapper(UserProfileMapper.class);
             mapper.updateByPrimaryKeySelective(this);
@@ -91,7 +90,7 @@ public class UserProfile {
     }
 
     public static UserProfile getWithUid(String uid){
-        SqlSession session = MybatisSessionUtil.getSession();
+        SqlSession session = MyBatisSessionUtil.getSession();
         try {
             UserProfileMapper mapper = session.getMapper(UserProfileMapper.class);
             UserProfile userProfile = mapper.selectByPrimaryKey(uid);
@@ -114,7 +113,7 @@ public class UserProfile {
 
     public static long getMaxNameIndex() {
         long idx= 0 ;
-        SqlSession session = MybatisSessionUtil.getSession();
+        SqlSession session = MyBatisSessionUtil.getSession();
         try {
             UserProfileMapper mapper = session.getMapper(UserProfileMapper.class);
              idx = mapper.getMaxNameIndex();
@@ -122,5 +121,21 @@ public class UserProfile {
             session.close();
         }
         return idx;
+    }
+
+    public Object getItemLock() {
+        return itemLock;
+    }
+
+    public int getPayTotal() {
+        return 0;
+    }
+
+    public int getPf() {
+        return 0;
+    }
+
+    public int getCountry() {
+        return 0;
     }
 }

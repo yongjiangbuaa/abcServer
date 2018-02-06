@@ -90,7 +90,9 @@ public class GameEngine {
         } catch (IllegalAccessException|InstantiationException e) {
             logger.error(e.getMessage());
             sb.append(new GameException(GameExceptionCode.ACCESS_CONFIG_FILE_ERROR,"error in access config file").toJson());
-        }  finally {
+        } catch (Exception e){
+            logger.error(e.getStackTrace().toString());
+        }finally {
 
         }
         //组织返回

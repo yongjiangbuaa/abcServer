@@ -1,8 +1,17 @@
 package com.geng.puredb.model;
 
+import com.geng.core.data.ISFSObject;
+import com.geng.core.data.SFSObject;
 import com.geng.db.MyBatisSessionUtil;
+import com.geng.exception.COKException;
+import com.geng.gameengine.login.LoginInfo;
 import com.geng.puredb.dao.UserProfileMapper;
 import org.apache.ibatis.session.SqlSession;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 public class UserProfile {
     private String uid;
@@ -16,11 +25,51 @@ public class UserProfile {
     private Long hearttime;
 
 
+    private String name;
     private Integer level;
+    private long crystal;
+    private long paidGold;
+
+
+
+    private long payTotal;
+    private String gcmRegisterId;
+    private String parseRegisterId;
+    private String banGMName;
+    private String pic;
+    private int picVer;
+    private String country;
+
+
+
+    private String deviceId;
+    private String gaid;
+    private String platform;
+    private String pf;
+    private String lang;
     private Object itemLock = new Object();
 
 
     private String storyId;
+    private String appVersion;
+    private String lastAppVersion;
+    private int gmFlag;
+    private long regTime;
+    private String openedPos;
+    private long offLineTime;
+    private long banTime;
+
+
+
+    private long chatBanTime;
+    private long noticeBanTime;
+    private long lastOnlineTime;
+    private String gmail;
+    private int serverId;
+    private int crossFightSrcServerId;
+    private String phoneDevice;
+
+    private LoginInfo loginInfo;
 
     public String getUid() {
         return uid;
@@ -77,6 +126,237 @@ public class UserProfile {
     public void setStoryId(String storyId) {
         this.storyId = storyId;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+    public String getDeviceId() {
+        return deviceId;
+    }
+
+    public void setDeviceId(String deviceId) {
+        this.deviceId = deviceId;
+    }
+
+    public String getGaid() {
+        return gaid;
+    }
+
+    public void setGaid(String gaid) {
+        this.gaid = gaid;
+    }
+
+    public String getPlatform() {
+        return platform;
+    }
+
+    public void setPlatform(String platform) {
+        this.platform = platform;
+    }
+
+    public void setPf(String pf) {
+        this.pf = pf;
+    }
+
+    public String getLang() {
+        return lang;
+    }
+
+    public void setLang(String lang) {
+        this.lang = lang;
+    }
+
+    public long getCrystal() {
+        return crystal;
+    }
+
+    public void setCrystal(long crystal) {
+        this.crystal = crystal;
+    }
+
+    public long getPaidGold() {
+        return paidGold;
+    }
+
+    public void setPaidGold(long paidGold) {
+        this.paidGold = paidGold;
+    }
+
+    public long getPayTotal() {
+        return payTotal;
+    }
+
+    public void setPayTotal(long payTotal) {
+        this.payTotal = payTotal;
+    }
+
+    public String getGcmRegisterId() {
+        return gcmRegisterId;
+    }
+
+    public void setGcmRegisterId(String gcmRegisterId) {
+        this.gcmRegisterId = gcmRegisterId;
+    }
+
+    public String getParseRegisterId() {
+        return parseRegisterId;
+    }
+
+    public void setParseRegisterId(String parseRegisterId) {
+        this.parseRegisterId = parseRegisterId;
+    }
+
+    public String getBanGMName() {
+        return banGMName;
+    }
+
+    public void setBanGMName(String banGMName) {
+        this.banGMName = banGMName;
+    }
+
+    public String getPic() {
+        return pic;
+    }
+
+    public void setPic(String pic) {
+        this.pic = pic;
+    }
+
+    public int getPicVer() {
+        return picVer;
+    }
+
+    public void setPicVer(int picVer) {
+        this.picVer = picVer;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getPf() {
+        return pf;
+    }
+    public String getAppVersion() {
+        return appVersion;
+    }
+
+    public void setAppVersion(String appVersion) {
+        this.appVersion = appVersion;
+    }
+
+    public String getLastAppVersion() {
+        return lastAppVersion;
+    }
+
+    public void setLastAppVersion(String lastAppVersion) {
+        this.lastAppVersion = lastAppVersion;
+    }
+
+    public int getGmFlag() {
+        return gmFlag;
+    }
+
+    public void setGmFlag(int gmFlag) {
+        this.gmFlag = gmFlag;
+    }
+
+    public long getRegTime() {
+        return regTime;
+    }
+
+    public void setRegTime(long regTime) {
+        this.regTime = regTime;
+    }
+
+    public String getOpenedPos() {
+        return openedPos;
+    }
+
+    public void setOpenedPos(String openedPos) {
+        this.openedPos = openedPos;
+    }
+
+    public long getOffLineTime() {
+        return offLineTime;
+    }
+
+    public void setOffLineTime(long offLineTime) {
+        this.offLineTime = offLineTime;
+    }
+
+    public long getBanTime() {
+        return banTime;
+    }
+
+    public void setBanTime(long banTime) {
+        this.banTime = banTime;
+    }
+
+    public long getChatBanTime() {
+        return chatBanTime;
+    }
+
+    public void setChatBanTime(long chatBanTime) {
+        this.chatBanTime = chatBanTime;
+    }
+
+    public long getNoticeBanTime() {
+        return noticeBanTime;
+    }
+
+    public void setNoticeBanTime(long noticeBanTime) {
+        this.noticeBanTime = noticeBanTime;
+    }
+
+    public long getLastOnlineTime() {
+        return lastOnlineTime;
+    }
+
+    public void setLastOnlineTime(long lastOnlineTime) {
+        this.lastOnlineTime = lastOnlineTime;
+    }
+
+    public String getGmail() {
+        return gmail;
+    }
+
+    public void setGmail(String gmail) {
+        this.gmail = gmail;
+    }
+
+    public int getServerId() {
+        return serverId;
+    }
+
+    public void setServerId(int serverId) {
+        this.serverId = serverId;
+    }
+
+    public int getCrossFightSrcServerId() {
+        return crossFightSrcServerId;
+    }
+
+    public void setCrossFightSrcServerId(int crossFightSrcServerId) {
+        this.crossFightSrcServerId = crossFightSrcServerId;
+    }
+
+    public String getPhoneDevice() {
+        return phoneDevice;
+    }
+
+    public void setPhoneDevice(String phoneDevice) {
+        this.phoneDevice = phoneDevice;
+    }
+
 
 
 
@@ -139,15 +419,38 @@ public class UserProfile {
         return itemLock;
     }
 
-    public int getPayTotal() {
-        return 0;
+
+
+    public ISFSObject toLoginInfo(boolean isOnLogin) throws COKException {
+        ISFSObject outData = new SFSObject();
+        this.getLoginInfo(outData);
+        return outData;
     }
 
-    public int getPf() {
-        return 0;
+    private void getLoginInfo(ISFSObject outData){
+        ISFSObject userInfoObj = new SFSObject();
+        userInfoObj.putUtfString("uuid", loginInfo != null ? loginInfo.getUuid() : "");
+        userInfoObj.putUtfString("name", name);
+        boolean isWomen = true;//isSexWomenUser();
+        userInfoObj.putBool("isWomen", isWomen);
+//        if(isWomen){
+//            UserRoseCrown roseCrown = UserRoseCrown.selectByUidAndRoseRoundTime(uid, RoseCrownActivity.getInstance().getStartTime());
+//            userInfoObj.putInt("roseCrown", roseCrown == null ? 0 : roseCrown.getRoseCrown());
+//        }
+        userInfoObj.putLong("gold", gold + paidGold);
+        userInfoObj.putLong("crystal", this.crystal);
+        userInfoObj.putLong("payTotal", payTotal);
+        userInfoObj.putUtfString("uid", uid);
+        userInfoObj.putInt("level", level);
+
+
     }
 
-    public int getCountry() {
-        return 0;
+    public void fillLoginInfo(ISFSObject initObj) {
+        initObj.putUtfString("uid",getUid());
+        initObj.putInt("gold",getGold());
+        initObj.putInt("star",getStar());
+        initObj.putInt("heart",getHeart());
+        initObj.putLong("heartTime",getHearttime());
     }
 }

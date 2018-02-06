@@ -1,7 +1,10 @@
 package com.geng.handlers;
 
+import com.geng.core.data.ISFSObject;
+import com.geng.core.data.SFSObject;
 import com.geng.exception.GameException;
 import com.geng.exception.GameExceptionCode;
+import com.geng.gameengine.ItemManager;
 import com.geng.puredb.model.UserProfile;
 import com.geng.puredb.model.UserStory;
 import com.geng.utils.G;
@@ -46,6 +49,12 @@ public class UnlockStoryRequestHandler implements IRequestHandler {
 
         //组织返回数据
         u.setStoryId(storyid);
-        sb.append(G.toJson(u));
+
+        //组织返回数据
+        ISFSObject initObj = SFSObject.newInstance();
+//        UserStory.getLoginInfo(u,sb);
+        ItemManager.getLoginInfo(u.getUid(),initObj);
+        u.fillLoginInfo(initObj);
+        sb.append(initObj.toJson());
     }
 }

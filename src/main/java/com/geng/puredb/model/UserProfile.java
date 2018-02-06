@@ -19,6 +19,9 @@ public class UserProfile {
     private Integer level;
     private Object itemLock = new Object();
 
+
+    private String storyId;
+
     public String getUid() {
         return uid;
     }
@@ -66,6 +69,15 @@ public class UserProfile {
     public void setLevel(Integer level) {
         this.level = level;
     }
+
+    public String getStoryId() {
+        return storyId;
+    }
+
+    public void setStoryId(String storyId) {
+        this.storyId = storyId;
+    }
+
 
 
     public   void insert(){

@@ -9,7 +9,7 @@ import com.geng.puredb.model.UserItem;
 import com.geng.puredb.model.UserProfile;
 import com.geng.utils.G;
 import com.geng.utils.MyHttpParam;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 
 import java.util.*;
 

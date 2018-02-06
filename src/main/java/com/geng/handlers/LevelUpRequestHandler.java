@@ -37,12 +37,17 @@ public class LevelUpRequestHandler implements IRequestHandler{
 
 
         String itemReward = new GameConfigManager("matchlevel").getItem(String.valueOf(1000000+userProfile.getLevel())).get("itemReward");
+        logger.info("itemReward {}",itemReward);
         synchronized (this) {
             String[] itemsProp = StringUtils.split(itemReward,",");
             for(String desc :itemsProp) {
                 String[] item_num_rate = StringUtils.split(desc,":");
                 boolean add  = false;
-                if(RandomUtils.nextInt(1,100) < Integer.parseInt(item_num_rate[2])) add = true;
+                int got = RandomUtils.nextInt(1,100);
+                if( got< Integer.parseInt(item_num_rate[2])) add = true;
+                else
+                    logger.info("rate {} but got {}",item_num_rate[2],got);
+
                 //add items
                 if(add) {
                     ItemManager.addItem(userProfile, item_num_rate[0], Integer.parseInt(item_num_rate[1]), 0, LoggerUtil.GoodsGetType.LEVEL_UP);

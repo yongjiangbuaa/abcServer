@@ -1,5 +1,6 @@
 package com.geng.puredb.model;
 
+import com.geng.core.data.ISFSObject;
 import com.geng.db.MyBatisSessionUtil;
 import com.geng.puredb.dao.UserStoryMapper;
 import com.geng.utils.GameService;
@@ -114,11 +115,12 @@ public class UserStory {
         return list;
     }
 
-    public static void getLoginInfo(UserProfile userProfile, StringBuilder sb) {
+    public static void getLoginInfo(UserProfile userProfile, ISFSObject initObj) {
+        String storyid = "";
         List<UserStory> list = UserStory.getByUserId(userProfile.getUid());
         if(list != null || list.size() > 0){
-            userProfile.setStoryId(list.get(0).getStoryid());
+            storyid = list.get(0).getStoryid();
         }
-
+        initObj.putUtfString("storyid",storyid);
     }
 }

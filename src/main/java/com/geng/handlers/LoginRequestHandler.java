@@ -38,7 +38,7 @@ public class LoginRequestHandler implements IRequestHandler{
         UserService.checkHeartTime(userProfile);
 
         //组织返回数据
-        UserStory.getLoginInfo(userProfile,sb);
+        UserStory.getLoginInfo(userProfile,initObj);
         ItemManager.getLoginInfo(uid,initObj);
         userProfile.fillLoginInfo(initObj);
         String json = initObj.toJson();

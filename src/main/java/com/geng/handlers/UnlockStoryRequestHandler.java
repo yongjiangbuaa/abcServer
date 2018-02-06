@@ -48,11 +48,10 @@ public class UnlockStoryRequestHandler implements IRequestHandler {
         u.update();
 
         //组织返回数据
-        u.setStoryId(storyid);
 
         //组织返回数据
         ISFSObject initObj = SFSObject.newInstance();
-//        UserStory.getLoginInfo(u,sb);
+        UserStory.getLoginInfo(u,initObj);
         ItemManager.getLoginInfo(u.getUid(),initObj);
         u.fillLoginInfo(initObj);
         sb.append(initObj.toJson());

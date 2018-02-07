@@ -94,7 +94,7 @@ public class GameEngine {
             String retStr = "exception";
                 ISFSObject errorObj = new SFSObject();
                 errorObj.putUtfString("err", GameExceptionCode.INVALID_OPT.getCode());
-            String msg = String.format("%s request %s, params: %s", uid, cmd, data);
+            String msg = String.format("uid %s deviceId %s request %s, params: %s", uid, deviceId,cmd, data);
             COKLoggerFactory.monitorException(msg, ExceptionMonitorType.CMD, COKLoggerFactory.ExceptionOwner.COMMON, e);
             sb.append(errorObj.toJson());
         }finally {

@@ -7,6 +7,7 @@ import com.geng.exceptions.GameExceptionCode;
 import com.geng.gameengine.ItemManager;
 import com.geng.puredb.model.UserItem;
 import com.geng.puredb.model.UserProfile;
+import com.geng.puredb.model.UserStory;
 import com.geng.utils.G;
 import com.geng.utils.MyHttpParam;
 import org.apache.commons.lang.StringUtils;
@@ -67,6 +68,7 @@ public class DelItemRequestHandler implements IRequestHandler{
         }
 
         ISFSObject retObj = SFSObject.newInstance();
+        UserStory.getLoginInfo(userProfile,retObj);
         userProfile.fillLoginInfo(retObj);
         ItemManager.getLoginInfo(userProfile.getUid(),retObj);
         sb.append(retObj.toJson());

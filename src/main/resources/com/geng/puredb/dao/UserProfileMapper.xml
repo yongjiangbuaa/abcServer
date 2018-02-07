@@ -4,7 +4,8 @@
   <resultMap id="BaseResultMap" type="com.geng.puredb.model.UserProfile">
     <id column="uid" jdbcType="VARCHAR" property="uid" />
     <result column="heart" jdbcType="INTEGER" property="heart" />
-    <result column="gold" jdbcType="INTEGER" property="gold" />
+    <result column="gold" property="gold" jdbcType="BIGINT"/>
+    <result column="paidGold" property="paidGold" jdbcType="BIGINT"/>
     <result column="star" jdbcType="INTEGER" property="star" />
     <result column="heartTime" jdbcType="BIGINT" property="hearttime" />
     <result column="level" jdbcType="INTEGER" property="level" />

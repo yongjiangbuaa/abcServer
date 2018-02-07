@@ -2,10 +2,12 @@ package com.geng.puredb.model;
 
 import com.geng.core.data.ISFSObject;
 import com.geng.core.data.SFSObject;
-import com.geng.utils.MyBatisSessionUtil;
+import com.geng.db.MyBatisSessionUtil;
 import com.geng.exceptions.COKException;
+import com.geng.exceptions.GameExceptionCode;
 import com.geng.gameengine.login.LoginInfo;
 import com.geng.puredb.dao.UserProfileMapper;
+import com.geng.utils.LoggerUtil;
 import org.apache.ibatis.session.SqlSession;
 
 public class UserProfile {
@@ -13,9 +15,17 @@ public class UserProfile {
 
     private Integer heart;
 
-    private Integer gold;
-
+    private long gold;
+    private long paidGold;
     private Integer star;
+
+    public long getGold() {
+        return gold;
+    }
+
+    public void setGold(long gold) {
+        this.gold = gold;
+    }
 
     private Long hearttime;
 
@@ -23,7 +33,7 @@ public class UserProfile {
     private String name;
     private Integer level;
     private long crystal;
-    private long paidGold;
+
 
 
 
@@ -82,13 +92,6 @@ public class UserProfile {
         this.heart = heart;
     }
 
-    public Integer getGold() {
-        return gold;
-    }
-
-    public void setGold(Integer gold) {
-        this.gold = gold;
-    }
 
     public Integer getStar() {
         return star;
@@ -443,10 +446,73 @@ public class UserProfile {
 
     public void fillLoginInfo(ISFSObject initObj) {
         initObj.putUtfString("uid",getUid());
-        initObj.putInt("gold",getGold());
+        initObj.putLong("gold",getGold());
         initObj.putInt("star",getStar());
         initObj.putInt("heart",getHeart());
         initObj.putInt("level",getLevel());
         initObj.putLong("heartTime",getHearttime());
+    }
+
+    /**
+     * 减少玩家的金币，减少规则为：优先消耗非充值金币，然后再消耗充值金币
+     *
+     * @param costType 减少金币的原因类型
+     * @param delta    要减少的金币值，大于0
+     * @param p1       原因1
+     * @param p2       原因2
+     * @param errorObj 当发生异常时，会把相关信息写入到该ISFSObject中
+     * @return 返回玩家的金币剩余总量
+     * @throws COKException             金币总量比要减少的值小时抛出此异常
+     * @throws IllegalArgumentException 1.要减少的金币数量小于0的时候抛出此异常 or 2.剩余金币数量小于0的时候抛出此异常
+     */
+    public synchronized long decrAllGold(LoggerUtil.GoldCostType costType, int delta, int p1, int p2, ISFSObject errorObj) throws COKException{
+        if(delta < 0){
+            throw new IllegalArgumentException(String.format("%s decr gold(%d) delta negative", uid, costType.ordinal()));
+        }
+        long oldGold, remainGold, oldPaidGold, remainPaidGold, oldTotal, remainTotal;
+        int goldType;
+        oldGold = gold;
+        oldPaidGold = paidGold;
+        oldTotal = oldGold + oldPaidGold;
+        if(oldTotal < 0){
+            throw new IllegalArgumentException(String.format("%s decr gold(%d) is negative", name, costType.ordinal()));
+        }
+        if(oldTotal < delta){
+            throw new COKException(GameExceptionCode.USERGOLD_IS_NOT_ENOUGH, errorObj, "Gold cost type is: " + costType.ordinal());
+        }
+
+        if(paidGold <= 0){ //如果付费金币<= 0
+            goldType = 0;
+            gold -= delta;
+            remainGold = gold;
+            remainTotal = gold;
+            LoggerUtil.getInstance().recordGoldCost(uid, goldType, costType.ordinal(), p1, p2, oldGold, - delta, remainGold, 0);
+
+//            UseCoinsFeedbackActivityManager.handleGoldDecr(this, delta);//金币变化后，检查金币累积消费等级
+        }else{ //先消耗付费金币
+            paidGold -= delta;
+            goldType = 1;
+            if(paidGold < 0){
+                long cost1 = delta + paidGold;
+                long cost2 = - paidGold;
+                gold += paidGold;
+                paidGold = 0;
+                remainGold = gold;
+                remainTotal = gold;
+                LoggerUtil.getInstance().recordGoldCost(uid, goldType, costType.ordinal(), p1, p2, oldPaidGold, - cost1, 0, 0);
+                goldType = 0;
+                LoggerUtil.getInstance().recordGoldCost(uid, goldType, costType.ordinal(), p1, p2, oldGold, - cost2, remainGold, 0);
+
+//                UseCoinsFeedbackActivityManager.handleGoldDecr(this, delta);//金币变化后，检查金币累积消费等级
+            }else{
+                remainTotal = gold + paidGold;
+                remainPaidGold = paidGold;
+                LoggerUtil.getInstance().recordGoldCost(uid, goldType, costType.ordinal(), p1, p2, oldPaidGold, - delta, remainPaidGold, 0);
+
+//                UseCoinsFeedbackActivityManager.handleGoldDecr(this, delta);//金币变化后，检查金币累积消费等级
+            }
+        }
+
+        return remainTotal;
     }
 }

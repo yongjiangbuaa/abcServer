@@ -5,8 +5,7 @@ public enum GameExceptionCode {
     INVALID_OPT("E00000"),
     ITEM_NOT_ENOUGH("10003"),
     LIFE_NOT_ENOUGH("10004"),
-    PARAM_ILLEGAL("10005"),
-    FB_NOT_BIND("10006"), NETWORK_UNORMAL("10007"),
+    USERGOLD_IS_NOT_ENOUGH("10005"),
     ;
 
     public String getValue() {

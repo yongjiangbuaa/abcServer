@@ -7,18 +7,18 @@ package com.geng.utils;
 import com.geng.exceptions.COKException;
 import com.geng.exceptions.ExceptionMonitorType;
 import com.geng.exceptions.GameExceptionCode;
-import com.geng.gameengine.GeoIpService;
+//import com.geng.gameengine.GeoIpService;
 import com.geng.gameengine.ItemManager;
-import com.geng.gameengine.Versions;
-import com.geng.gameengine.pay.HexBin;
-import com.geng.gameengine.reward.RewardManager;
+//import com.geng.gameengine.Versions;
+//import com.geng.gameengine.pay.HexBin;
+//import com.geng.gameengine.reward.RewardManager;
 import com.geng.puredb.model.UserProfile;
-import com.geng.puredb.model.UserResource;
-import com.geng.utils.filter.BadWordsFilter;
-import com.geng.utils.myredis.MyRedisBatch;
-import com.geng.utils.myredis.R;
+//import com.geng.puredb.model.UserResource;
+//import com.geng.utils.filter.BadWordsFilter;
+//import com.geng.utils.myredis.MyRedis、Batch;
+//import com.geng.utils.myredis.R;
 import com.geng.utils.xml.GameConfigManager;
-import com.google.common.base.Joiner;
+//import com.google.common.base.Joiner;
 import com.geng.core.data.ISFSArray;
 import com.geng.core.data.ISFSObject;
 import com.geng.core.data.SFSArray;
@@ -26,9 +26,9 @@ import com.geng.core.data.SFSObject;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.ScanParams;
-import redis.clients.jedis.ScanResult;
+//import redis.clients.jedis.Jedis;
+//import redis.clients.jedis.ScanParams;
+//import redis.clients.jedis.ScanResult;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -56,7 +56,7 @@ import java.util.regex.Pattern;
  */
 public final class CommonUtils {
 
-    private static BadWordsFilter badWordsFilter;
+//    private static BadWordsFilter badWordsFilter;
 
     public static List<String> BadWordsList = new ArrayList<>();
     public static List<String> regularForbiddenWords = new ArrayList<>();
@@ -65,7 +65,7 @@ public final class CommonUtils {
     public static List<String> weightForbiddenWords = new ArrayList<String>();
     public static long badWordsFileLastModifyTime=-1;
 
-    private static BadWordsFilter badNameWordsFilter;
+//    private static BadWordsFilter badNameWordsFilter;
     public static List<String> badNameWordsList = new ArrayList<>();
     public static long badNameWordsFileLastModifyTime = -1;
 
@@ -139,7 +139,7 @@ public final class CommonUtils {
 		return false;
     }
 
-
+/**
     public static void loadBadNameWorldsList(){
         File file = new File(Constants.GAME_CONFIG_PATH + "/badwords_name.txt");
         if(!file.exists()){
@@ -177,7 +177,7 @@ public final class CommonUtils {
             tmpBadWordsList.remove("v");
             badNameWordsList = tmpBadWordsList;
         }catch (Exception e){
-            COKLoggerFactory.monitorException("loading bad name words exceptions", ExceptionMonitorType.CMD, COKLoggerFactory.ExceptionOwner.GWP, e);
+            COKLoggerFactory.monitorException("loading bad name words exception", ExceptionMonitorType.CMD, COKLoggerFactory.ExceptionOwner.GWP, e);
         }
     }
 
@@ -237,75 +237,11 @@ public final class CommonUtils {
             weightForbiddenWords=tmpWeightForbiddenWords;
 
         }catch (Exception e){
-            COKLoggerFactory.monitorException("loading bad words exceptions", ExceptionMonitorType.CMD, COKLoggerFactory.ExceptionOwner.ZC, e);
+            COKLoggerFactory.monitorException("loading bad words exception", ExceptionMonitorType.CMD, COKLoggerFactory.ExceptionOwner.ZC, e);
         }
     }
 
-    /*
-    *
-    * */
-    public static GameExceptionCode handleResNotEnoughBuildingCost(UserProfile userProfile, Map<UserResource.ResourceType, Long> needResourceMap,
-                                                                   Map<UserResource.ResourceType, Long> notEnoughResMap, LoggerUtil.GoldCostType resourceGoldCostType, int itemId,
-                                                                   String itemCostStr, Map<String, Integer> currItemMap,boolean isAutoUseItem,ISFSArray itemRemainingArray,Map<UserResource.ResourceType, Long> useItemResource) {
-        int resourceGoldCost = CommonUtils.calNotEnoughResourceCost(notEnoughResMap, userProfile.getAppVersion());
-        resourceGoldCost += ItemManager.getNotEnoughGoodsCost(itemCostStr, currItemMap);
-        try {
-            if (userProfile.getAllGold() < resourceGoldCost) {
-                return GameExceptionCode.USERGOLD_IS_NOT_ENOUGH;
-            }
-            if(isAutoUseItem){
-                ItemManager.autoUseItemForBuild(userProfile, itemRemainingArray, useItemResource);
-            }
-            if (resourceGoldCost > 0) {
-                userProfile.decrAllGold(resourceGoldCostType, resourceGoldCost, itemId, 0, null);
-            }
-            userProfile.getUserResource().decrResourceWithoutPush(needResourceMap, "upgradeBuilding");
-        } catch (COKException e) {
-            return GameExceptionCode.USERGOLD_IS_NOT_ENOUGH;
-        }
-        return GameExceptionCode.SUCCESS;
-    }
 
-
-    /**
-     * 立即建造消耗统一处理
-     *
-     * @param needTime
-     * @param userProfile
-     * @param resourceGoldCostType
-     * @param cdGoldCostType
-     * @return
-     */
-    public static GameExceptionCode handleInstantBuildingCost(UserProfile userProfile, Map<UserResource.ResourceType, Long> needResourceMap,
-                                                              int needTime, Map<UserResource.ResourceType, Long> notEnoughResMap,
-                                                              LoggerUtil.GoldCostType resourceGoldCostType, LoggerUtil.GoldCostType cdGoldCostType, int itemId,
-                                                              String itemCostStr, Map<String, Integer> currItemMap) {
-        int cdGoldCost = getGoldCost(needTime);
-        int resourceGoldCost = CommonUtils.calNotEnoughResourceCost(notEnoughResMap, userProfile.getAppVersion());
-        resourceGoldCost += ItemManager.getNotEnoughGoodsCost(itemCostStr, currItemMap);
-        int totalGoldCost = resourceGoldCost == Integer.MAX_VALUE ? Integer.MAX_VALUE : resourceGoldCost + cdGoldCost;
-        try {
-            if (userProfile.getAllGold() < totalGoldCost) {
-                return GameExceptionCode.USERGOLD_IS_NOT_ENOUGH;
-            }
-            if (resourceGoldCost > 0) {
-                userProfile.decrAllGold(resourceGoldCostType, resourceGoldCost, itemId, 0, null);
-            }
-            if (cdGoldCost > 0) {
-                userProfile.decrAllGold(cdGoldCostType, cdGoldCost, itemId, 0, null);
-            }
-            userProfile.getUserResource().decrResourceWithoutPush(needResourceMap, "upgradeBuildingImmediately");
-        } catch (COKException e) {
-            return GameExceptionCode.USERGOLD_IS_NOT_ENOUGH;
-        }
-        return GameExceptionCode.SUCCESS;
-    }
-
-    public static GameExceptionCode handleInstantBuildingCost(UserProfile userProfile, Map<UserResource.ResourceType, Long> needResourceMap,
-                                                              int needTime, Map<UserResource.ResourceType, Long> notEnoughResMap,
-                                                              LoggerUtil.GoldCostType resourceGoldCostType, LoggerUtil.GoldCostType cdGoldCostType, int itemId) {
-        return handleInstantBuildingCost(userProfile, needResourceMap, needTime, notEnoughResMap, resourceGoldCostType, cdGoldCostType, itemId, null, null);
-    }
 
     /**
      * 立即建造时间花费
@@ -352,133 +288,7 @@ public final class CommonUtils {
 		return cost;
 	}
 
-    /**
-     * 立即建造资源不足金币消耗
-     *
-     * @param notEnoughResource
-     * @return
-     */
-    public static int calNotEnoughResourceCost(Map<UserResource.ResourceType, Long> notEnoughResource, String appVersion) {
-        int totalCost = 0;
-        if (notEnoughResource.isEmpty()) {
-            return totalCost;
-        }
-        GameConfigManager itemMap = new GameConfigManager("item");
-        Map<String, String> resourceCostMap = itemMap.getItem("resource_cost");
-        Map<String, String> resource_num1Map = itemMap.getItem("resource_num1");
-        Map<String, String> resource_num2Map = itemMap.getItem("resource_num2");
-        Map<String, String> resource_num3Map = itemMap.getItem("resource_num3");
-        for (Map.Entry<UserResource.ResourceType, Long> entry : notEnoughResource.entrySet()) {
-            int cost;
-            if (entry.getKey() == UserResource.ResourceType.SILVER) {
-                cost = (int) Math.ceil(entry.getValue() * Float.parseFloat(resource_num3Map.get("k5")));
-            } else {
-                int costK1 = Integer.parseInt(resourceCostMap.get("k1"));
-                int costK2 = Integer.parseInt(resourceCostMap.get("k2"));
-                int costK3 = Integer.parseInt(resourceCostMap.get("k3"));
-                int costK4 = Integer.parseInt(resourceCostMap.get("k4"));
-                //公式金币数=int（a*（资源*d）^b+c）
-                float a, b, c, d = 0;
-                if (entry.getValue() <= costK1) {
-                    a = Float.parseFloat(resource_num1Map.get("k1"));
-                    b = Float.parseFloat(resource_num1Map.get("k2"));
-                    c = Float.parseFloat(resource_num1Map.get("k3"));
-                } else if (entry.getValue() > costK1 && entry.getValue() <= costK2) {
-                    a = Float.parseFloat(resource_num1Map.get("k4"));
-                    b = Float.parseFloat(resource_num1Map.get("k5"));
-                    c = Float.parseFloat(resource_num1Map.get("k6"));
-                } else if (entry.getValue() > costK2 && entry.getValue() <= costK3) {
-                    a = Float.parseFloat(resource_num1Map.get("k7"));
-                    b = Float.parseFloat(resource_num1Map.get("k8"));
-                    c = Float.parseFloat(resource_num1Map.get("k9"));
-                } else if (entry.getValue() > costK3 && entry.getValue() <= costK4) {
-                    a = Float.parseFloat(resource_num1Map.get("k10"));
-                    b = Float.parseFloat(resource_num1Map.get("k11"));
-                    c = Float.parseFloat(resource_num1Map.get("k12"));
-                } else {
-                    a = Float.parseFloat(resource_num2Map.get("k1"));
-                    b = Float.parseFloat(resource_num2Map.get("k2"));
-                    c = Float.parseFloat(resource_num2Map.get("k3"));
-                }
-                switch (entry.getKey()) {
-                    case FOOD:
-                        d = Float.parseFloat(resource_num3Map.get("k1"));
-                        break;
-                    case WOOD:
-                        d = Float.parseFloat(resource_num3Map.get("k2"));
-                        break;
-                    case IRON:
-                        d = Float.parseFloat(resource_num3Map.get("k3"));
-                        break;
-                    case STONE:
-                        d = Float.parseFloat(resource_num3Map.get("k4"));
-                        break;
-                }
-                cost = Math.max((int) (a * Math.pow(entry.getValue() * d, b) + c), 1);
-                if (cost < 0) {
-                    return Integer.MAX_VALUE;
-                }
-            }
-            totalCost += cost;
-        }
-        if (totalCost < 0) {
-            totalCost = Integer.MAX_VALUE;
-        }
-        return totalCost;
-    }
 
-    private static int getCDGoldCost(int cdTime, Map<String, String> cdTimeMap, Map<String, String> cdCostMap) {
-        int cdGoldCost = 0;
-        StringBuilder key = new StringBuilder("k");
-        for (int i = 0; i < cdTimeMap.size(); i++) {
-            key.append(i + 1);
-            if (cdTime <= Integer.parseInt(cdTimeMap.get(key.toString()))) {
-                cdGoldCost = Integer.parseInt(cdCostMap.get(key.toString()));
-                break;
-            }
-            key.delete(1, 2);
-        }
-        return cdGoldCost;
-    }
-
-    public static Map<String, Integer> parseBlob(byte[] content) {
-        Map<String, Integer> retMap = new HashMap<String, Integer>();
-        if (content != null) {
-            String str = fromByteToString(content);
-            JSONObject json = JSONObject.fromObject(str);
-            Iterator<?> iter = json.keys();
-            while (iter.hasNext()) {
-                String key = (String) iter.next();
-                retMap.put(key, json.getInt(key));
-            }
-        }
-        return retMap;
-    }
-
-
-    public static byte[] parseBlob(Map<String, Integer> params) {
-        String str = JSONObject.fromObject(params).toString();
-        try {
-            return Charset.forName("UTF-8").newEncoder()
-                    .encode(CharBuffer.wrap(str.toCharArray())).array();
-        } catch (CharacterCodingException e) {
-            LoggerUtil.getInstance().logBySFS("parse blob exceptions");
-        }
-        return null;
-    }
-
-    public static byte[] parseBlob(Set<String> params) {
-        if (params != null && params.size() > 0) {
-            String str = StringUtils.join(params, ",");
-            try {
-                return Charset.forName("UTF-8").newEncoder()
-                        .encode(CharBuffer.wrap(str.toCharArray())).array();
-            } catch (CharacterCodingException e) {
-                LoggerUtil.getInstance().logBySFS("parse blob exceptions");
-            }
-        }
-        return null;
-    }
 
     public static String fromByteToString(byte[] content) {
         String result = null;
@@ -487,7 +297,7 @@ public final class CommonUtils {
                 result = Charset.forName("UTF-8").newDecoder()
                         .decode(ByteBuffer.wrap(content)).toString().trim();
             } catch (CharacterCodingException e) {
-                LoggerUtil.getInstance().logBySFS("parse blob exceptions");
+                LoggerUtil.getInstance().logBySFS("parse blob exception");
             }
         }
         return result;
@@ -499,7 +309,7 @@ public final class CommonUtils {
                 return Charset.forName("UTF-8").newEncoder()
                         .encode(CharBuffer.wrap(content.trim().toCharArray())).array();
             } catch (CharacterCodingException e) {
-                LoggerUtil.getInstance().logBySFS("parse blob exceptions");
+                LoggerUtil.getInstance().logBySFS("parse blob exception");
             }
         }
         return null;
@@ -629,23 +439,23 @@ public final class CommonUtils {
     /**
      * 将指定格式的日期时间描述解析为 毫秒级 时间戳
      *
-     * @param pattern 格式 (yyyy-年 MM-月 dd-日 HH-小时 mm-分钟 ss-秒)
-     * @param timeStr 时间描述
+     * @param //pattern 格式 (yyyy-年 MM-月 dd-日 HH-小时 mm-分钟 ss-秒)
+     * @param //timeStr 时间描述
      * @return ret      异常返回-1
      */
-    public static long parseTimeStamp(String pattern, String timeStr) {
+    /*public static long parseTimeStamp(String pattern, String timeStr) {
         SimpleDateFormat dateFormat = new SimpleDateFormat(pattern);
         long ret = -1;
         try {
             ret = dateFormat.parse(timeStr.trim()).getTime();
         } catch (ParseException pException) {
-            LoggerUtil.getInstance().logBySFS("parse time exceptions");
+            LoggerUtil.getInstance().logBySFS("parse time exception");
             COKLoggerFactory.monitorException("parseTimeStamp failed", ExceptionMonitorType.WORLD, COKLoggerFactory.ExceptionOwner.GWP, pException);
         }
         return ret;
-    }
+    }*/
 
-    public static String makeMD5(String sourceStr) {
+   /* public static String makeMD5(String sourceStr) {
         try {
             byte[] bytes = sourceStr.getBytes("utf-8");
             MessageDigest md5 = MessageDigest.getInstance("MD5");
@@ -660,7 +470,7 @@ public final class CommonUtils {
             LoggerUtil.getInstance().logBySFS(e);
         }
         return null;
-    }
+    }*/
 
     private static int[] getIntArray(String[] strArray) {
         int ret[] = {};
@@ -739,115 +549,6 @@ public final class CommonUtils {
             source[index] = source[len];
         }
         return result;
-    }
-    /**
-     * 根据时间删除redis中的聊天记录
-     *
-     * @param keyReg:   redis键值的正则表达式
-     * @param dueTime:  截止日期 删除dueTime之前的聊天记录
-     * @param timeUnit: 时间单位
-     *                  (eg: 删除5分钟之前的聊天记录 delteChattingRecords("someKey", 5, TimeUnit.MINUTES);)
-     */
-    public static void deleteChattingRecords(String keyReg, int dueTime, TimeUnit timeUnit) {
-
-        MyRedisBatch myRedisBatch=new MyRedisBatch() {
-            @Override
-            public Object run(Jedis jedis) {
-
-                long timeCondition = dueTime;
-                switch (timeUnit) {
-                    case MILLISECONDS:
-                        break;
-                    case SECONDS:
-                        timeCondition *= 1000;
-                        break;
-                    case MINUTES:
-                        timeCondition *= 60000;
-                        break;
-                    case HOURS:
-                        timeCondition *= 1440000;
-                        break;
-                    case DAYS:
-                        timeCondition *= 86400000;
-                        break;
-                    default:
-                        break;
-                }
-
-                String query=keyReg;
-
-                List<String> keys = new LinkedList<String>();
-//        Jedis jedis = RedisSessionUtil.getInstance().getResource();
-                try{
-                    ScanParams params = new ScanParams();
-                    params.match(query);
-                    params.count(1000);
-                    String nextCursor="0";
-                    do{
-                        ScanResult<String> scanResult = jedis.scan(nextCursor, params);
-                        keys.addAll( scanResult.getResult() );
-                        nextCursor = scanResult.getStringCursor();
-                    }while(!"0".equals(nextCursor));
-                }finally{
-//            jedis.close();
-                }
-
-
-                if (keys.size() == 0) {
-                    return null;
-                }
-
-
-//        RedisSession rs = new RedisSession(false);
-                try {
-
-                    long now = System.currentTimeMillis();
-                    int index;
-                    for (String key : keys) {
-                        if(key.contains("_seqId")){
-                            jedis.del(key);
-                            continue;
-                        }
-                        boolean deleteFlag = false;
-                        List<String> msgList = jedis.lrange(key, 0, -1);
-                        if (msgList.size() == 0) {
-                            continue;
-                        }
-                        index = -1;
-                        for (String msg : msgList) {
-                            ISFSObject msgObj = SFSObject.newFromJsonData(msg);
-                            if (!msgObj.containsKey("time")) {
-                                continue;
-                            }
-                            ;
-                            long time = msgObj.getLong("time");
-                            long interval = (now - time);
-                            if (interval >= timeCondition) {
-                                deleteFlag = true;
-                                break;
-                            }
-                            index++;
-                        }
-                        if (deleteFlag) {
-                            if (index == -1) {
-                                jedis.ltrim(key, 1, 0);
-                            } else {
-                                jedis.ltrim(key, 0, index);
-                            }
-                        }
-                    }
-                } finally {
-//            rs.close();
-                }
-
-
-                return null;
-            }
-        };
-
-        R.Local().batch(myRedisBatch);
-
-
     }
 
     /**
@@ -1067,7 +768,7 @@ public final class CommonUtils {
         return false;
     }
 
-    public static String filterBadWords(String message){
+    /*public static String filterBadWords(String message){
         if (badWordsFilter != null){
             return badWordsFilter.replaceBadWords(message);
         }
@@ -1079,7 +780,7 @@ public final class CommonUtils {
             return badWordsFilter.containsBadWords(nickName);
         }
         return containsBadWordsReg(nickName, false);
-    }
+    }*/
 
     /**
      *
@@ -1128,12 +829,12 @@ public final class CommonUtils {
         return false;
     }
 
-    public static boolean nicknamecontainsBadWords(String nickName) {
+    /*public static boolean nicknamecontainsBadWords(String nickName) {
         if(badNameWordsFilter != null){
             return badNameWordsFilter.containsBadWords(nickName);
         }
         return containsBadWordsReg(nickName, true);
-    }
+    }*/
 
 
 
@@ -1263,7 +964,7 @@ public final class CommonUtils {
         return list;
     }
 
-	public static ISFSArray getChatRecordsBySeqId(String redisKey, long start, long end){
+	/*public static ISFSArray getChatRecordsBySeqId(String redisKey, long start, long end){
 		ISFSArray ret = new SFSArray();
 		try{
 //            new RedisSession()
@@ -1285,10 +986,10 @@ public final class CommonUtils {
 				ret.addSFSObject(msgObj);
 			}
 		}catch (Exception e){
-			COKLoggerFactory.userLogger.error("get chat records exceptions", e);
+			COKLoggerFactory.userLogger.error("get chat records exception", e);
 		}
 		return ret;
-	}
+	}*/
 
     public static String[] randomArray(String[] sourceArray, int rndNum) {
         if (sourceArray == null) {
@@ -1327,10 +1028,10 @@ public final class CommonUtils {
         return list;
     }
 
-    public static String getRangeToStr(List list,String regex)
-    {
-        return Joiner.on(regex).skipNulls().join(list);
-    }
+//    public static String getRangeToStr(List list,String regex)
+//    {
+//        return Joiner.on(regex).skipNulls().join(list);
+//    }
 
     public static List getRangeClosed(int min1,int max1,int min2,int max2)
     {
@@ -1419,9 +1120,9 @@ public final class CommonUtils {
         return flag;
     }
 
-    public static String ip2Country(String ip) {
-        return GeoIpService.getCountryCode(ip);
-    }
+//    public static String ip2Country(String ip) {
+//        return GeoIpService.getCountryCode(ip);
+//    }
 
     public static int checkAndMultiply(int left, int right) throws COKException {
         int result = left * right;
@@ -1470,27 +1171,7 @@ public final class CommonUtils {
      */
     public static boolean isEventOpened(UserProfile userProfile, Map<String, String> xmlList) {
 
-        if (userProfile == null || xmlList == null){
-            return false;
-        }
-        if (
-//                userProfile.isOlderThanVersion(xmlList.get("k1"))
-                Versions.Compare(userProfile.getAppVersion(), xmlList.get("k1")) <0
-                ) {
-            return false;
-        }
-//        boolean isTestServer = GameEngine.getInstance().isTestServer();
-//        if (isTestServer) {
-//            if (!isServerInCheckTestServers(xmlList.get("k72"))) {
-//                return false;
-//            } else if (!isServerInCheckTestServers(xmlList.get("k107"))) {
-//                return false;
-//            }
-//        } else {
-            if (!isServerInCheckServers(xmlList.get("k2"), Constants.SERVER_ID)) {
-                return false;
-            }
-//        }
+
         return true;
     }
 
@@ -1650,7 +1331,7 @@ public final class CommonUtils {
      * @param totalReward
      * @param utilReward
      */
-    public static void mergeRewardValue(ISFSArray totalReward, ISFSArray utilReward) {
+    /*public static void mergeRewardValue(ISFSArray totalReward, ISFSArray utilReward) {
         if (utilReward == null)
             return ;
         Map<String, ISFSObject> uuidArrayMap = new HashMap<>();
@@ -1711,5 +1392,5 @@ public final class CommonUtils {
         for (ISFSObject obj : uuidArrayMap.values()) {
             totalReward.addSFSObject(obj);
         }
-    }
+    }*/
 }

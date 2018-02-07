@@ -88,8 +88,9 @@ public class GameEngine {
             sb.append(e.toJson());
             logger.info(sb.toString());
         } catch (IllegalAccessException|InstantiationException e) {
+            COKLoggerFactory.monitorException("error in access config file",ExceptionMonitorType.OTHER, COKLoggerFactory.ExceptionOwner.GYJ,e);
             logger.error(e.getMessage());
-            sb.append(new GameException(GameExceptionCode.ACCESS_CONFIG_FILE_ERROR,"error in access config file").toJson());
+            sb.append(new GameException(GameExceptionCode.INVALID_OPT,"error in access config file").toJson());
         } catch (Throwable e) {
             String retStr = "exceptions";
                 ISFSObject errorObj = new SFSObject();

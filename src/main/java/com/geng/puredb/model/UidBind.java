@@ -1,6 +1,6 @@
 package com.geng.puredb.model;
 
-import com.geng.db.MyBatisSessionUtil;
+import com.geng.utils.MyBatisSessionUtil;
 import com.geng.puredb.dao.UidBindMapper;
 import org.apache.ibatis.session.SqlSession;
 

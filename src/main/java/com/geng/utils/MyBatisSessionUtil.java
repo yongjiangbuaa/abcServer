@@ -1,4 +1,4 @@
-package com.geng.db;
+package com.geng.utils;
 
 import com.geng.server.GameEngine;
 import org.apache.ibatis.session.ExecutorType;

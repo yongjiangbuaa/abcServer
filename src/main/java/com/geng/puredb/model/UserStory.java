@@ -1,7 +1,7 @@
 package com.geng.puredb.model;
 
 import com.geng.core.data.ISFSObject;
-import com.geng.db.MyBatisSessionUtil;
+import com.geng.utils.MyBatisSessionUtil;
 import com.geng.puredb.dao.UserStoryMapper;
 import com.geng.utils.GameService;
 import org.apache.ibatis.session.SqlSession;

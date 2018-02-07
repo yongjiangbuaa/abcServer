@@ -39,4 +39,7 @@ public class Constants {
     public static final String TEST_SERVER_REGISTER_NORMAL = "TEST_SERVER_REGISTER_NORMAL";
 
 
+    public static final String BIND_FIRST_GOOGLE_MAIL_ID = "";
+    public static final String BIND_FIRST_APPSTORE_MAIL_ID = "";
+    public static final String BIND_FIRST_VK_MAIL_ID = "";
 }

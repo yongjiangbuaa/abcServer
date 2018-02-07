@@ -4,6 +4,8 @@ import com.geng.core.data.*;
 import com.geng.gameengine.login.LoginInfo;
 import com.geng.puredb.model.UserProfile;
 import com.geng.service.AccountService;
+import com.geng.utils.CommonUtils;
+import com.geng.utils.Constants;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
@@ -302,7 +304,7 @@ public class GlobalDBProxy {
      * @param  ①为null，表示不分pf ②不为null且有值，根据需要查询相关数据
      * @return
      */
-    /*public static ISFSArray getAccountBindInfo(String uid, List<String> bindPfList, List<String> nonBindPfList) {
+    public static ISFSArray getAccountBindInfo(String uid, List<String> bindPfList, List<String> nonBindPfList) {
         String sql = "select * from userbindmappingreverse where gameUid = ?";
         ISFSArray bindInfo = new SFSArray();
         List<String> paramList = new ArrayList<>();
@@ -336,7 +338,7 @@ public class GlobalDBProxy {
 //            }
         }
         return bindInfo;
-    }*/
+    }
 
     //自动绑定的版本，多个包可能绑定同一个账号
     public static String getRealBindPf(String bindPf){
@@ -488,7 +490,7 @@ public class GlobalDBProxy {
      * @param account
      * @param accountName
      * @return
-     *//*
+     */
     public static boolean updateDeviceCorrelation(String oldUid, String newUid, MAPPING_TYPE mappingType, String account, String accountName){
         List<SqlParamsObj> uidSqlParamsList = GlobalDBProxy.toUpdateAccountByType(oldUid, mappingType, "", "",  null);//解绑
         List<SqlParamsObj> uidSqlParamsList2 = GlobalDBProxy.toUpdateAccountByType(newUid, mappingType, account, accountName, null);//解绑
@@ -635,14 +637,14 @@ public class GlobalDBProxy {
         return retObj;
     }
 
-    *//**
+    /**
      * 旧版绑定，新加绑定请使用下面一个方法
      *
      * @param gameUid
      * @param mappingType
      * @param mappingValue
      * @return
-     *//*
+     */
     public static SqlParamsObj toInsertAccountMappingObj(String gameUid, MAPPING_TYPE mappingType, String mappingValue) {
         return new SqlParamsObj("insert usermapping(gameUid, mappingType, mappingValue) values(?, ?, ?)", new Object[]{gameUid, mappingType.toString(), mappingValue});
     }

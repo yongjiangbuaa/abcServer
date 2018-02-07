@@ -4,7 +4,7 @@
  */
 package com.geng.utils.xml;
 
-import com.geng.exception.IllegalXMLConfigException;
+import com.geng.exceptions.IllegalXMLConfigException;
 import com.geng.utils.properties.PropertyFileReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

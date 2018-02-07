@@ -1,11 +1,9 @@
 package com.geng.utils;
 
-import com.geng.exception.ExceptionMonitorType;
+import com.geng.exceptions.ExceptionMonitorType;
 import com.geng.gameengine.login.COKLoginExceptionType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.List;
 
 /**
  * Created by lifangkai on 15/1/15.
@@ -13,9 +11,9 @@ import java.util.List;
 public class COKLoggerFactory {
     private static final ThreadLocalStringBuilder threadLocalStringBuilderHolder = new ThreadLocalStringBuilder(128);
 
-    public static final Logger userLogger = LoggerFactory.getLogger("com.elex.cok.user");
-    public static final Logger exceptionLogger = LoggerFactory.getLogger("com.elex.cok.MoniterTestException");
-    public static final Logger USER_RESOURCE_LOGGER = LoggerFactory.getLogger("com.elex.cok.es.user.resource");
+    public static final Logger userLogger = LoggerFactory.getLogger("com.geng.user");
+    public static final Logger exceptionLogger = LoggerFactory.getLogger("com.geng.MoniterTestException");
+    public static final Logger USER_RESOURCE_LOGGER = LoggerFactory.getLogger("com.geng.es.user.resource");
 
     public static final Logger zhengchengLogger = LoggerFactory.getLogger("zhengcheng@elex-tech.com");
     public static final Logger wangzhiyuanLogger = LoggerFactory.getLogger("wangzhiyuan@elex-tech.com");

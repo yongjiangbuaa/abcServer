@@ -10,11 +10,15 @@ package com.geng.utils;
  */
 public class LoggerUtil {
 
+    public void recordException(Exception e) {
+
+    }
+
     public enum GoodsUseType {
     }
 
     public enum GoodsGetType {
-         LEVEL_UP;
+         LEVEL_UP, REWARD_RANDOM;
     }
     public static LoggerUtil getInstance() {
         return LazyHolder.INSTANCE;

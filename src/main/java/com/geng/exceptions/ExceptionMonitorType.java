@@ -1,4 +1,4 @@
-package com.geng.exception;
+package com.geng.exceptions;
 
 /**
  * Created by lifangkai on 15/5/11.

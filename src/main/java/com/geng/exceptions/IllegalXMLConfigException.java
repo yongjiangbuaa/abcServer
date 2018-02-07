@@ -2,7 +2,7 @@
  * @author: lifangkai@elex-tech.com
  * @date: 2013年10月31日 下午2:26:00
  */
-package com.geng.exception;
+package com.geng.exceptions;
 
 /**
  *XML配置运行时异常

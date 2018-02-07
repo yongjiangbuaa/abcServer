@@ -1,10 +1,9 @@
 package com.geng.puredb.model;
 
 import com.geng.core.data.*;
-import com.geng.db.MyBatisSessionUtil;
+import com.geng.utils.MyBatisSessionUtil;
 import com.geng.puredb.dao.UserItemMapper;
 import com.geng.utils.GameService;
-import com.geng.utils.LoggerUtil;
 import com.geng.utils.xml.GameConfigManager;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.SqlSession;

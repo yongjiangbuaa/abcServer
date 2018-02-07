@@ -2,16 +2,11 @@ package com.geng.puredb.model;
 
 import com.geng.core.data.ISFSObject;
 import com.geng.core.data.SFSObject;
-import com.geng.db.MyBatisSessionUtil;
-import com.geng.exception.COKException;
+import com.geng.utils.MyBatisSessionUtil;
+import com.geng.exceptions.COKException;
 import com.geng.gameengine.login.LoginInfo;
 import com.geng.puredb.dao.UserProfileMapper;
 import org.apache.ibatis.session.SqlSession;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
 
 public class UserProfile {
     private String uid;

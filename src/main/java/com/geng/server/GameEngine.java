@@ -2,6 +2,7 @@ package com.geng.server;
 
 import com.geng.core.data.ISFSObject;
 import com.geng.core.data.SFSObject;
+import com.geng.exceptions.COKException;
 import com.geng.exceptions.ExceptionMonitorType;
 import com.geng.exceptions.GameException;
 import com.geng.exceptions.GameExceptionCode;
@@ -85,7 +86,12 @@ public class GameEngine {
             }
         } catch (GameException e) {
             logger.error(e.getMessage());
-            sb.append(e.toJson());
+            if(e instanceof COKException) {
+                COKException e1 = (COKException) e;
+                sb.append(e1.toJson());
+            }else {
+                sb.append(e.toJson());
+            }
             logger.info(sb.toString());
         } catch (IllegalAccessException|InstantiationException e) {
             COKLoggerFactory.monitorException("error in access config file",ExceptionMonitorType.OTHER, COKLoggerFactory.ExceptionOwner.GYJ,e);

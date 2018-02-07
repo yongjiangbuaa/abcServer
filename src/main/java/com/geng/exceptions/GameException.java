@@ -4,6 +4,21 @@ public class GameException extends Throwable {
     private String err;
     private String errMsg;
 
+    public String getErr() {
+        return err;
+    }
+
+    public void setErr(String err) {
+        this.err = err;
+    }
+
+    public String getErrMsg() {
+        return errMsg;
+    }
+
+    public void setErrMsg(String errMsg) {
+        this.errMsg = errMsg;
+    }
 
     public GameException(GameExceptionCode code, String str) {
         err = code.getValue();

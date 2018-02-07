@@ -478,7 +478,7 @@ public class UserProfile {
             throw new IllegalArgumentException(String.format("%s decr gold(%d) is negative", name, costType.ordinal()));
         }
         if(oldTotal < delta){
-            throw new COKException(GameExceptionCode.USERGOLD_IS_NOT_ENOUGH, errorObj, "Gold cost type is: " + costType.ordinal());
+            throw new COKException(GameExceptionCode.USERGOLD_IS_NOT_ENOUGH, errorObj, "gold not enough!!Gold cost type is: " + costType.ordinal());
         }
 
         if(paidGold <= 0){ //如果付费金币<= 0

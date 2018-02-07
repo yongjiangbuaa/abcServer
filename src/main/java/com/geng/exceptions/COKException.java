@@ -57,10 +57,10 @@ public class COKException extends GameException {
     }
 
     @Override
-    public String toString() {
+    public String toJson() {
         ISFSObject obj = new SFSObject();
-        obj.putUtfString("errorCode", exceptionCode.getCode());
-        obj.putUtfString("errorMsg", getMessage());
+        obj.putUtfString("err", exceptionCode.getCode());
+        obj.putUtfString("errMsg",getErrMsg());
         if (retObj != null && retObj.size() > 0) {
             obj.putSFSObject("errorData", retObj);
         }

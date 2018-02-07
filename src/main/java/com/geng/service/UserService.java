@@ -1,7 +1,11 @@
 package com.geng.service;
 
+import com.geng.core.data.ISFSObject;
+import com.geng.core.data.SFSObject;
+import com.geng.gameengine.ItemManager;
 import com.geng.puredb.model.UidBind;
 import com.geng.puredb.model.UserProfile;
+import com.geng.puredb.model.UserStory;
 
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -36,5 +40,13 @@ public class UserService {
             userProfile.update();
         }
 
+    }
+
+    public static ISFSObject fillAll(UserProfile userProfile) {
+        ISFSObject retObj = SFSObject.newInstance();
+        ItemManager.getLoginInfo(userProfile.getUid(),retObj);
+        UserStory.getLoginInfo(userProfile,retObj);
+        userProfile.fillLoginInfo(retObj);
+        return retObj;
     }
 }

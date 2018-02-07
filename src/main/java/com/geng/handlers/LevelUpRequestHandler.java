@@ -52,11 +52,7 @@ public class LevelUpRequestHandler implements IRequestHandler{
             }
         }
 
-        ISFSObject retObj = SFSObject.newInstance();
-        ItemManager.getLoginInfo(userProfile.getUid(),retObj);
-        UserStory.getLoginInfo(userProfile,retObj);
-        userProfile.fillLoginInfo(retObj);
-        sb.append(retObj.toJson());
+        sb.append(UserService.fillAll(userProfile).toJson());
 
     }
 }

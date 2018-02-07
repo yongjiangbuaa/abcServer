@@ -1,6 +1,6 @@
 package com.geng.handlers;
 
-import com.geng.exception.GameException;
+import com.geng.exceptions.GameException;
 import com.geng.puredb.model.UserProfile;
 
 public interface IRequestHandler {

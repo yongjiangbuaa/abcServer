@@ -1,11 +1,9 @@
 package com.geng.utils;
 
-import com.geng.exception.ExceptionMonitorType;
+import com.geng.exceptions.ExceptionMonitorType;
 import com.geng.gameengine.login.COKLoginExceptionType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.List;
 
 /**
  * Created by lifangkai on 15/1/15.

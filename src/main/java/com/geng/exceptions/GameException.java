@@ -1,4 +1,4 @@
-package com.geng.exception;
+package com.geng.exceptions;
 
 public class GameException extends Throwable {
     private String err;

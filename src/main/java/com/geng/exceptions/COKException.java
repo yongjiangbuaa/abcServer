@@ -2,7 +2,7 @@
  * @author: lifangkai@elex-tech.com
  * @date: 2013年9月30日 下午3:39:40
  */
-package com.geng.exception;
+package com.geng.exceptions;
 
 import com.geng.core.data.ISFSObject;
 import com.geng.core.data.SFSObject;

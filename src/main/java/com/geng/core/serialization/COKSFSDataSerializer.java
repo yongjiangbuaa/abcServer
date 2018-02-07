@@ -48,7 +48,7 @@ public class COKSFSDataSerializer implements ISFSDataSerializer {
 		try {
 			return objectMapper.writeValueAsString(array);
 		} catch (Exception e) {
-			throw new IllegalStateException("array2json got exception." + Arrays.toString(array.toArray()), e);
+			throw new IllegalStateException("array2json got exceptions." + Arrays.toString(array.toArray()), e);
 		}
 	}
 
@@ -380,7 +380,7 @@ public class COKSFSDataSerializer implements ISFSDataSerializer {
 		try {
 			return objectMapper.writeValueAsString(map);
 		} catch (Exception e) {
-			throw new IllegalArgumentException("object2json got exception. ", e);
+			throw new IllegalArgumentException("object2json got exceptions. ", e);
 		}
 	}
 

@@ -2,9 +2,9 @@ package com.geng.server;
 
 import com.geng.core.data.ISFSObject;
 import com.geng.core.data.SFSObject;
-import com.geng.exception.ExceptionMonitorType;
-import com.geng.exception.GameException;
-import com.geng.exception.GameExceptionCode;
+import com.geng.exceptions.ExceptionMonitorType;
+import com.geng.exceptions.GameException;
+import com.geng.exceptions.GameExceptionCode;
 import com.geng.handlers.*;
 import com.geng.puredb.model.UserProfile;
 import com.geng.utils.COKLoggerFactory;
@@ -88,10 +88,11 @@ public class GameEngine {
             sb.append(e.toJson());
             logger.info(sb.toString());
         } catch (IllegalAccessException|InstantiationException e) {
+            COKLoggerFactory.monitorException("error in access config file",ExceptionMonitorType.OTHER, COKLoggerFactory.ExceptionOwner.GYJ,e);
             logger.error(e.getMessage());
-            sb.append(new GameException(GameExceptionCode.ACCESS_CONFIG_FILE_ERROR,"error in access config file").toJson());
+            sb.append(new GameException(GameExceptionCode.INVALID_OPT,"error in access config file").toJson());
         } catch (Throwable e) {
-            String retStr = "exception";
+            String retStr = "exceptions";
                 ISFSObject errorObj = new SFSObject();
                 errorObj.putUtfString("err", GameExceptionCode.INVALID_OPT.getCode());
             String msg = String.format("uid %s deviceId %s request %s, params: %s", uid, deviceId,cmd, data);

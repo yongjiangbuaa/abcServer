@@ -8,11 +8,12 @@ import com.geng.core.data.ISFSArray;
 import com.geng.core.data.ISFSObject;
 import com.geng.core.data.SFSArray;
 import com.geng.core.data.SFSObject;
-import com.geng.exception.COKException;
-import com.geng.exception.GameExceptionCode;
+import com.geng.exceptions.COKException;
+import com.geng.exceptions.GameExceptionCode;
 import com.geng.puredb.model.UserItem;
 import com.geng.puredb.model.UserProfile;
 import com.geng.server.GameEngine;
+import com.geng.utils.CommonUtils;
 import com.geng.utils.LoggerUtil;
 import com.geng.utils.xml.GameConfigManager;
 import org.apache.commons.lang3.StringUtils;
@@ -169,7 +170,7 @@ public class ItemManager {
 
 
 
-/**
+
     public static ISFSObject buyItem(UserProfile userProfile, String itemId, int count) throws  COKException{
         return buyItem(userProfile, itemId, count, false, false);
     }
@@ -224,7 +225,7 @@ public class ItemManager {
             throw new COKException(GameExceptionCode.INVALID_OPT, "param error"); //TODO: 参数不合法
         }
         long remainGold = userProfile.decrAllGold(LoggerUtil.GoldCostType.ITEM, price, Integer.parseInt(itemId), count, null);
-		userProfile.update(false);
+		userProfile.update();
         if (!isBuyForUse) {
             UserItem item = addItem(userProfile, itemId, count, 0, LoggerUtil.GoodsGetType.BUY);
             writeBuyItemLog(userProfile, item, price, count);
@@ -233,12 +234,9 @@ public class ItemManager {
         }
         retObj.putLong("remainGold", remainGold);
         retObj.putInt("costGold", price);
-        if(CommonUtils.isSameStr(itemId, GoodsType.DUNGEONS_KEY.getGoodsId())){
-            LoggerUtil.getInstance().recordFunctionPointLog(userProfile.getUid(), LoggerUtil.FunctionPoint.DUNGEONS, 3, null, null);
-        }
         return retObj;
     }
- **/
+
 
     private static void writeBuyItemLog(UserProfile userProfile, UserItem item, int price, int count) {
         int originalCount = item.getCount() - count;
@@ -277,10 +275,10 @@ public class ItemManager {
     }**/
 
 
-    /*
+
     public static ISFSObject buyItemBatch(UserProfile userProfile, String itemId, int count) throws  COKException{
         return buyItemBatch(userProfile, itemId, count, false, false);
-    }*/
+    }
     /**
      * 批量购买
      * @param userProfile
@@ -289,9 +287,9 @@ public class ItemManager {
      * @return
      * @throws COKException
      */
-//    public static ISFSObject buyItemBatch(UserProfile userProfile, String itemId, int count, boolean isBuyForUse,boolean hasCDTime) throws  COKException {
-//        throw new COKException(GameExceptionCode.INVALID_OPT,"");
-//    }
+    public static ISFSObject buyItemBatch(UserProfile userProfile, String itemId, int count, boolean isBuyForUse,boolean hasCDTime) throws  COKException {
+        throw new COKException(GameExceptionCode.INVALID_OPT,"");
+    }
 
     public static int getItemCount(UserProfile userProfile,String itemId,int value) {
         try {

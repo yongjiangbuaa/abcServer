@@ -7,6 +7,7 @@ import com.geng.exceptions.GameExceptionCode;
 //import com.geng.gameengine.GoodsType;
 import com.geng.gameengine.ItemManager;
 import com.geng.puredb.model.UserProfile;
+import com.geng.service.UserService;
 import com.geng.utils.CommonUtils;
 import com.geng.core.data.ISFSObject;
 
@@ -42,11 +43,10 @@ public class BuyItem implements IRequestHandler {
     }
 
     @Override
-    public void handle(String deviceId, UserProfile u, String data, StringBuilder sb) throws GameException {
+    public void handle(String deviceId, UserProfile userProfile, String data, StringBuilder sb) throws GameException {
         ISFSObject retObj;
         ISFSObject params = SFSObject.newFromJsonData(data);
-        retObj = handleRetObj(u, params);
+        retObj = handleRetObj(userProfile, params);
 
-        sb.append(retObj.toJson());
-    }
+        sb.append(UserService.fillAll(userProfile).toJson());    }
 }

@@ -8,6 +8,7 @@ import com.geng.gameengine.ItemManager;
 import com.geng.puredb.model.UserItem;
 import com.geng.puredb.model.UserProfile;
 import com.geng.puredb.model.UserStory;
+import com.geng.service.UserService;
 import com.geng.utils.G;
 import com.geng.utils.MyHttpParam;
 import org.apache.commons.lang.StringUtils;
@@ -67,10 +68,6 @@ public class DelItemRequestHandler implements IRequestHandler{
 //            sb.append("{\"items\":").append(G.toJson(res)).append("}");
         }
 
-        ISFSObject retObj = SFSObject.newInstance();
-        UserStory.getLoginInfo(userProfile,retObj);
-        userProfile.fillLoginInfo(retObj);
-        ItemManager.getLoginInfo(userProfile.getUid(),retObj);
-        sb.append(retObj.toJson());
+        sb.append(UserService.fillAll(userProfile).toJson());
     }
 }

@@ -6,6 +6,7 @@ public enum GameExceptionCode {
     ITEM_NOT_ENOUGH("10003"),//物品不足
     LIFE_NOT_ENOUGH("10004"),//heart不足
     USERGOLD_IS_NOT_ENOUGH("10005"),//金币不足
+    STAR_NOT_ENOUGH("10006"),//星星不足
     ;
 
     public String getValue() {

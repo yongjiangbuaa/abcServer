@@ -2,6 +2,7 @@ package com.geng.handlers;
 
 import com.geng.core.data.ISFSObject;
 import com.geng.core.data.SFSObject;
+import com.geng.exceptions.COKException;
 import com.geng.exceptions.GameException;
 import com.geng.exceptions.GameExceptionCode;
 import com.geng.gameengine.ItemManager;
@@ -26,11 +27,17 @@ public class UnlockStoryRequestHandler implements IRequestHandler {
     public void handle(String deviceId, UserProfile userProfile, String data, StringBuilder sb) throws GameException {
         if(StringUtils.isBlank(data))
             throw new GameException(GameExceptionCode.INVALID_OPT,"param not valid!! no data!");
+        if(userProfile.getStar() <= 0)
+            throw new COKException(GameExceptionCode.STAR_NOT_ENOUGH,"star not enough!");
         UserStory param = G.fromJson(data, UserStory.class);
         if(param == null || StringUtils.isBlank(param.getStoryid()) ){
             throw new GameException(GameExceptionCode.INVALID_OPT,"param has no storyid");
         }
         String storyid = param.getStoryid();
+        int need = new GameConfigManager("quest").getItem(storyid).getInt("requireStar");
+        if(userProfile.getStar() < need)
+            throw new COKException(GameExceptionCode.STAR_NOT_ENOUGH,"star not enough!");
+
         UserStory story = null;
         List<UserStory> storyList = UserStory.getByUserId(userProfile.getUid());
         if (null == storyList || storyList.size() == 0) {
@@ -45,7 +52,7 @@ public class UnlockStoryRequestHandler implements IRequestHandler {
 
 
         //扣星星
-        userProfile.setStar(userProfile.getStar() - new GameConfigManager("quest").getItem(storyid).getInt("requireStar"));
+        userProfile.setStar(userProfile.getStar() - need);
         userProfile.update();
 
         //组织返回数据

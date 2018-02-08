@@ -164,7 +164,7 @@ public class MailFunction {
         int mailTypeReadCount[] = new int[labelLength];
         int mailTypeTotalCount[] = new int[labelLength];
         int upNoticeReadMailCount = 0;
-        ArrayListMultimap<Integer, String> groupIndexMap = ArrayListMultimap.create();
+            ArrayListMultimap<Integer, String> groupIndexMap = ArrayListMultimap.create();
         List<AbstractSameMailGroup> comparatorList = MailGroupGenerator.getAllMailGroup();
         if (mailList != null) {
             for (Mail mailItem : mailList) {
@@ -723,7 +723,7 @@ public class MailFunction {
             allChosenMails.addAll(Mail.getMails(uidList));
 //            ChatUserInfoManager.setMailLastUpdateTime(userProfile.getUid(),uidList);
         }
-        SqlSession session = MyBatisSessionUtil.getInstance().getBatchSession(srcServerId);
+        SqlSession session = MyBatisSessionUtil.getInstance().getBatchSession(1);//srcServerId);
         try{
             for(String label: labelList){
                 List<Mail> typeMails = Mail.getSizeMail(ownerId, Integer.parseInt(label), session);

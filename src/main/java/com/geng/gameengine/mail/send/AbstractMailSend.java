@@ -75,7 +75,7 @@ public abstract class AbstractMailSend {
             targetIsOffLine = true;
             targetUserProfile = UserProfile.getWithUid(targetUid);
         }
-        if (targetUserProfile == null || MailType.Send != mailType && StringUtils.isNotBlank(senderUid) && MailFunction.isPersonalMail(mailType.ordinal(), targetUserProfile.getAppVersion())
+        if (targetUserProfile == null || MailType.Send != mailType && StringUtils.isNotBlank(senderUid) && MailFunction.isPersonalMail(mailType.ordinal(), targetUserProfile.getAppVersion()))
         {// && ChatService.checkShield(targetUserProfile.getUid(), senderUid)) {
             return null;
         }
@@ -104,16 +104,15 @@ public abstract class AbstractMailSend {
             if(targetUserProfile.getCrossFightSrcServerId() == -1 && targetUserProfile.getBanTime() == Long.MAX_VALUE){
                 if(StringUtils.isNotBlank(senderUid)) {
                     int srcServerId = senderUserProfile.getCrossFightSrcServerId();
-                    Optional<SqlSession> optional = MyBatisSessionUtil.getInstance().getBatchSession(srcServerId);
-                    if (!optional.isPresent()) {
+                    session = MyBatisSessionUtil.getInstance().getBatchSession(srcServerId);
+                    if (session == null) {
                         COKLoggerFactory.monitorException(String.format("can not get remote server %s db session when send mail to src server", srcServerId), ExceptionMonitorType.CROSS_KINGDOM_FIGHT, COKLoggerFactory.ExceptionOwner.BSL);
                     }
-                    session = optional.get();
                 }
             }
         }
         if(session == null){
-            session = MyBatisSessionUtil.getInstance().getBatchSession(srcServerId);
+           session = MyBatisSessionUtil.getInstance().getBatchSession(1);//srcServerId);
         }
         Mail mail;
         try {
@@ -250,7 +249,7 @@ public abstract class AbstractMailSend {
 
     private Map<String, String> getSenderUserInfo(Mail mail, String senderUid) {
         Map<String, String> retMap = new HashMap<>();
-        if (mail.getType() != MailType.UpNotice.ordinal() && StringUtils.isNotBlank(senderUid)) {
+        /*if (mail.getType() != MailType.UpNotice.ordinal() && StringUtils.isNotBlank(senderUid)) {
             UserProfile userProfile = GameEngine.getInstance().getPresentUserProfile(senderUid);
             if (userProfile != null) {
                 retMap.put("pic", userProfile.getPic());
@@ -263,7 +262,7 @@ public abstract class AbstractMailSend {
                     retMap = queryInfoMap;
                 }
             }
-        }
+        }*/
         return retMap;
     }
 
@@ -289,10 +288,11 @@ public abstract class AbstractMailSend {
                 }
                 UserProfile targetUser = GameEngine.getInstance().getPresentUserProfile(mailItem.getTouser());
                 if (targetUser != null || serverId != Constants.SERVER_ID) { //本服targetUser不为null的情况下push  或者  跨服推送
-                    String appVersion;
+                    String appVersion="";
                     if(targetUser != null){
                         appVersion = targetUser.getAppVersion();
                     }else{
+                        ;
 //                        appVersion = AppVersionManager.getItem("app_version", "1.1.5");
                     }
                     pushInfo.putUtfString("uid", mailItem.getUid());

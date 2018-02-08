@@ -31,8 +31,9 @@ public class MyBatisSessionUtil {
         return sqlSessionFactory;
     }
 
+
     public SqlSession getBatchSession(int srcServerId) {
-        return  Optional.fromNullable(new SqlSession());
+        return  null;
     }
 
     static class LAZY_LOAD{

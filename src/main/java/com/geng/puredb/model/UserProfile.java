@@ -2,12 +2,13 @@ package com.geng.puredb.model;
 
 import com.geng.core.data.ISFSObject;
 import com.geng.core.data.SFSObject;
-import com.geng.db.MyBatisSessionUtil;
 import com.geng.exceptions.COKException;
 import com.geng.exceptions.GameExceptionCode;
 import com.geng.gameengine.login.LoginInfo;
 import com.geng.puredb.dao.UserProfileMapper;
 import com.geng.utils.LoggerUtil;
+import com.geng.utils.MyBatisSessionUtil;
+import com.google.common.base.Optional;
 import org.apache.ibatis.session.SqlSession;
 
 public class UserProfile {
@@ -425,7 +426,7 @@ public class UserProfile {
         return outData;
     }
 
-    private void getLoginInfo(ISFSObject outData){
+    public void getLoginInfo(ISFSObject outData){
         ISFSObject userInfoObj = new SFSObject();
         userInfoObj.putUtfString("uuid", loginInfo != null ? loginInfo.getUuid() : "");
         userInfoObj.putUtfString("name", name);
@@ -514,5 +515,21 @@ public class UserProfile {
         }
 
         return remainTotal;
+    }
+
+    public LoginInfo getLoginInfo() {
+        return loginInfo;
+    }
+
+    public static String getLastUpdateInfoTime(String fromUser) {
+        return null;
+    }
+
+    public Object getMailLock() {
+        return new Object();
+    }
+
+    public Optional<String> getAllianceSimpleName() {
+        return null;
     }
 }

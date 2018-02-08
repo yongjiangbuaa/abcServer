@@ -1,6 +1,7 @@
 package com.geng.utils;
 
 import com.geng.server.GameEngine;
+import com.google.common.base.Optional;
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -28,6 +29,10 @@ public class MyBatisSessionUtil {
         if(null == sqlSessionFactory) init();
 
         return sqlSessionFactory;
+    }
+
+    public SqlSession getBatchSession(int srcServerId) {
+        return  Optional.fromNullable(new SqlSession());
     }
 
     static class LAZY_LOAD{

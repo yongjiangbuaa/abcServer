@@ -11,6 +11,8 @@ dependencies {
     compile 'org.mybatis:mybatis:3.4.5'
     compile 'mysql:mysql-connector-java:5.1.45'
     compile 'com.google.code.gson:gson:2.8.2'
+    compile 'org.springframework:spring-context:4.1.1.RELEASE'
+    compile 'org.springframework:spring-jdbc:4.1.1.RELEASE'
     compile fileTree(dir: 'lib', include: '*.jar')
 }
 

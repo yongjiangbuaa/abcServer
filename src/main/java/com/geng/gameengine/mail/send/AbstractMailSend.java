@@ -4,16 +4,16 @@ import com.geng.core.GameEngine;
 import com.geng.core.GameExecutor;
 import com.geng.exceptions.COKException;
 import com.geng.exceptions.ExceptionMonitorType;
-import com.geng.gameengine.ChatService;
-import com.geng.gameengine.ParsePushService;
-import com.geng.gameengine.PlayerParsePushInfo;
-import com.geng.gameengine.cross.CrossKingdomFightManager;
-import com.geng.gameengine.cross.SharedUserInfo;
-import com.geng.gameengine.cross.SharedUserService;
+//import com.geng.gameengine.ChatService;
+//import com.geng.gameengine.ParsePushService;
+//import com.geng.gameengine.PlayerParsePushInfo;
+//import com.geng.gameengine.cross.CrossKingdomFightManager;
+//import com.geng.gameengine.cross.SharedUserInfo;
+//import com.geng.gameengine.cross.SharedUserService;
 import com.geng.gameengine.mail.*;
 import com.geng.gameengine.mail.group.AbstractSameMailGroup;
-import com.geng.gameengine.manager.AppVersionManager;
-import com.geng.gameengine.world.core.UserWorld;
+//import com.geng.gameengine.manager.AppVersionManager;
+//import com.geng.gameengine.world.core.UserWorld;
 import com.geng.puredb.model.Mail;
 import com.geng.puredb.model.MailGroup;
 import com.geng.puredb.model.UserProfile;
@@ -24,7 +24,7 @@ import com.geng.core.data.ISFSArray;
 import com.geng.core.data.ISFSObject;
 import com.geng.core.data.SFSArray;
 import com.geng.core.data.SFSObject;
-import com.smartfoxserver.v2.extensions.ExtensionLogLevel;
+//import com.smartfoxserver.v2.extensions.ExtensionLogLevel;
 import org.apache.commons.lang.StringUtils;
 import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
@@ -76,7 +76,7 @@ public abstract class AbstractMailSend {
             targetUserProfile = UserProfile.getWithUid(targetUid);
         }
         if (targetUserProfile == null || MailType.Send != mailType && StringUtils.isNotBlank(senderUid) && MailFunction.isPersonalMail(mailType.ordinal(), targetUserProfile.getAppVersion())
-                && ChatService.checkShield(targetUserProfile.getUid(), senderUid)) {
+        {// && ChatService.checkShield(targetUserProfile.getUid(), senderUid)) {
             return null;
         }
         UserProfile senderUserProfile = null;
@@ -87,8 +87,8 @@ public abstract class AbstractMailSend {
             }
         }
         SqlSession session = null;
-        if(!GameEngine.getInstance().isCrossFightServer()){
-            UserWorld targetUserWorld = targetUserProfile.getUserWorld();
+        if(true){//!GameEngine.getInstance().isCrossFightServer()){
+           /* UserWorld targetUserWorld = targetUserProfile.getUserWorld();
             if(targetUserWorld == null){
                 targetUserWorld = UserWorld.getWithUid(targetUid);
             }
@@ -99,7 +99,7 @@ public abstract class AbstractMailSend {
                     COKLoggerFactory.monitorException(String.format("can not get remote server %s db session when send mail", crossServerId), ExceptionMonitorType.CROSS_KINGDOM_FIGHT, COKLoggerFactory.ExceptionOwner.BSL);
                 }
                 session = optional.get();
-            }
+            }*/
         }else {
             if(targetUserProfile.getCrossFightSrcServerId() == -1 && targetUserProfile.getBanTime() == Long.MAX_VALUE){
                 if(StringUtils.isNotBlank(senderUid)) {
@@ -113,7 +113,7 @@ public abstract class AbstractMailSend {
             }
         }
         if(session == null){
-            session = MyBatisSessionUtil.getInstance().getBatchSession();
+            session = MyBatisSessionUtil.getInstance().getBatchSession(srcServerId);
         }
         Mail mail;
         try {
@@ -155,7 +155,7 @@ public abstract class AbstractMailSend {
             if (targetUserProfile == null) {
                 return;
             }
-            Map<String, String> function_on = new GameConfigManager("item").getItem("function_on2");
+            /*Map<String, String> function_on = new GameConfigManager("item").getItem("function_on2");
             ParsePushService.PushTarget exceptTarget = StringUtils.equals("1", function_on.get("k5")) ? null : ParsePushService.PushTarget.IOS;
             String functionOn = function_on.get("k3");
             if ("1".equals(functionOn)) {
@@ -168,7 +168,7 @@ public abstract class AbstractMailSend {
                 //"1.0.83"   targetUserProfile.isOlderThanVersion(Versions.VERSION_1_0_83)
                 ParsePushService.pushMessageExceptTarget(mailItem.getTouser(), pushMsg, PlayerParsePushInfo.PUSH_TYPE.MAIL,
 						null, false , exceptTarget, ParsePushService.ParseStatType.PERSONAL_MAIL);
-            }
+            }*/
         }
     }
 
@@ -195,10 +195,7 @@ public abstract class AbstractMailSend {
     protected Mail mail(String fromUid, UserProfile targetUserProfile, String title, MailType mailType, String rewardId, long createTime, String contents,
                         boolean itemIdFlag, boolean isSave, SqlSession session, boolean isCheckNum, String fromName, boolean forceSetNoReward, MailSrcFuncType srctype) {
         MailCheckInfo checkInfo = new MailCheckInfo(null, 1, 1, 0);
-        if (isCheckNum && targetUserProfile.getArmyManager() != null) {
-        //.getArmyManager() != null是为了检测确保这个UserProfile实例不是单单的一张UserProfile表的简单数据
-            getCheckInfo(checkInfo, mailType, fromUid, targetUserProfile);
-        }
+
         String mailUid = StringUtils.isBlank(checkInfo.getFirstMailUid()) ? GameService.getGUID(): checkInfo.getFirstMailUid();
         Mail mailItem = new Mail(mailUid, fromUid, targetUserProfile.getUid(), title, rewardId, createTime, contents, mailType, checkInfo.getAlreadySaveFlag(), itemIdFlag, fromName, 0, forceSetNoReward,srctype);
         mailItem.groupTotal = checkInfo.getGroupTotal();
@@ -296,7 +293,7 @@ public abstract class AbstractMailSend {
                     if(targetUser != null){
                         appVersion = targetUser.getAppVersion();
                     }else{
-                        appVersion = AppVersionManager.getItem("app_version", "1.1.5");
+//                        appVersion = AppVersionManager.getItem("app_version", "1.1.5");
                     }
                     pushInfo.putUtfString("uid", mailItem.getUid());
                     pushInfo.putUtfString("title", mailItem.getTitle());
@@ -328,7 +325,7 @@ public abstract class AbstractMailSend {
                         pushInfo.putInt("totalNum", mailItem.groupTotal == null ? 0 : mailItem.groupTotal);
                     }
                     addPushInfo(mailItem, pushInfo);
-                    if(com.geng.gameengine.chat.ChatKeys.isMailNeedAllField()){
+                    /*if(com.geng.gameengine.chat.ChatKeys.isMailNeedAllField()){
                         pushInfo.putInt("rewardStatus",mailItem.getRewardstatus());
                         pushInfo.putInt("status",mailItem.getStatus());
                         pushInfo.putUtfString("contentsLocal", StringUtils.replaceEach(mailItem.getContentsStr(),new String[]{"\\n"}, new String[]{"\n"}));
@@ -340,7 +337,7 @@ public abstract class AbstractMailSend {
                         }
                         pushInfo.putUtfString("translationId", StringUtils.isBlank(mailItem.getTranslationId()) ? "" : mailItem.getTranslationId());
                         pushInfo.putUtfString("fromUser", StringUtils.isBlank(mailItem.getFromuser()) ? "" : mailItem.getFromuser());
-                    }
+                    }*/
                     if(mailItem.getType() == MailType.Fight.ordinal())
                         pushInfo.putSFSObject("fightContents", SFSObject.newFromJsonData(mailItem.getContentsStr()));
                     if(serverId == Constants.SERVER_ID) {
@@ -468,14 +465,14 @@ public abstract class AbstractMailSend {
         ISFSObject retObj = SFSObject.newInstance();
         retObj.putUtfString("uid", mail.getUid());
         retObj.putUtfString("toUid", seeUid);
-        SharedUserInfo toUserInfo = new SharedUserService().getSharedUserInfo(seeUid);
-        if (StringUtils.isNotBlank(toUserInfo.getAllianceAbbrName())) {
-            retObj.putUtfString("alliance", toUserInfo.getAllianceAbbrName());
-        }
-        if (StringUtils.isNotBlank(toUserInfo.getPic())) {
-            retObj.putUtfString("pic", toUserInfo.getPic());
-        }
-        retObj.putInt("picVer", toUserInfo.getPicVer());
+//        SharedUserInfo toUserInfo = new SharedUserService().getSharedUserInfo(seeUid);
+//        if (StringUtils.isNotBlank(toUserInfo.getAllianceAbbrName())) {
+//            retObj.putUtfString("alliance", toUserInfo.getAllianceAbbrName());
+//        }
+//        if (StringUtils.isNotBlank(toUserInfo.getPic())) {
+//            retObj.putUtfString("pic", toUserInfo.getPic());
+//        }
+//        retObj.putInt("picVer", toUserInfo.getPicVer());
         retObj.putInt("unread", mail.groupUnread == null ? 0 : mail.groupUnread);
         retObj.putInt("totalNum", mail.groupTotal == null ? 0 : mail.groupTotal);
         return retObj;

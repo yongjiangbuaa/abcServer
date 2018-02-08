@@ -5,36 +5,27 @@ import com.geng.exceptions.COKException;
 import com.geng.exceptions.ExceptionMonitorType;
 import com.geng.exceptions.GameExceptionCode;
 import com.geng.gameengine.*;
-import com.geng.gameengine.chat.room.ChatUserInfoManager;
+//import com.geng.gameengine.chat.room.ChatUserInfoManager;
 import com.geng.gameengine.mail.group.AbstractSameMailGroup;
-import com.geng.gameengine.reward.RewardManager;
 import com.geng.puredb.dao.MailGroupMapper;
 import com.geng.puredb.dao.MailMapper;
-import com.geng.puredb.dao.OldmailinsertMapper;
+//import com.geng.puredb.dao.OldmailinsertMapper;
 import com.geng.puredb.model.*;
 import com.geng.utils.*;
-import com.geng.utils.event.EventLogger;
+//import com.geng.utils.event.EventLogger;
 import com.google.common.collect.ArrayListMultimap;
 import com.geng.core.data.ISFSArray;
 import com.geng.core.data.ISFSObject;
 import com.geng.core.data.SFSArray;
 import com.geng.core.data.SFSObject;
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
-import com.geng.core.data.*;
+
 import com.geng.puredb.model.UserProfile;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.ibatis.session.SqlSession;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.*;
 
 /**
  * Created by Administrator on 2014/11/28.
@@ -157,106 +148,13 @@ public class MailFunction {
         getLoginInfo(userProfile, outData);
     }
 
-    private static boolean checkServerMail(UserProfile userProfile, String country, ServerPushWithBLOBs serverPush,
-                                    ServerMailRecord record, List<ServerMailRecord> haveReceive, List<String> deviceRecordList,
-                                    List<ServerMailRecord> recordList) {
-        ConcurrentLock.LockValue lock = new ConcurrentLock.LockValue(ConcurrentLock.LockType.SEND_SERVER_MAIL, serverPush.getActivityId());
-        if (ConcurrentLock.getInstance().isLock(lock)) {
-            return false;
-        }
-        if (haveReceive != null) {
-            for (ServerMailRecord receiveRecord : haveReceive) {
-                if (receiveRecord.getRecord().equals(serverPush.getActivityId())) {
-                    return false;
-                }
-            }
-        }
-        if (serverPush.getBind() == 1) {
-            Boolean isBind = userProfile.isBind();
-            if (isBind == null) {
-                isBind = AccountService.isAccountHasBeenBind(userProfile.getUid());
-            }
-            if (!isBind) {
-                recordList.add(record);
-                return false;
-            }
-        }
-        if (!UserActivityService.checkServerPushCondition(serverPush, userProfile)) {
-            return false;
-        }
-        if (serverPush.getDeviceLimit() == 1 &&  deviceRecordList != null && deviceRecordList.contains(serverPush.getActivityId())) {
-            return false;
-        }
-        boolean isInPlatform = true;
-        if (StringUtils.isNotBlank(serverPush.getPlatform())) {
-            isInPlatform = serverPush.getPlatform().equals(userProfile.getPf());
-        }
-        if (!isInPlatform || userProfile.getLastOnlineTime() < serverPush.getLastOnlineTimeBegin()) {
-            return false;
-        }
-        if (StringUtils.isNotBlank(serverPush.getCountries())) {
-            String countryArray[] = StringUtils.split(serverPush.getCountries(), ';');
-            if (!ArrayUtils.contains(countryArray, country)) {
-                recordList.add(record);
-                return false;
-            }
-        }
-        if (userProfile.getRegTime() < serverPush.getRegStartTime() || userProfile.getRegTime() > serverPush.getRegEndTime() ||
-                userProfile.getLastOnlineTime() > serverPush.getLastOnlineTime() ||
-                userProfile.getLevel() < serverPush.getLevelmin() || userProfile.getLevel() > serverPush.getLevelmax()) {
-            recordList.add(record);
-            return false;
-        }
-        return true;
-    }
 
-    public static Map<String, String> handleServerPush(UserProfile userProfile, ServerPushWithBLOBs serverPush) {
-        String contents = serverPush.getStringContents(userProfile.getAppVersion());
-        String title = serverPush.getStringTitle();
-        if (serverPush.getItemIdFlag() != 1) {
-            String standardLang = "en";
-            String lang = standardLang;
-            if (StringUtils.isNotBlank(userProfile.getLang())) {
-                lang = CommonUtils.formatLang(userProfile.getLang());
-                lang = StringUtils.replaceChars(lang, '-', '_');
-            }
-            if (StringUtils.isNotBlank(contents)) {
-                ISFSObject contentsObj = serverPush.getContentObj();
-                contents = contentsObj.getUtfString(lang);
-                if (StringUtils.isBlank(contents)) {
-                    contents = contentsObj.getUtfString(standardLang);
-                }
-            }
-            if (StringUtils.isNotBlank(title)) {
-                ISFSObject titleObj = serverPush.getTitleObj();
-                title = titleObj.getUtfString(lang);
-                if (StringUtils.isBlank(title)) {
-                    title = titleObj.getUtfString(standardLang);
-                }
-            }
-        }
-        String activationCode = null;
-        if (0 != serverPush.getCDKeySeries()) {
-            activationCode = CommonUtils.Bit16(userProfile.getUid() + serverPush.getCDKeySeries());
-            if (activationCode == null) {
-                logger.info(userProfile.getUid() + "activation code generate error");
-            }
-        }
-        Map<String, String> retMap = new HashMap<>();
-        retMap.put("c", contents);
-        retMap.put("t", title);
-        if (activationCode != null) {
-            retMap.put("cdKey", activationCode);
-        }
-        return retMap;
-    }
 
     private static void receiveServerMail (UserProfile userProfile) {
 
     }
 
     private static void getLoginInfo(UserProfile userProfile, ISFSObject outData) {
-	    MailTableChangeService.checkOldMail(userProfile.getUid());
         List<MailGroup> groupList = MailGroup.getGroupList(userProfile.getUid(), null);//查询mail_group 所有
         List<Mail> mailList = Mail.getMailsWithoutOrder(userProfile.getUid()); //取邮件的时候不排序，避免数据库查询太慢 huangyuanqiang
         repairMail(mailList,false);
@@ -648,16 +546,16 @@ public class MailFunction {
         if (mailItem != null && mailItem.getStatus() == 0) {
             mailItem.setStatus(1);
             mailItem.update(null);
-            ChatUserInfoManager.setMailLastUpdateTime(mailItem.getTouser(), mailItem.getUid());
+//            ChatUserInfoManager.setMailLastUpdateTime(mailItem.getTouser(), mailItem.getUid());
             if (mailItem.getType() == MailType.GIFT.ordinal()){
-                LoggerUtil.getInstance().updateMailGiftLog(uid, 0, mailItem.getCreatetime());
+//                LoggerUtil.getInstance().updateMailGiftLog(uid, 0, mailItem.getCreatetime());
             }
         }
     }
 
     public static void markReadStatusBatch(UserProfile userProfile, List<String> uidList){
         if(uidList.size() > 0){
-            ChatUserInfoManager.setMailLastUpdateTime(userProfile.getUid(), uidList);
+//            ChatUserInfoManager.setMailLastUpdateTime(userProfile.getUid(), uidList);
             Object[] querys = new Object[uidList.size()];
             StringBuilder sb = new StringBuilder("update mail set status = 1 where uid in(");
             for(int i=0;i<uidList.size();i++){
@@ -681,7 +579,7 @@ public class MailFunction {
             }
             mailItem.setSaveflag(1);
             mailItem.update(null);
-            ChatUserInfoManager.setMailLastUpdateTime(mailItem.getTouser(), mailItem.getUid());
+//            ChatUserInfoManager.setMailLastUpdateTime(mailItem.getTouser(), mailItem.getUid());
             ISFSObject retObj = SFSObject.newInstance();
             retObj.putUtfString("save", "success");
             return retObj;
@@ -700,17 +598,17 @@ public class MailFunction {
         ISFSObject retObj = SFSObject.newInstance();
         mailItem.setSaveflag(0);
         mailItem.update(null);
-        ChatUserInfoManager.setMailLastUpdateTime(mailItem.getTouser(), mailItem.getUid());
+//        ChatUserInfoManager.setMailLastUpdateTime(mailItem.getTouser(), mailItem.getUid());
         retObj.putUtfString("cancel", "success");
         return retObj;
     }
 
     public static ISFSObject saveMailBatch(UserProfile userProfile, List<String> uidList, int flag){
-        if(uidList.size() > 0){
-            ChatUserInfoManager.setMailLastUpdateTime(userProfile.getUid(), uidList);
-        }else{
-            return null;
-        }
+//        if(uidList.size() > 0){
+//            ChatUserInfoManager.setMailLastUpdateTime(userProfile.getUid(), uidList);
+//        }else{
+//            return null;
+//        }
         Object[] querys = new Object[1+uidList.size()];
         querys[0] = flag;
         StringBuilder sb = new StringBuilder("update mail set saveFlag = ? where uid in(");
@@ -731,9 +629,9 @@ public class MailFunction {
      */
     public static ISFSObject getContents(UserProfile userProfile, String uid, String type) throws COKException {
         String[] uidArray = StringUtils.split(uid, '|');
-        if (uidArray == null || uidArray.length < 1) {
-            throw new COKException(GameExceptionCode.PARAM_ILLEGAL, "no mail uids"); //TODO:参数有问题，没传uid
-        }
+//        if (uidArray == null || uidArray.length < 1) {
+//            throw new COKException(GameExceptionCode.PARAM_ILLEGAL, "no mail uids"); //TODO:参数有问题，没传uid
+//        }
         List<String> ordinalMailUidList = Arrays.asList(uidArray);
         ISFSArray retArray = SFSArray.newInstance();
         if (!ordinalMailUidList.isEmpty()) {
@@ -758,8 +656,8 @@ public class MailFunction {
     * 根据邮件对象领取
     * */
     public static ISFSObject receiveReward(UserProfile userProfile, Mail mailItem, SqlSession session, boolean isAuto) throws COKException{
-        ISFSObject retObject;
-        if (mailItem == null) {
+        ISFSObject retObject = null;
+        /*if (mailItem == null) {
             return null;
         } else if (StringUtils.isEmpty(mailItem.getRewardStr())) {
             throw new COKException(GameExceptionCode.PARAM_ILLEGAL, "rewardId in mail is null"); //TODO: 少传参数
@@ -800,7 +698,7 @@ public class MailFunction {
             recordMails.add(mailItem);
             recordMailReceiveReward(recordMails);
             ChatUserInfoManager.setMailLastUpdateTime(userProfile.getUid(),mailItem.getUid());
-        }
+        }*/
         return retObject;
     }
     /**
@@ -823,9 +721,9 @@ public class MailFunction {
         List<Mail> allChosenMails = new ArrayList<>();
         if(uidList.size() > 0){
             allChosenMails.addAll(Mail.getMails(uidList));
-            ChatUserInfoManager.setMailLastUpdateTime(userProfile.getUid(),uidList);
+//            ChatUserInfoManager.setMailLastUpdateTime(userProfile.getUid(),uidList);
         }
-        SqlSession session = MyBatisSessionUtil.getInstance().getBatchSession();
+        SqlSession session = MyBatisSessionUtil.getInstance().getBatchSession(srcServerId);
         try{
             for(String label: labelList){
                 List<Mail> typeMails = Mail.getSizeMail(ownerId, Integer.parseInt(label), session);
@@ -839,9 +737,9 @@ public class MailFunction {
                 int count = 0;
                 for(Mail mail: allChosenMails){
                     if(mail.getRewardstatus() == 0){
-                        if (mail.getMbLevel() > 0 && userProfile.getUbManager().getMainBuildingLevel() < mail.getMbLevel()) {
-                            continue;
-                        }
+//                        if (mail.getMbLevel() > 0 && userProfile.getUbManager().getMainBuildingLevel() < mail.getMbLevel()) {
+//                            continue;
+//                        }
                         addUpToRewardObj(rewardMap, mail.getRewardStr());
                         mail.setStatus(1);
                         mail.setRewardstatus(1);
@@ -857,7 +755,7 @@ public class MailFunction {
                 String rewardStr = resolveRewardObj(rewardMap);
                 if(StringUtils.isNotBlank(rewardStr)) {
                     boolean isRewardSafeResource = SwitchConstant.SafeResourceGetSwitch.isSwitchOpen();//1为安全资源,2为非安全资源
-                    retObj = RewardManager.sendActivityReward(userProfile, allChosenMails.get(0).getCreatetime(), rewardStr, isRewardSafeResource, LoggerUtil.GoldCostType.PUSH_AWARD_ADD,MailSrcFuncType.MAIL_BATCH.getValue());
+//                    retObj = RewardManager.sendActivityReward(userProfile, allChosenMails.get(0).getCreatetime(), rewardStr, isRewardSafeResource, LoggerUtil.GoldCostType.PUSH_AWARD_ADD,MailSrcFuncType.MAIL_BATCH.getValue());
                 }
             }
 			session.commit();
@@ -913,10 +811,10 @@ public class MailFunction {
         List<Mail> mailList = Mail.getMails(uidList);
         if (uidList.size() > 0) {
             Mail.batchDeleteByRewardStatus(uidList);
-            ChatUserInfoManager.setMailLastUpdateTime(userProfile.getUid(),uidList);
+//            ChatUserInfoManager.setMailLastUpdateTime(userProfile.getUid(),uidList);
         }
         List<AbstractSameMailGroup> comparatorList = MailGroupGenerator.getAllMailGroup();
-        SqlSession session = MyBatisSessionUtil.getInstance().getBatchSession();
+        SqlSession session = MyBatisSessionUtil.getInstance().getBatchSession(srcServerId);
         ISFSObject retObject = new SFSObject();
         try{
             if(mailList != null && mailList.size() > 0){
@@ -949,9 +847,9 @@ public class MailFunction {
                         }
                     }
                 }
-                if(delUser.size() > 0){
-                    com.geng.gameengine.chat.ChatServerProxy.getInstance().delMsg(userProfile.getUid(), delUser.toArray(new String[delUser.size()]), types.toArray(new String[types.size()]));
-                }
+//                if(delUser.size() > 0){
+//                    com.geng.gameengine.chat.ChatServerProxy.getInstance().delMsg(userProfile.getUid(), delUser.toArray(new String[delUser.size()]), types.toArray(new String[types.size()]));
+//                }
             }
 			session.commit();
 		}finally {
@@ -1001,7 +899,7 @@ public class MailFunction {
         for (int i = 0; i < uidsArray.length; i++) {
             ordinaryUids.add(uidsArray[i]);
         }
-        ChatUserInfoManager.setMailLastUpdateTime(userProfile.getUid(),ordinaryUids);
+//        ChatUserInfoManager.setMailLastUpdateTime(userProfile.getUid(),ordinaryUids);
         List<Mail> mailList = Mail.getMails(ordinaryUids);
         if (ordinaryUids.size() > 0) {
             nums += Mail.batchDelete(ordinaryUids);
@@ -1026,7 +924,7 @@ public class MailFunction {
                 }
             }
         }
-        SqlSession session = MyBatisSessionUtil.getInstance().getBatchSession();
+        SqlSession session = MyBatisSessionUtil.getInstance().getBatchSession(srcServerId);
         try {
             for (int rule : groupIndexMap.keySet()){
                 AbstractSameMailGroup comparator = MailGroupGenerator.getGroup(comparatorList, rule);
@@ -1097,7 +995,7 @@ public class MailFunction {
         List<MailGroup> groupList = MailGroup.getGroupList(uid, null);
         if (groupList != null && !groupList.isEmpty()) {
             session.getMapper(MailGroupMapper.class).batchInsert(groupList);
-        }
+        }/*
         List<ServerMailRecord> mailUidRecords = ServerMailRecord.getServerMailRecords(uid, null);
         if (mailUidRecords != null && !mailUidRecords.isEmpty()) {
             ServerMailRecord.insertBatch(mailUidRecords, session);
@@ -1114,7 +1012,7 @@ public class MailFunction {
         List<OldmailinsertKey> oldmailinsertKeys = OldmailinsertKey.selectByUid(uid, null);
         if (oldmailinsertKeys != null && !oldmailinsertKeys.isEmpty()) {
             session.getMapper(OldmailinsertMapper.class).insertBatch(oldmailinsertKeys);
-        }
+        }*/
     }
 
     /**
@@ -1124,7 +1022,7 @@ public class MailFunction {
         ISFSObject translateObj = null;
         if(targetUser == null) return;
         try{
-            translateObj = TranslationService.getInstance().translateByContent(contents, CommonUtils.formatLang(targetUser.getLang()), false);
+            translateObj = null;//TranslationService.getInstance().translateByContent(contents, CommonUtils.formatLang(targetUser.getLang()), false);
         }catch (Exception e){
             translateObj = null;
         }
@@ -1152,7 +1050,7 @@ public class MailFunction {
             String[] idArr = StringUtils.split(translationId, "|");
             String fromLang = idArr[0];
             String uuid = idArr[1];
-            translateObj = TranslationService.getInstance().translateByUuid(uuid, contents, fromLang, CommonUtils.formatLang(lang), false);
+            translateObj = null;//TranslationService.getInstance().translateByUuid(uuid, contents, fromLang, CommonUtils.formatLang(lang), false);
         }catch (Exception e){
             translateObj = null;
         }
@@ -1200,10 +1098,10 @@ public class MailFunction {
             contents.putInt("deal",1);
             inviteMail.setContents(CommonUtils.fromStringToByte(contents.toJson()));
             inviteMail.update(null);
-            AllianceInviteMove.delete(inviterUid, inviteeUid);
+//            AllianceInviteMove.delete(inviterUid, inviteeUid);
             //统计
-            if(isAccept)
-                LoggerUtil.getInstance().recordAllianceRelatedStats(LoggerUtil.AllianceRecordType.INVITE_RESPONSE, inviterUid, inviteeUid, null, null);
+//            if(isAccept)
+//                LoggerUtil.getInstance().recordAllianceRelatedStats(LoggerUtil.AllianceRecordType.INVITE_RESPONSE, inviterUid, inviteeUid, null, null);
         }catch(Exception e){
             COKLoggerFactory.zhengchengLogger.error("invalidate alliance invite move error", e);
         }
@@ -1220,7 +1118,7 @@ public class MailFunction {
             contents.putInt("deal", 1);
             inviteMail.setContents(CommonUtils.fromStringToByte(contents.toJson()));
             inviteMail.update(session);
-            AllianceInviteMove.delete(inviterUid, inviteeUid);
+//            AllianceInviteMove.delete(inviterUid, inviteeUid);
         }catch(Exception e){
             COKLoggerFactory.zhengchengLogger.error("invalidate alliance invite move error", e);
         }
@@ -1293,13 +1191,13 @@ public class MailFunction {
         ISFSObject retObj = new SFSObject();
         ISFSArray updateMails = new SFSArray();
         ISFSArray delMails = new SFSArray();
-        Map<String,String> mailUids = ChatUserInfoManager.getMailIdsByLastUpdateTime(userProfile.getUid(), lastUpdatetime);
+        Map<String,String> mailUids = null;// ChatUserInfoManager.getMailIdsByLastUpdateTime(userProfile.getUid(), lastUpdatetime);
         if(mailUids != null && mailUids.size() > 0){
             List<Mail> mails = Mail.getMails(new ArrayList<String>(mailUids.keySet()));
             for(Mail mail : mails){
                 if(!mail.getTouser().equals(userProfile.getUid())){
                     //不是本人的邮件，删掉
-                    ChatUserInfoManager.removeMailLastUpdateTime(userProfile.getUid(),mail.getUid());
+//                    ChatUserInfoManager.removeMailLastUpdateTime(userProfile.getUid(),mail.getUid());
                     continue;
                 }
                 ISFSObject updateM = new SFSObject();
@@ -1335,9 +1233,7 @@ public class MailFunction {
         String toUser = userProfile.getUid();
         ISFSObject retObj = new SFSObject();
         ISFSArray mailSFSArray = null;
-        if(StringUtils.isBlank(uid) || uid.equals("0")){
-            uid = ChatUserInfoManager.getUserLastMailId(toUser);
-        }
+
         if(StringUtils.isBlank(uid) || uid.equals("0")){
             mailSFSArray = SFSMysql.getInstance().query("select * from mail where toUser = ? and saveFlag != 3 order by createTime desc limit " + limitCount, new Object[]{toUser});
         }else{
@@ -1456,7 +1352,7 @@ public class MailFunction {
         contentObj.putLong("createTime",mail.getLong("createTime"));
         contentObj.putInt("status",mail.getInt("status"));
         if(!StringUtils.isBlank(mail.getUtfString("fromUser"))){
-            contentObj.putUtfString("lastUpdateTime",UserProfile.getLastUpdateInfoTime(mail.getUtfString("fromUser")).or("0"));
+//            contentObj.putUtfString("lastUpdateTime",UserProfile.getLastUpdateInfoTime(mail.getUtfString("fromUser")).or("0"));
         }else{
             contentObj.putUtfString("lastUpdateTime","0");
         }
@@ -1743,7 +1639,7 @@ public class MailFunction {
                 obj.putUtfString("user",user);
                 obj.putInt("type",mailItem.getType());
                 obj.putInt("srcType",mailItem.getSrctype());
-                EventLogger.getInstance().info(EventLogger.EventEnum.MAIL_REWARD,obj.toJson());
+//                EventLogger.getInstance().info(EventLogger.EventEnum.MAIL_REWARD,obj.toJson());
                 //String recordKey = "MAIL_REWARD_RECEIVE_RECORD:" + user;
                // rs.zAdd(recordKey, obj.toJson(), time);
             }

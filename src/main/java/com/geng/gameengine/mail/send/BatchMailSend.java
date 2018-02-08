@@ -158,7 +158,7 @@ public class BatchMailSend extends AbstractMailSend {
 		}
 		SqlSession session;
 		if(serverId == Constants.SERVER_ID) {
-			session = MyBatisSessionUtil.getInstance().getBatchSession();
+			session = MyBatisSessionUtil.getInstance().getBatchSession(srcServerId);
 		}else {
 			Optional<SqlSession> optional = MyBatisSessionUtil.getInstance().getBatchSession(serverId);
 			if (!optional.isPresent()){

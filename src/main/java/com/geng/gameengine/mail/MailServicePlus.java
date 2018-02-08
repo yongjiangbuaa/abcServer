@@ -7,6 +7,7 @@ import com.geng.gameengine.mail.send.BatchMailSend;
 import com.geng.gameengine.mail.send.CrossPersonalMailSend;
 import com.geng.gameengine.mail.send.LocalPersonalMailSend;
 import com.geng.gameengine.mail.send.SystermMailSend;
+import com.geng.puredb.model.Mail;
 import com.geng.puredb.model.UserProfile;
 import com.geng.utils.Constants;
 import com.geng.utils.LoggerUtil;
@@ -43,7 +44,7 @@ public class MailServicePlus {
         sendTargetUsersByMailXmlWithParamGlobal(userList,mailXmlId,rewardId,paramList,srcFuncType);
     }
     public static void sendTargetUsersByMailXmlWithParamGlobal(List<String> userList, String mailXmlId,String rewardId, List<String> paramList, MailSrcFuncType srcFuncType) {
-        if(null == userList || userList.size() <= 0 ) return;
+        /*if(null == userList || userList.size() <= 0 ) return;
         ISFSObject pushObj = SFSObject.newInstance();
         pushObj.putInt(MailGlobalChannel.SID, Constants.SERVER_ID);
         pushObj.putUtfString(MailGlobalChannel.UIDS, StringUtils.join(userList,","));
@@ -52,7 +53,7 @@ public class MailServicePlus {
         else pushObj.putUtfString(MailGlobalChannel.REWARD_ID,rewardId);
         pushObj.putUtfString(MailGlobalChannel.MAIL_PARAMS, StringUtils.join(paramList,","));
         pushObj.putInt(MailGlobalChannel.SRC_FUNC_TYPE,srcFuncType.getValue());
-        R.Global().publish(MailGlobalChannel.class.getSimpleName(), pushObj.toJson());
+        R.Global().publish(MailGlobalChannel.class.getSimpleName(), pushObj.toJson());*/
     }
 
     public static void sendTargetUsersByMailXmlWithParam(List<String> userList, String mailXmlId, String rewardId, MailType mailType, List<String> paramList, int serverId,MailSrcFuncType srcFuncType) {
@@ -63,45 +64,7 @@ public class MailServicePlus {
         }
     }
 
-    public static void sendAllianceSystemMail(String allianceId, String title, String rewardId, String contents,MailSrcFuncType srcFuncType) {
-        List<String> members = AllianceService.selectAllianceMembers(allianceId, null);
-        new BatchMailSend().sendMail(null, members, title, MailType.System, rewardId, System.currentTimeMillis(), contents, false,srcFuncType);
-    }
 
-    public static ISFSObject sendAlliancePersonMail(UserProfile userProfile,String title,String contents,MailSrcFuncType mailSrcFuncType) throws COKException {
-        AllianceMember am = AllianceMember.getWithUid(userProfile.getUid());
-        if(am == null)
-            throw new COKException(GameExceptionCode.ALLIANCE_NOT_EXIST,"alliance not exist"); //TODO: 联盟不存在
-		List<ISFSObject> memberObjList = AllianceService.selectMembersWithRank(userProfile.getAllianceId(), userProfile);
-        List<String> members = AllianceService.selectMembers(memberObjList);
-        new BatchMailSend().sendMail(userProfile.getUid(), members, title, MailType.Alliance_ALL, null, System.currentTimeMillis(), contents, false,MailSrcFuncType.ALLIANCE_PERSON);
-		ISFSObject retObj = new LocalPersonalMailSend().sendOutMail(userProfile.getUid(), userProfile.getUid(), title, MailType.Send.ordinal(), System.currentTimeMillis(), contents,mailSrcFuncType);
-		Map<String, String> function_on = new GameConfigManager("item").getItem("function_on2");
-		ParsePushService.PushTarget exceptTarget = StringUtils.equals("1", function_on.get("k5")) ? null : ParsePushService.PushTarget.IOS;
-		String functionOn = function_on.get("k2");
-		if ("1".equals(functionOn)) {
-			int rank = AllianceMember.getRankById(userProfile.getUid());
-			if (rank > 3) {
-				List<String> params = new LinkedList<>();
-				params.add(userProfile.getName());
-				params.add(contents);
-				ParsePushService.pushByDialogIdWithParam(members, "105672", params, PlayerParsePushInfo.PUSH_TYPE.ALLIANCE, exceptTarget, ParsePushService.ParseStatType.ALLIANCE_MAIL);
-			}
-        }
-		com.geng.gameengine.chat.ChatServerProxy.getInstance().sendMsgToMultiUser(userProfile.getUid(), members,
-                "" + MailType.Alliance_ALL.ordinal(), contents);
-        return retObj;
-    }
-
-    public static void sendAllianceMailByMailXml(String allianceId, String mailXmlId, String rewardId, MailType mailType,MailSrcFuncType mailSrcFuncType) {
-        if (StringUtils.isBlank(allianceId)) return;
-        try {
-            List<String> members = AllianceService.selectAllianceMembers(allianceId, null);
-            new BatchMailSend().sendMailByXml(members, mailXmlId, rewardId, mailType, null,null,mailSrcFuncType);
-        } catch (Exception e){
-            LoggerUtil.getInstance().recordException(e);
-        }
-    }
 
     public static void sendAllianceMailByMailXmlWithParam(String allianceId, String mailXmlId, String rewardId, MailType mailType, List<String> paramList,MailSrcFuncType srcFuncType) {
         sendAllianceMailByMailXmlWithParam(allianceId, mailXmlId, rewardId, mailType, paramList, null,srcFuncType);
@@ -124,15 +87,7 @@ public class MailServicePlus {
         return retInfo;
     }
 
-    public static ISFSObject sendPersonalMail(User sender, String targetUid, String title, MailType mailType, String rewardId, String contents, long createTime,MailSrcFuncType mailSrcFuncType) {
-        ISFSObject ret = new LocalPersonalMailSend().sendMail((String) sender.getProperty("uid"), targetUid, title, mailType.ordinal(), rewardId, createTime, contents,mailSrcFuncType);
-        return  ret;
-    }
 
-    public static ISFSObject sendPersonalMailWithItemFlag(User sender, String targetUid, String title, MailType mailType, String rewardId, String contents, long createTime,MailSrcFuncType mailSrcFuncType) {
-        ISFSObject ret = new LocalPersonalMailSend().sendMail((String) sender.getProperty("uid"), targetUid, title, mailType.ordinal(), rewardId, createTime, contents, true, false, mailSrcFuncType);
-        return  ret;
-    }
 
     public static ISFSObject sendCrossPersonalMailByMailXml(String senderUid, String senderName, String targetUid, int targetServerId, String mailXmlId, MailType mailType, String rewardId, List<String> contentsParam, long createTime,MailSrcFuncType mailSrcFuncType){
         ISFSObject ret = new CrossPersonalMailSend().sendMailByMailXml(senderUid, senderName, targetUid, mailXmlId, mailType.ordinal(), targetServerId, rewardId, createTime, contentsParam, mailSrcFuncType);
@@ -310,26 +265,7 @@ public class MailServicePlus {
 		}
 	}
 
-    public static Mail getWholeServerMail(String targetUid, String title, String rewardStr, String contents, int mailType, String updateVersion, int reply, int like,
-                                          int itemIdFlag, long createTime,String activationCode, int mbLevel,MailSrcFuncType mailSrcFuncType) {
-        if (contents == null) {
-            contents = "";
-        }
-        if (StringUtils.isNotBlank(activationCode)) {
-            contents += "\r\n" + activationCode;
-        }
-        boolean isDialog = itemIdFlag == 1;
-        MailType sendType = MailType.get(mailType);
-        Mail mail = new Mail(GameService.getGUID(), null, targetUid, title, rewardStr, createTime, contents, sendType, 0, isDialog, "", mbLevel,mailSrcFuncType);
-        mail.setReply(reply + (like << 2));
-        if (sendType != null && sendType == MailType.UpNotice) {
-            if (StringUtils.isBlank(updateVersion)) {
-                updateVersion = "1.0.0";
-            }
-            mail.setFromuser(updateVersion);
-        }
-        return mail;
-    }
+
 
     public static String getRewardIdByMailId(String mailId) {
         Map<String, String> mailXml = new GameConfigManager("mail").getItem(mailId);
@@ -360,10 +296,7 @@ public class MailServicePlus {
         return transContentsObj(contents, mType, appVersion, false, null, null);
     }
 
-    public static ISFSObject transContentsObj(Mail mail, String appVersion, String lang){
 
-        return transContentsObj(mail.getContentsStr(), mail.getType(), appVersion, true, lang, mail.getTranslationId());
-    }
 
     public static ISFSObject transContentsObj(String contents, int mType, String appVersion, boolean isTranslate, String lang, String translationId) {
         ISFSObject mailObj;
@@ -515,159 +448,12 @@ public class MailServicePlus {
         return userObj;
     }
 
-    public static void pushGMMail(Mail mailItem) {
 
+    public static Map<String, Map<String, String>> getUserPicMap(Set<String> allFromUser) {
+        return null;
     }
 
     public static Map<String, Map<String, String>> getFromUserMap(List<Mail> mailList) {
-        Set<String> fromUserSet = new HashSet<>();
-        if (mailList != null) {
-            for (Mail mailItem : mailList) {
-                if (mailItem.getType() == MailType.Personal.ordinal() || mailItem.getType() == MailType.Send.ordinal() || mailItem.getType() == MailType.Alliance_ALL.ordinal()
-                        || mailItem.getType() == MailType.AllianceInvite.ordinal() || mailItem.getType() == MailType.AllianceApply.ordinal()
-                        || mailItem.getType() == MailType.Detect.ordinal() || mailItem.getType() == MailType.TradeResource.ordinal()
-                        || mailItem.getType() == MailType.ModPersonal.ordinal() || mailItem.getType() == MailType.ModSend.ordinal()
-                        || mailItem.getType() == MailType.InviteMovePoint.ordinal() || mailItem.getType() == MailType.KickAllianceUser.ordinal()
-                        || mailItem.getType() == MailType.GIFT.ordinal() || mailItem.getType() == MailType.GIFT_EXCHANGE.ordinal() || mailItem.getType() == MailType.GIFT_ALLIANCE.ordinal()
-                        || mailItem.getType() == MailType.RefuseAllianceApply.ordinal()) {
-                    if (!StringUtils.isBlank(mailItem.getFromuser())) {
-                        fromUserSet.add(mailItem.getFromuser());
-                    }
-                }
-            }
-        }
-        Map<String, Map<String, String>> userPicMap = getUserPicMap(fromUserSet);
-        return userPicMap;
+        return null;
     }
-
-    public static Map<String, String> getUserPicMap(String userUid) {
-        Set<String> uidSet = new HashSet<>();
-        uidSet.add(userUid);
-        Map<String, Map<String, String>> infoMap = getUserPicMap(uidSet);
-        return infoMap != null ? infoMap.get(userUid) : null;
-    }
-
-    public static Map<String, Map<String, String>> getUserPicMap(Set<String> fromUserSet) {
-        Map<String, Integer> uidServerMap = new SharedUserService().getServerId(fromUserSet);
-        List<String> crossServerUidList = new ArrayList<>();
-        Iterator<String> iterator = fromUserSet.iterator();
-        while(iterator.hasNext()) {
-            String uid = iterator.next();
-            int server = Constants.SERVER_ID;
-            if(uidServerMap.containsKey(uid)) {
-                server = uidServerMap.get(uid);
-            }
-            if(!SharedUserService.isCurrServer(server)) {
-                crossServerUidList.add(uid);
-                iterator.remove();
-            }
-        }
-        Map<String, Map<String, String>> userPicMap = new HashMap<>();
-        if(!crossServerUidList.isEmpty()) {
-            Map<String, SharedUserInfo> crossUserInfoMap = new SharedUserService().getSharedUserInfoList(crossServerUidList, true);
-            for(Map.Entry<String, SharedUserInfo> entry : crossUserInfoMap.entrySet()) {
-                SharedUserInfo sharedUserInfo = entry.getValue();
-                Map<String, String> userInfoMap = new HashMap<>();
-                userInfoMap.put("pic", sharedUserInfo.getPic());
-                userInfoMap.put("picVer", String.valueOf(sharedUserInfo.getPicVer()));
-                userInfoMap.put("uid", sharedUserInfo.getUid());
-                userInfoMap.put("name", sharedUserInfo.getName());
-                userInfoMap.put("lang", sharedUserInfo.getLang());
-                userInfoMap.put("abbr", sharedUserInfo.getAllianceAbbrName());
-                userPicMap.put(entry.getKey(), userInfoMap);
-            }
-        }
-        ISFSArray userProfileResult = UserProfileDao.selectManyWithAllianceAbbr(fromUserSet);
-        for (int index = 0; index < userProfileResult.size(); index++) {
-            ISFSObject userObj = userProfileResult.getSFSObject(index);
-            if (!StringUtils.isBlank(userObj.getUtfString("name"))) {
-                Map<String, String> userInfo = new HashMap<>();
-                userInfo.put("uid", userObj.getUtfString("uid"));
-                userInfo.put("name", userObj.getUtfString("name"));
-                if(userObj.containsKey("pic"))
-                    userInfo.put("pic", userObj.getUtfString("pic"));
-                if(userObj.containsKey("picVer"))
-                    userInfo.put("picVer", String.valueOf(userObj.getInt("picVer")));
-                userInfo.put("abbr", userObj.getUtfString("abbr"));
-                userInfo.put("lang", userObj.containsKey("lang") ? userObj.getUtfString("lang") : "");
-                userPicMap.put(userObj.getUtfString("uid"), userInfo);
-            }
-        }
-        return userPicMap;
-    }
-
-
-    /**
-     * 跨服迁城时清除花冠数据发补偿邮件
-     * @param session
-     */
-    public static void saveRoseCrownMail(String uid, int num, SqlSession session){
-        if(num <= 0){
-            return;
-        }
-        Map<String, String> mailXml = new GameConfigManager("mail").getItem("111660");
-        int everyCount = Integer.parseInt(new GameConfigManager("item").getItem("rose_crown").get("k8"));
-        num *= everyCount;
-        String title = mailXml.get("title");
-        String contents = mailXml.get("message");
-        String rewardStr = "food,0," + num + "|wood,0," + num;
-        String typeInXml = mailXml.get("type");
-        MailType mailType;
-        //尝试从mail.xml配置文件中读取type属性来设定mailType
-        if (StringUtils.isBlank(typeInXml)) {
-            mailType = MailType.SysNotice;
-        } else {
-            int mailTypeIndex = Integer.parseInt(typeInXml);
-            //设定的值在MailType的范围内
-            if (mailTypeIndex >= 0 && mailTypeIndex < MailType.values().length) {
-                mailType = MailType.get(mailTypeIndex);
-            } else {
-                mailType = MailType.System;
-            }
-        }
-
-        boolean itemIdFlag = (mailType == MailType.GIFT_EXCHANGE) ? false : true;
-        Mail mailItem = new Mail(GameService.getGUID(), null, uid, title, rewardStr, System.currentTimeMillis(), contents, mailType, 0, itemIdFlag, null, 0,MailSrcFuncType.ROSE_CROWN);
-        session.getMapper(MailMapper.class).insert(mailItem);
-    }
-    public static void saveMailByXmlWithoutUpdate(String uid, String mailXmlId, String rewardId, MailType mailType, List<String> params, SqlSession session){
-        Map<String, String> mailXml = new GameConfigManager("mail").getItem(mailXmlId);
-        if (mailXml == null || mailXml.isEmpty()) {
-            return ;
-        }
-        String sender = mailXml.get("sender");
-        String title = mailXml.get("title");
-        String contents = mailXml.get("message");
-        if (params != null && params.size() > 0) {
-            String delimeter = "|";
-            String param = StringUtils.join(params, delimeter);
-            contents = contents + delimeter + param;
-        }
-        String reward;
-        if (StringUtils.isBlank(rewardId)) {
-            reward = mailXml.get("reward");
-        } else {
-            reward = rewardId;
-        }
-        if (mailType == null) {
-            String typeInXml = mailXml.get("type");
-            //尝试从mail.xml配置文件中读取type属性来设定mailType
-            if (StringUtils.isBlank(typeInXml)) {
-                mailType = MailType.SysNotice;
-            } else {
-                int mailTypeIndex = Integer.parseInt(typeInXml);
-                //设定的值在MailType的范围内
-                if (mailTypeIndex >= 0 && mailTypeIndex < MailType.values().length) {
-                    mailType = MailType.get(mailTypeIndex);
-                } else {
-                    mailType = MailType.System;
-                }
-            }
-        }
-
-        boolean itemIdFlag = (mailType == MailType.GIFT_EXCHANGE) ? false : true;
-        Mail mailItem = new Mail(GameService.getGUID(), sender, uid, title, reward, System.currentTimeMillis(), contents, mailType, 0, itemIdFlag, null, 0,MailSrcFuncType.MOVE_CITY_LOST);
-        session.getMapper(MailMapper.class).insert(mailItem);
-    }
-
 }

@@ -6,6 +6,8 @@ import com.geng.puredb.model.UserProfile;
 import com.geng.service.AccountService;
 import com.geng.utils.CommonUtils;
 import com.geng.utils.Constants;
+import com.geng.utils.SFSMysql;
+import com.google.common.base.Joiner;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
@@ -782,5 +784,5 @@ public class GlobalDBProxy {
         }
 
         return retObj;
-    }*/
+    }
 }

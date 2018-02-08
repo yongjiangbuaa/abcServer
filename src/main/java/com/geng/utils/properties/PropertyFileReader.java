@@ -41,5 +41,11 @@ public class PropertyFileReader {
     }
 
 
+    public static String getRealTimeItem(String s) {
+        return null;
+    }
 
+    public static boolean getRealBooleanItem(String mail_translation, String aTrue) {
+        return false;
+    }
 }

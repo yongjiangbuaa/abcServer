@@ -11,8 +11,8 @@ import com.geng.exceptions.COKException;
 import com.geng.exceptions.ExceptionMonitorType;
 import com.geng.exceptions.GameExceptionCode;
 import com.geng.gameengine.account.AccountDeviceMapping;
-//import com.geng.gameengine.cross.SharedUserInfo;
-//import com.geng.gameengine.cross.SharedUserService;
+import com.geng.gameengine.cross.SharedUserInfo;
+import com.geng.gameengine.cross.SharedUserService;
 //import com.geng.gameengine.friend.FriendManager;
 import com.geng.gameengine.login.COKLoginExceptionType;
 import com.geng.gameengine.login.LoginInfo;
@@ -228,16 +228,16 @@ public class UserService {
      *
      * @return
      */
-    private static UserProfile register(LoginInfo loginInfo, String ipAddress) throws SFSException {
-        SqlSession session = MyBatisSessionUtil.getInstance().getBatchSession();
+    private static UserProfile register(LoginInfo loginInfo, String ipAddress) throws COKException {
+        SqlSession session = MyBatisSessionUtil.getInstance().getBatchSession(1);
         UserProfile userProfile = null;
         try {
-            userProfile = UserProfile.newInstance(session, loginInfo)
-                    .onRegister(session);
+//            userProfile =  UserProfile.newInstance(session, loginInfo)
+//                    .onRegister(session);
 //            StatReg.writelog(userProfile, session, loginInfo, ipAddress);
 //            StatAf.writelog(userProfile, session, loginInfo);
-            session.commit();
-            userProfile.setLoginInfo(loginInfo);
+//            session.commit();
+//            userProfile.setLoginInfo(loginInfo);
             UserService.insertGlobalAccount(userProfile);
             AccountDeviceMapping.addMapping(userProfile.getUid(), loginInfo.getDeviceId(), AccountDeviceMapping.AccountDeviceMappingType.REGISTER);
 //            UserService.insertPhoneStatInfo(userProfile);
@@ -245,7 +245,7 @@ public class UserService {
         } catch (Exception e) {
             session.rollback();
             COKLoggerFactory.monitorException(loginInfo.toString(), ExceptionMonitorType.REGISTER, COKLoggerFactory.ExceptionOwner.COMMON, e);
-            throw new SFSException(e);
+            throw new COKException(GameExceptionCode.INVALID_OPT,"register error");
         } finally {
             session.close();
             session = null; //huangyuanqiang
@@ -446,7 +446,7 @@ public class UserService {
 //                SFSMysql.getInstance().updateCrossServer(Integer.parseInt(server), "update userprofile set banTime = 0 where uid = ?", gameUid);
                 AccountDeviceMapping.addMapping(gameUid, userProfile.getDeviceId(), AccountDeviceMapping.AccountDeviceMappingType.CHANGE);
             } else {
-                LoggerUtil.getInstance().logBySFS(ExtensionLogLevel.WARN, String.format("[%s] bind account, but %s is not int servers", userProfile.getUid(), server));
+                LoggerUtil.getInstance().logBySFS(String.format("[%s] bind account, but %s is not int servers", userProfile.getUid(), server));
             }
         } else if (alreadyBindServer.size() > 0 && optType == 3) {
             ISFSObject record = alreadyBindServer.getSFSObject(0);
@@ -462,7 +462,7 @@ public class UserService {
             } else if( type.equals("AppStore")){
                 insertGlobalAccount(userProfile, accountName, Constants.SERVER_ID);
             } else {
-                LoggerUtil.getInstance().logBySFS(ExtensionLogLevel.WARN, "");
+                LoggerUtil.getInstance().logBySFS( "");
             }
         } else if (optType == 1) {
             AccountService.updateGlobalAccountByType(userProfile.getUid(), type, account, accountName, pass);
@@ -543,7 +543,7 @@ public class UserService {
         int moveOutTimes = StringUtils.isBlank(deviceMoveOutTimes) ? 0 :Integer.parseInt(deviceMoveOutTimes);
         if ((deviceBindTimes + moveOutTimes) >= Integer.parseInt(new GameConfigManager("item").getItem("account").get("k1"))) {
             if(!hasValidServer(accountUidArray)){
-                throw new COKException(GameExceptionCode.ACCOUNT_TOO_MUCH_IN_SERVER, "account too much");
+                throw new COKException(GameExceptionCode.INVALID_OPT, "account too much");
             }
             type = 2;
         }
@@ -551,7 +551,7 @@ public class UserService {
 //        RedisSession rs = new RedisSession(true);
         R.Local().hSet("NEW_ACCOUNT_RECORD", userProfile.getDeviceId(), "true"); //用户走注册流程时stat_reg中为1（开启新游戏）
         userProfile.setParseRegisterId(null);
-        userProfile.update(false);
+        userProfile.update();
     }
 
     public static void changeNewName(UserProfile userProfile, String oldNickName, String nickName) throws COKException {
@@ -565,7 +565,7 @@ public class UserService {
         if (!success) {
             throw new COKException(GameExceptionCode.INVALID_OPT);
         }
-        userProfile.update(false);
+        userProfile.update();
 
         try {
            /* if(userProfile.getLoverKeepsakeManager() != null) {
@@ -584,7 +584,7 @@ public class UserService {
     public static void updateGaid(UserProfile userProfile, String gaid) {
         String oldGaid = userProfile.getGaid();
         userProfile.setGaid(gaid);
-        userProfile.update(false);
+        userProfile.update();
         GlobalDBProxy.updateAccountByType(userProfile.getUid(), GlobalDBProxy.MAPPING_TYPE.gaid, gaid, null, oldGaid);
     }
 

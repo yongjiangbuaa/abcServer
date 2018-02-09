@@ -1,10 +1,10 @@
 package com.geng.puredb.model;
 
-import com.elex.cok.gameengine.login.LoginInfo;
-import com.elex.cok.utils.CommonUtils;
-import com.elex.cok.utils.DateUtils;
-import com.elex.cok.utils.SFSMysql;
-import com.elex.cok.utils.bcde.BCDEUtil;
+import com.geng.gameengine.login.LoginInfo;
+import com.geng.utils.CommonUtils;
+import com.geng.utils.DateUtils;
+import com.geng.utils.SFSMysql;
+//import com.geng.utils.bcde.BCDEUtil;
 import com.geng.utils.SFSMysql;
 import org.apache.commons.lang.StringUtils;
 

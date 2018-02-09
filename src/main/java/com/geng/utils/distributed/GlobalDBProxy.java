@@ -1,14 +1,15 @@
 package com.geng.utils.distributed;
 
-import com.geng.core.data.*;
+import com.geng.gameengine.AccountService;
 import com.geng.gameengine.login.LoginInfo;
 import com.geng.puredb.model.UserProfile;
-import com.geng.service.AccountService;
 import com.geng.utils.CommonUtils;
 import com.geng.utils.Constants;
 import com.geng.utils.SFSMysql;
-import com.google.common.base.Joiner;
-import org.apache.commons.lang3.StringUtils;
+import com.google.api.client.repackaged.com.google.common.base.Joiner;
+import com.google.common.base.Optional;
+import com.geng.core.data.*;
+import org.apache.commons.lang.StringUtils;
 
 import java.util.*;
 
@@ -202,7 +203,7 @@ public class GlobalDBProxy {
         return weakBindMap.keySet().contains(pf);
     }
 
-/*    public static boolean insertGlobalAccount(UserProfile userProfile, String googleAccount, String facebookAccount, String facebookAccountName, String gcName, int serverId) {
+    public static boolean insertGlobalAccount(UserProfile userProfile, String googleAccount, String facebookAccount, String facebookAccountName, String gcName, int serverId) {
         String gameUid = userProfile.getUid();
         List<SqlParamsObj> sqlParamsObjList = new ArrayList<>();
         List<String> accountFields = new ArrayList<>(Arrays.asList("uuid", "gameUid", "server", "deviceId"));
@@ -288,22 +289,22 @@ public class GlobalDBProxy {
         sb.append(")");
         sqlParamsObjList.add(0, new SqlParamsObj(sb.toString(), accountParams.toArray()));
         return SFSMysql.getInstance().executeUpdateGlobalWithTransaction(sqlParamsObjList);
-    }*/
+    }
 
     //自动绑定的渠道不允许start new game
     public static boolean canStartNewGame(String uid) {
         //由于渠道数量太多，取消bindlist的判断
-//        ISFSArray bindInfo = getAccountBindInfo(uid, null, MAPPING_TYPE.multiPlatformList);
-//        if (bindInfo.size() > 0) {
-//            return false;
-//        }
+        ISFSArray bindInfo = getAccountBindInfo(uid, null, MAPPING_TYPE.multiPlatformList);
+        if (bindInfo.size() > 0) {
+            return false;
+        }
         return true;
     }
 
     /**
      * 查看玩家绑定的账号
-     * @param
-     * @param  ①为null，表示不分pf ②不为null且有值，根据需要查询相关数据
+     * @param uid
+     * @param bindPfList ①为null，表示不分pf ②不为null且有值，根据需要查询相关数据
      * @return
      */
     public static ISFSArray getAccountBindInfo(String uid, List<String> bindPfList, List<String> nonBindPfList) {
@@ -350,10 +351,10 @@ public class GlobalDBProxy {
     }
 
     public static boolean checkAccountBind(String uid, String bindPf, String bindId) {
-//        String sql = "select * from userbindmapping where mappingType = ? and mappingValue = ? and gameUid = ? ";
-//        ISFSArray bindInfoArray = SFSMysql.getInstance().queryGlobal(sql, new Object[]{getRealBindPf(bindPf), bindId, uid});
-//        if (bindInfoArray.size() > 0)
-//            return true;
+        String sql = "select * from userbindmapping where mappingType = ? and mappingValue = ? and gameUid = ? ";
+        ISFSArray bindInfoArray = SFSMysql.getInstance().queryGlobal(sql, new Object[]{getRealBindPf(bindPf), bindId, uid});
+        if (bindInfoArray.size() > 0)
+            return true;
         return false;
     }
 

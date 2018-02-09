@@ -11,16 +11,16 @@ import com.geng.exceptions.COKException;
 import com.geng.exceptions.ExceptionMonitorType;
 import com.geng.exceptions.GameExceptionCode;
 import com.geng.gameengine.account.AccountDeviceMapping;
-import com.geng.gameengine.cross.SharedUserInfo;
-import com.geng.gameengine.cross.SharedUserService;
-import com.geng.gameengine.friend.FriendManager;
+//import com.geng.gameengine.cross.SharedUserInfo;
+//import com.geng.gameengine.cross.SharedUserService;
+//import com.geng.gameengine.friend.FriendManager;
 import com.geng.gameengine.login.COKLoginExceptionType;
 import com.geng.gameengine.login.LoginInfo;
 import com.geng.gameengine.mail.MailServicePlus;
 import com.geng.gameengine.mail.MailSrcFuncType;
-import com.geng.gameengine.world.finalize.WorldClearDeadAccountTask;
-import com.geng.handlers.requesthandlers.mod.common.ModService;
-import com.geng.puredb.dao.UserProfileDao;
+//import com.geng.gameengine.world.finalize.WorldClearDeadAccountTask;
+//import com.geng.handlers.requesthandlers.mod.common.ModService;
+//import com.geng.puredb.dao.UserProfileDao;
 import com.geng.puredb.model.*;
 import com.geng.utils.*;
 import com.geng.utils.distributed.GlobalDBProxy;
@@ -29,14 +29,14 @@ import com.geng.utils.myredis.R;
 import com.geng.utils.properties.PropertyFileReader;
 import com.geng.utils.xml.GameConfigManager;
 import com.google.common.base.Optional;
-import com.geng.core.User;
+//import com.geng.core.User;
 import com.geng.core.data.ISFSArray;
 import com.geng.core.data.ISFSObject;
 import com.geng.core.data.SFSObject;
-import com.smartfoxserver.v2.exceptions.SFSException;
-import com.smartfoxserver.v2.exceptions.SFSLoginException;
-import com.smartfoxserver.v2.extensions.ExtensionLogLevel;
-import com.geng.gameengine.login.LoginStrategy;
+//import com.smartfoxserver.v2.exceptions.SFSException;
+//import com.smartfoxserver.v2.exceptions.SFSLoginException;
+//import com.smartfoxserver.v2.extensions.ExtensionLogLevel;
+//import com.geng.gameengine.login.LoginStrategy;
 import org.apache.commons.lang.StringUtils;
 import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
@@ -100,23 +100,26 @@ public class UserService {
      *
      * @throws
      */
-    public static UserProfile handleLogin(User user, LoginInfo loginInfo, String address) throws SFSException {
+//    public static UserProfile handleLogin(User user, LoginInfo loginInfo, String address) throws SFSException {
+    public static UserProfile handleLogin(LoginInfo loginInfo, String address) throws COKException {
         UserProfile userProfile;
         String gameUid = loginInfo.getGameUid();
         boolean isRegister = false;
         if (StringUtils.isBlank(gameUid)) {
             isRegister = true;
             if(SwitchConstant.ResourceDealerRegisterFilter.isSwitchOpen()) {
-                filterResourceDealerRegister(loginInfo, address);
+//                filterResourceDealerRegister(loginInfo, address);
             }
             userProfile = register(loginInfo, address);
 //            new SharedUserService().updateUserInfo(userProfile);//注册时把其放入resis(gobal),防止在其未退出时其它使用redis查该用户的信息而找不到
         } else {
 //            userProfile = UserProfile.getLoggedUserProfile(gameUid, false, loginInfo);
-//            if (userProfile == null) {
+            userProfile = UserProfile.getWithUid(gameUid);
+            if (userProfile == null) {
+                throw new COKException(GameExceptionCode.UID_NOT_EXIST,"uid not exist!!");
 //                throw new SFSException(String.format("load user:%s error", gameUid));
-//            }
-//            userProfile.setLoginInfo(loginInfo);
+            }
+            userProfile.setLoginInfo(loginInfo);
             synUserProfileProperty(userProfile);
         }
 //        user.setProperty("uid", userProfile.getUid());
@@ -161,51 +164,7 @@ public class UserService {
     }
 
     private static void synUserProfileProperty(UserProfile userProfile) {
-        LoginInfo loginInfo = userProfile.getLoginInfo();
-        if (!StringUtils.isBlank(loginInfo.getClientVersion())) {
-            userProfile.setAppVersion(loginInfo.getClientVersion());
-        }
-        if (!StringUtils.isBlank(loginInfo.getLang())) {
-            String oldLang = userProfile.getLang();
-            userProfile.setLang(loginInfo.getLang());
-            try {
-                if ((userProfile.isModUser())) {
-                    ModFilter.statModOnline(userProfile.getLang(), userProfile.getUid());
-                    if (!loginInfo.getLang().equalsIgnoreCase(oldLang)) {
-                        // mod2级或mod5级，并且语言发生变更的时候，需要更新global中的mod表中的语言
-                        ModService.updateGlobalMod(userProfile);
-                    }
-                }
-            } catch (Exception ex) {
-                logger.error("{} login, update mod lang error", userProfile.getUid());
-            }
-        }
-        userProfile.setLastLoginTime(System.currentTimeMillis());
-        userProfile.setLastOnlineTime(System.currentTimeMillis());
 
-        if (!StringUtils.isBlank(loginInfo.getGmail())) {
-            userProfile.setGmail(loginInfo.getGmail());
-        }
-        if (StringUtils.isNotBlank(loginInfo.getPf())) {
-            userProfile.setPf(loginInfo.getPf());
-        }
-        if (StringUtils.isNotBlank(loginInfo.getDeviceId())) {
-            userProfile.setDeviceId(loginInfo.getDeviceId());
-        }
-        userProfile.setCurGaid(loginInfo.getGaid());
-        userProfile.setLoginInfo(loginInfo);
-        userProfile.update(false);
-
-        UserLord userLord = userProfile.getUserLord();
-        int oldHDLogin = userLord.getIsHDLogin();
-        int newHDLogin = loginInfo.isHDLogin() ? 1 : 0;
-        if (oldHDLogin != newHDLogin) {
-            userLord.setIsHDLogin(newHDLogin);
-            userLord.updateHDLogin();
-        }
-        if(loginInfo != null && !loginInfo.isWebClient()) {
-            AccountDeviceMapping.repair(userProfile.getUid(), userProfile.getDeviceId());
-        }
     }
 
     public static void updateIOSPlayerDeviceId(UserProfile userProfile, ISFSObject loginRetObj) {
@@ -264,15 +223,7 @@ public class UserService {
             R.Local().hsetnx(loginInfoKey, userProfile.getUid(), info.toJson());
         }
     }
-    /**
-     * 过滤资源商的非法注册
-     * 规则：在一个小时之内，同一个ip的注册人数超过20，立即封停该ip（禁止ip再次建号），并且将问题当日该ip注册的账号封停。
-     * @param address
-     */
-    public static void filterResourceDealerRegister(LoginInfo loginInfo, String address) throws SFSLoginException {
-
-    }
-    /**
+        /**
      * 处理用户注册
      *
      * @return
@@ -283,13 +234,13 @@ public class UserService {
         try {
             userProfile = UserProfile.newInstance(session, loginInfo)
                     .onRegister(session);
-            StatReg.writelog(userProfile, session, loginInfo, ipAddress);
-            StatAf.writelog(userProfile, session, loginInfo);
+//            StatReg.writelog(userProfile, session, loginInfo, ipAddress);
+//            StatAf.writelog(userProfile, session, loginInfo);
             session.commit();
             userProfile.setLoginInfo(loginInfo);
             UserService.insertGlobalAccount(userProfile);
             AccountDeviceMapping.addMapping(userProfile.getUid(), loginInfo.getDeviceId(), AccountDeviceMapping.AccountDeviceMappingType.REGISTER);
-            UserService.insertPhoneStatInfo(userProfile);
+//            UserService.insertPhoneStatInfo(userProfile);
             userProfile.setLastUpdateTime();
         } catch (Exception e) {
             session.rollback();
@@ -306,8 +257,8 @@ public class UserService {
                     if (normalRegister == null) {
 //                        new NPCPlayer(userProfile);
                         R.Local().hincrBy(Constants.TEST_SERVER_REGISTER_COUNT_DAILY, String.valueOf(Constants.SERVER_ID), 1);
-                        userProfile.getAchievementManager().addNewOnStrongHolderLevel();
-                        userProfile.getAchievementManager().triggerAchievements(null);
+//                        userProfile.getAchievementManager().addNewOnStrongHolderLevel();
+//                        userProfile.getAchievementManager().triggerAchievements(null);
                     }
                 } catch (Exception e) {
                     logger.error("set npc player error", e);
@@ -355,12 +306,12 @@ public class UserService {
         int level = 0;
         long power = 0;
         int picVer = 0 ;
-        if (userProfile != null && userProfile.getPlayerInfo() != null) {
+        if (userProfile != null ){//&& userProfile.getPlayerInfo() != null) {
             name = userProfile.getName();
             level = userProfile.getLevel();
             pic = userProfile.getPic();
             picVer = userProfile.getPicVer();
-            power = userProfile.getPlayerInfo().getPower();
+            power = 0;//userProfile.getPlayerInfo().getPower();
             Optional<String> optionalAllianceName = userProfile.getAllianceSimpleName();
             if (optionalAllianceName.isPresent()) {
                 allianceSimpleName = optionalAllianceName.get();
@@ -400,7 +351,7 @@ public class UserService {
         return nppObj;
     }
 
-    public static Optional<SharedUserInfo> selectUserNamePicAndPower(String uid) {
+    /*public static Optional<SharedUserInfo> selectUserNamePicAndPower(String uid) {
         Integer serverId = SharedUserService.selectServerId(uid).orNull();
         if(serverId == null) {
             return Optional.absent();
@@ -439,7 +390,7 @@ public class UserService {
                                     loginInfo.getPhone_width(),
                                     loginInfo.getPhone_height()});
         }
-    }
+    }*/
 
     /**
      * 绑定账号
@@ -520,10 +471,10 @@ public class UserService {
                 String serverMail = "test@gmail.com";
                 String contents = "http://10.1.5.59:8080/gameservice/email/confirm?login=" + account + "&id=" + userProfile.getUid();
                 String title = "COK-MailBind-Test";
-                EmailUtil.sendEmail(serverMail, account, title, contents, true);
+//                EmailUtil.sendEmail(serverMail, account, title, contents, true);
             }
             if (type.equals("facebook")) {
-                FriendManager.getInstance().bindFaceBook(userProfile, account);
+//                FriendManager.getInstance().bindFaceBook(userProfile, account);
             }
             AccountService.sendRewardForFirstBindUser(userProfile, type);
         } else if (optType == 2) {
@@ -617,12 +568,12 @@ public class UserService {
         userProfile.update(false);
 
         try {
-            if(userProfile.getLoverKeepsakeManager() != null) {
+           /* if(userProfile.getLoverKeepsakeManager() != null) {
                 userProfile.getLoverKeepsakeManager().afterChangeNewName(nickName);
             }
             if(userProfile.getPuzzleManager() != null) {
                 userProfile.getPuzzleManager().afterChangeNewName(nickName);
-            }
+            }*/
         } catch (Exception e) {
             logger.error("change lover name error");
             COKLoggerFactory.monitorException("update puzzle cash sender name or lover name error", ExceptionMonitorType.OTHER, COKLoggerFactory.ExceptionOwner.SP, e);
@@ -789,7 +740,7 @@ public class UserService {
     }
 
     private static boolean hasValidServer(ISFSArray accountUidArray){
-        if(accountUidArray == null || accountUidArray.size() == 0)  return true;
+       /* if(accountUidArray == null || accountUidArray.size() == 0)  return true;
         Map<String, Integer> serverRatioMap = new SharedUserService().getServerListRatio();
         if(serverRatioMap == null || serverRatioMap.size() == 0)    return true;
         Map<Integer, Integer> serverAccountNum = new HashMap<>();
@@ -814,7 +765,7 @@ public class UserService {
                 ret = true;
                 break;
             }
-        }
-        return ret;
+        }*/
+        return true;
     }
 }

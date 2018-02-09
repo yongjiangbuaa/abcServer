@@ -540,4 +540,21 @@ public class UserProfile {
     public void setLastLoginTime(long l) {
 
     }
+
+    public void setLoginInfo(LoginInfo loginInfo) {
+
+    }
+
+
+    public long getLoginTime() {
+        return 0;
+    }
+
+    public static String selectName(String uid) {
+        return null;
+    }
+
+    public void setLastUpdateTime() {
+
+    }
 }

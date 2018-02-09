@@ -1326,6 +1326,10 @@ public final class CommonUtils {
 		}
 	}
 
+    public static String makeMD5(String pass) {
+	    return "";
+    }
+
     /**
      * 合并奖励(数目相加)
      * @param totalReward

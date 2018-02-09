@@ -5,10 +5,9 @@
 package com.geng.gameengine;
 
 import com.geng.core.GameEngine;
-import com.geng.gameengine.friend.FriendManager;
+//import com.geng.gameengine.friend.FriendManager;
 import com.geng.gameengine.mail.MailServicePlus;
 import com.geng.gameengine.mail.MailSrcFuncType;
-import com.geng.puredb.model.UserLord;
 import com.geng.puredb.model.UserProfile;
 import com.geng.utils.CommonUtils;
 import com.geng.utils.Constants;
@@ -98,11 +97,11 @@ public class AccountService {
      * @param userInfoObj
      */
     public static boolean toBindInfo(UserProfile userProfile, ISFSObject userInfoObj) {
-        UserLord lord  = userProfile.getUserLord();
-        String uid = lord.getUid();
+//        UserLord lord  = userProfile.getUserLord();
+        String uid = userProfile.getUid();
         String bindType = null;
         boolean isBind = false;
-        ISFSObject bindObj = getUserBindStatus(uid);
+        ISFSObject bindObj = getUserBindStatus(userProfile.getUid());
         if (!StringUtils.isBlank(bindObj.getUtfString("googleAccount"))) {
             bindType = "google";
             isBind = true;
@@ -164,10 +163,10 @@ public class AccountService {
             }
         }
         userInfoObj.putBool("bindFlag", bindType != null);
-        if (bindType != null && !lord.isAcceptFirstBindAccountReward()) {
+        if (bindType != null ){//&& !lord.isAcceptFirstBindAccountReward()) {
             sendRewardForFirstBindUser(userProfile, bindType);
         }
-        userInfoObj.putUtfString("bindShareStatus", lord.getFirstBindShareRewardStatusInfo());
+//        userInfoObj.putUtfString("bindShareStatus", lord.getFirstBindShareRewardStatusInfo());
         String accountName = bindObj.getUtfString("gameUserName");
         if(accountName == null || !userProfile.getName().equals(accountName)) {
             GlobalDBProxy.updateAccountByType(uid, GlobalDBProxy.MAPPING_TYPE.name, userProfile.getName(), null, accountName);

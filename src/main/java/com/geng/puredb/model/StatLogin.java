@@ -5,6 +5,7 @@ import com.elex.cok.utils.CommonUtils;
 import com.elex.cok.utils.DateUtils;
 import com.elex.cok.utils.SFSMysql;
 import com.elex.cok.utils.bcde.BCDEUtil;
+import com.geng.utils.SFSMysql;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.Calendar;
@@ -37,7 +38,7 @@ public class StatLogin extends StatLoginKey {
 	}
 
 	public static Long writelog(UserProfile userProfile, String ip){
-		if(ip == null && userProfile.getSfsUser() != null && userProfile.getSfsUser().getIpAddress() != null){
+		/*if(ip == null && userProfile.getSfsUser() != null && userProfile.getSfsUser().getIpAddress() != null){
 			ip = userProfile.getSfsUser().getIpAddress();
 		}
 		long now = System.currentTimeMillis();
@@ -94,8 +95,8 @@ public class StatLogin extends StatLoginKey {
 					new Object[]{now, userProfile.getUid(), 0, ip, userProfile.getLevel(), userProfile.getUbManager().getMainBuildingLevel(), userProfile.getPayTotal(),
 							deviceId, userProfile.getRegTime(), statReg.getPf(), statReg.getCountry(), curCountry, curGaid, curDeviceId, appVersion, curIp,curPf,trulyIp});
 		}
-		UserLoginIp.recordLoginIp(userProfile.getUid(), ip);
-		return now;
+		UserLoginIp.recordLoginIp(userProfile.getUid(), ip);*/
+		return System.currentTimeMillis();
 	}
 
 	public static void writeDisconnectLog(UserProfile userProfile){

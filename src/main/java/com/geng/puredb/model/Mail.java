@@ -1,11 +1,17 @@
 package com.geng.puredb.model;
 
-
-import com.geng.core.data.*;
-import com.geng.utils.MyBatisSessionUtil;
-import com.geng.gameengine.mail.*;
+import com.geng.core.ConcurrentLock;
+import com.geng.gameengine.mail.MailFunction;
+import com.geng.gameengine.mail.MailServicePlus;
+import com.geng.gameengine.mail.MailType;
+import com.geng.gameengine.mail.MailSrcFuncType;
+import com.geng.gameengine.mail.send.SystermMailSend;
+import com.geng.gameengine.reward.RewardManager;
 import com.geng.puredb.dao.MailMapper;
 import com.geng.utils.CommonUtils;
+import com.geng.utils.MyBatisSessionUtil;
+import com.geng.core.data.ISFSObject;
+import com.geng.core.data.SFSObject;
 import org.apache.commons.lang.StringUtils;
 import org.apache.ibatis.session.SqlSession;
 
@@ -71,7 +77,7 @@ public class Mail implements Serializable, Comparable<Mail>{
 		retObject.putInt("mbLevel", mailItem.getMbLevel());
 		fillExtraParams(mailItem, retObject);
 		if (mailItem.getType() == MailType.Fight.ordinal()) {
-//			SystermMailSend.addFightMailInfo(mailItem, retObject);
+			SystermMailSend.addFightMailInfo(mailItem, retObject);
 		}
 		putPicInfo(retObject, mailItem, userPicMap.get(mailItem.getFromuser()));
 		return retObject;
@@ -162,7 +168,7 @@ public class Mail implements Serializable, Comparable<Mail>{
 		retObject.putInt("type",  MailFunction.serverType2Client(mailItem.getType(), appVersion));
 		retObject.putLong("createTime", mailItem.getCreatetime());
         if(isNeed) {
-            retObject.putUtfString("lastUpdateTime", UserProfile.getLastUpdateInfoTime(mailItem.getTouser()).or(""));
+            retObject.putUtfString("lastUpdateTime", UserProfile.getLastUpdateInfoTime(mailItem.getTouser()));
         }else {
 //            retObject.putUtfString("lastUpdateTime", "0");
         }

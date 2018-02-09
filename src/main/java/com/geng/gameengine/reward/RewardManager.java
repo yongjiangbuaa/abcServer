@@ -8,8 +8,8 @@ import com.geng.core.ConcurrentLock;
 import com.geng.core.GameEngine;
 import com.geng.exceptions.COKException;
 import com.geng.gameengine.*;
-import com.geng.gameengine.activity.RoseCrownActivity;
-import com.geng.gameengine.alliance.AllianceManager;
+//import com.geng.gameengine.activity.RoseCrownActivity;
+//import com.geng.gameengine.alliance.AllianceManager;
 import com.geng.gameengine.mail.MailSrcFuncType;
 import com.geng.puredb.model.*;
 import com.geng.utils.LoggerUtil;
@@ -72,7 +72,7 @@ public class RewardManager {
 
 	public RewardManager(String uid, String rewardId) {
 		this.rewardId = rewardId;
-		userProfile = GameEngine.getInstance().getUserProfile(uid);
+		userProfile = UserProfile.getWithUid(uid);//GameEngine.getInstance().getUserProfile(uid);
 		rewardConfigMap = GameConfigManager.getItem("reward", rewardId);
 		addSafeResource = hasSafeResCfg();
 		awardArr = SFSArray.newInstance();
@@ -295,7 +295,7 @@ public class RewardManager {
 		handleResourceRate(multiple,srcType); //有金币
 		handleWbskill(multiple);
 		if (userProfileUpdate) {
-			userProfile.update(false);
+			userProfile.update();
 		}
 //		if (resourceUpdate) {
 //			userProfile.getUserResource().update();
@@ -343,9 +343,9 @@ public class RewardManager {
 			String itemArray[] = StringUtils.split(exchangeConfigMap.get("item"), '|');
 			for (String item :itemArray){
 				String itemInfo[] = StringUtils.split(item, ';');
-				if (itemInfo[0].equals(GoodsType.OPEN_TRAIN_POS_1.getGoodsId()) || itemInfo[0].equals(GoodsType.OPEN_TRAIN_POS_2.getGoodsId()) || itemInfo[0].equals(GoodsType.OPEN_TRAIN_POS_3.getGoodsId())) {
-					continue;
-				}
+//				if (itemInfo[0].equals(GoodsType.OPEN_TRAIN_POS_1.getGoodsId()) || itemInfo[0].equals(GoodsType.OPEN_TRAIN_POS_2.getGoodsId()) || itemInfo[0].equals(GoodsType.OPEN_TRAIN_POS_3.getGoodsId())) {
+//					continue;
+//				}
 				sbReward.append("goods,").append(itemInfo[0]).append(',').append(itemInfo[1]).append('|');
 			}
 		}
@@ -784,9 +784,9 @@ public class RewardManager {
 				if (itemInfo == null || itemInfo.length < 2) {
 					continue;
 				}
-				if (itemInfo[0].equals(GoodsType.OPEN_TRAIN_POS_1.getGoodsId()) || itemInfo[0].equals(GoodsType.OPEN_TRAIN_POS_2.getGoodsId()) || itemInfo[0].equals(GoodsType.OPEN_TRAIN_POS_3.getGoodsId())) {
-					continue;
-				}
+//				if (itemInfo[0].equals(GoodsType.OPEN_TRAIN_POS_1.getGoodsId()) || itemInfo[0].equals(GoodsType.OPEN_TRAIN_POS_2.getGoodsId()) || itemInfo[0].equals(GoodsType.OPEN_TRAIN_POS_3.getGoodsId())) {
+//					continue;
+//				}
 				int id = Integer.parseInt(itemInfo[0]);
 				int value = Integer.parseInt(itemInfo[1]);
 				if (id < 50) {

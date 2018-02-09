@@ -30,7 +30,7 @@ public class LoggerUtil {
     }
 
     public enum GoodsGetType {
-         LEVEL_UP, BUY;
+         LEVEL_UP, BUY, REWARD_RANDOM;
     }
     public static LoggerUtil getInstance() {
         return LazyHolder.INSTANCE;

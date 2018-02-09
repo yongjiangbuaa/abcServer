@@ -1,7 +1,7 @@
 package com.geng.gameengine.mail.send;
 
 import com.geng.core.GameEngine;
-import com.geng.gameengine.cross.WorldService;
+//import com.geng.gameengine.cross.WorldService;
 import com.geng.gameengine.mail.MailSrcFuncType;
 import com.geng.gameengine.mail.MailType;
 import com.geng.puredb.model.Mail;
@@ -32,11 +32,11 @@ public class CrossPersonalMailSend extends AbstractMailSend {
     }
 
     public ISFSObject sendMail(String senderUid, String targetUid, int targetServerId, String title, int mailType, String rewardId, long createTime, String contents, String senderName, MailSrcFuncType mailSrcFuncType) {
-        WorldService remoteService = GameEngine.getInstance().getRemoteWorldService(targetServerId);
-        boolean flag = remoteService.sendMail(senderUid, targetUid, title, contents, mailType, rewardId, senderName,mailSrcFuncType.getValue());
-        if(!flag) {
-            return null;
-        }
+//        WorldService remoteService = GameEngine.getInstance().getRemoteWorldService(targetServerId);
+//        boolean flag = remoteService.sendMail(senderUid, targetUid, title, contents, mailType, rewardId, senderName,mailSrcFuncType.getValue());
+//        if(!flag) {
+//            return null;
+//        }
         MailType sendType = MailType.Send;
         if (mailType == MailType.ModPersonal.ordinal()) {
             sendType = MailType.ModSend;
@@ -74,11 +74,11 @@ public class CrossPersonalMailSend extends AbstractMailSend {
             reward = rewardId;
         }
 
-        WorldService remoteService = GameEngine.getInstance().getRemoteWorldService(targetServerId);
-        boolean flag = remoteService.sendMail(senderUid, targetUid, title, contents, mailType, reward, senderName,mailSrcFuncType.getValue());
-        if(!flag) {
-            return null;
-        }
+//        WorldService remoteService = GameEngine.getInstance().getRemoteWorldService(targetServerId);
+//        boolean flag = remoteService.sendMail(senderUid, targetUid, title, contents, mailType, reward, senderName,mailSrcFuncType.getValue());
+//        if(!flag) {
+//            return null;
+//        }
         Mail mail = send(targetUid, senderUid, title, MailType.get(mailType), null, createTime, contents, false, true, true, false, null, false,mailSrcFuncType);
         ISFSObject retObj = mailSendReturn(mail, targetUid);
         return retObj;
@@ -118,12 +118,12 @@ public class CrossPersonalMailSend extends AbstractMailSend {
                 }
             }
         }
-        WorldService remoteService = GameEngine.getInstance().getRemoteWorldService(targetServerId);
-        remoteService.sendMail(null, targetUid, title, contents, mailType.ordinal(), reward, sender, mailSrcFuncType.getValue());
+//        WorldService remoteService = GameEngine.getInstance().getRemoteWorldService(targetServerId);
+//        remoteService.sendMail(null, targetUid, title, contents, mailType.ordinal(), reward, sender, mailSrcFuncType.getValue());
     }
 
     public void sendSystemMail(String targetUid,int targetServerId, String title, String contents,String rewardId, MailType mailType, MailSrcFuncType mailSrcFuncType){
-        WorldService remoteService = GameEngine.getInstance().getRemoteWorldService(targetServerId);
-        remoteService.sendMail(null, targetUid, title, contents, mailType.ordinal(), rewardId, null, mailSrcFuncType.getValue());
+//        WorldService remoteService = GameEngine.getInstance().getRemoteWorldService(targetServerId);
+//        remoteService.sendMail(null, targetUid, title, contents, mailType.ordinal(), rewardId, null, mailSrcFuncType.getValue());
     }
 }

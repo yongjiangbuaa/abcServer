@@ -2,15 +2,11 @@ package com.geng.gameengine.mail.send;
 
 import com.geng.core.GameEngine;
 import com.geng.exceptions.ExceptionMonitorType;
-import com.geng.gameengine.ChatService;
-import com.geng.gameengine.cross.CrossKingdomFightManager;
 import com.geng.gameengine.mail.MailFunction;
 import com.geng.gameengine.mail.MailSrcFuncType;
 import com.geng.gameengine.mail.MailType;
-import com.geng.puredb.dao.UserProfileDao;
 import com.geng.puredb.model.Mail;
 import com.geng.puredb.model.MailGroup;
-import com.geng.puredb.model.ServerInfo;
 import com.geng.puredb.model.UserProfile;
 import com.geng.utils.*;
 import com.geng.utils.xml.GameConfigManager;
@@ -111,7 +107,7 @@ public class BatchMailSend extends AbstractMailSend {
 				needQueryUid.add(uid);
 			}
 		}
-		List<UserProfile> queryUserProfileList = UserProfileDao.selectByUidList(needQueryUid);
+		List<UserProfile> queryUserProfileList = null;// UserProfileDao.selectByUidList(needQueryUid);
 		if (queryUserProfileList != null && !queryUserProfileList.isEmpty()) {
 			cacheUserProfileList.addAll(queryUserProfileList);
 		}
@@ -124,7 +120,7 @@ public class BatchMailSend extends AbstractMailSend {
 			if(srcServerId == -1){
 				srcServerId = targetUserProfile.getCrossFightSrcServerId();
 			}
-			if (StringUtils.isNotBlank(senderUid) && MailFunction.isPersonalMail(mailType.ordinal(), targetUserProfile.getAppVersion()) && ChatService.checkShield(targetUserProfile.getUid(), senderUid)) {
+			if (StringUtils.isNotBlank(senderUid) && MailFunction.isPersonalMail(mailType.ordinal(), targetUserProfile.getAppVersion())){// && ChatService.checkShield(targetUserProfile.getUid(), senderUid)) {
 				continue;
 			}
 			if (orignType == MailType.GIFT_ALLIANCE) {
@@ -160,11 +156,10 @@ public class BatchMailSend extends AbstractMailSend {
 		if(serverId == Constants.SERVER_ID) {
 			session = MyBatisSessionUtil.getInstance().getBatchSession(srcServerId);
 		}else {
-			Optional<SqlSession> optional = MyBatisSessionUtil.getInstance().getBatchSession(serverId);
-			if (!optional.isPresent()){
+			 session = MyBatisSessionUtil.getInstance().getBatchSession(serverId);
+			if (null == session){
 				COKLoggerFactory.monitorException(String.format("can not get remote server %s db session", serverId), ExceptionMonitorType.CROSS_KINGDOM_FIGHT, COKLoggerFactory.ExceptionOwner.BSL);
 			}
-			session = optional.get();
 		}
 		try {
 			Mail.insertBatch(insertMailList, session);
@@ -174,10 +169,10 @@ public class BatchMailSend extends AbstractMailSend {
 			}
 			MailGroup.replaceBatch(groupList, session);
 			session.commit();
-			LoggerUtil.getInstance().updateExchangeAllianceLog(orderInfo, 1);
+//			LoggerUtil.getInstance().updateExchangeAllianceLog(orderInfo, 1);
 		} catch (Exception e) {
 			session.rollback();
-			LoggerUtil.getInstance().updateExchangeAllianceLog(orderInfo, 2);
+//			LoggerUtil.getInstance().updateExchangeAllianceLog(orderInfo, 2);
 			throw e;
 		} finally {
 			session.close();
@@ -193,97 +188,7 @@ public class BatchMailSend extends AbstractMailSend {
 		/*
 		*  跨服战活动相关逻辑
 		*/
-		List<String> crossUidList = new ArrayList<>();
-		int crossServerId = -1;
-		//本服是中立服，则需要发给原服的用户,本服查不到的说明在原服，banTime是Long.MAX_VALUE的说明已暂时退出
-		if(GameEngine.getInstance().isCrossFightServer()) {
-			List<String> srcUidList = new ArrayList<>();
-			if (queryUserProfileList != null) {
-				for (UserProfile userProfile : queryUserProfileList) {
-					if (userProfile.getBanTime() != Long.MAX_VALUE) {
-						needQueryUid.remove(userProfile.getUid());
-					}
-				}
-			}
-			srcUidList.addAll(needQueryUid);
-			crossUidList = srcUidList;
-			crossServerId = srcServerId;
-		}
-		//本服在开跨服战，需将邮件推送到跨服战服务器中
-		else if(CrossKingdomFightManager.getInstance().isActivityStart()){
-			List<String> ckfUidList = new ArrayList<>();
-			if(queryUserProfileList != null){
-				for(UserProfile userProfile: queryUserProfileList){
-					if(userProfile.getBanTime() == Long.MAX_VALUE){
-						ckfUidList.add(userProfile.getUid());
-					}
-				}
-			}
-			crossUidList = ckfUidList;
-			crossServerId = ServerInfo.getCrossServerId();
-		}
-		//给跨服战中的原服或中立服发邮件
-		if(!crossUidList.isEmpty() && crossServerId != -1){
-			SqlSession ckfSession;
-			Optional<SqlSession> optional = MyBatisSessionUtil.getInstance().getBatchSession(crossServerId);
-			if (!optional.isPresent()){
-				COKLoggerFactory.monitorException(String.format("can not get remote server %s db session", serverId), ExceptionMonitorType.CROSS_KINGDOM_FIGHT, COKLoggerFactory.ExceptionOwner.BSL);
-				return false;
-			}
-			ckfSession = optional.get();
-			try {
-				Collections.sort(updateMaiList);
-				for (Mail mail : updateMaiList) {
-					mail.setUid(GameService.getGUID());
-					mail.setNewOne(true);
-				}
-				if(!updateMaiList.isEmpty()){
-					insertMailList.addAll(updateMaiList);
-				}
-				List<Mail> crossMailList = new LinkedList<>();
-				List<MailGroup> crossMailGroupList = new LinkedList<>();
-				for(String crossUid: crossUidList){
-					boolean found = false;
-					for(Mail mail: insertMailList){
-						if(crossUid.equals(mail.getTouser())){
-							crossMailList.add(mail);
-							MailGroup group = getMailGroup(mail, "");
-							if(group != null){
-								crossMailGroupList.add(group);
-							}
-							found = true;
-							break;
-						}
-					}
-					if(!found){
-						Mail mail = mailWithoutCheckSum(senderUid, crossUid, title, mailType, rewardId, createTime, contents, itemIdFlag, false, null, isCheckNum, fromName,srctype);
-						afterMail(true, mail, null);
-						if (StringUtils.isNotBlank(this.fromName)){
-							mail.setFromname(this.fromName);
-						}
-						crossMailList.add(mail);
-						MailGroup group = getMailGroup(mail, "1.1.9");
-						if(group != null){
-							crossMailGroupList.add(group);
-						}
-					}
-				}
-				Mail.insertBatch(crossMailList, ckfSession);
-				MailGroup.replaceBatch(crossMailGroupList, ckfSession);
-				ckfSession.commit();
-				if (isPush) {
-					for (Mail mail : crossMailList) {
-						pushMail(mail, senderUid, crossServerId);
-					}
-				}
-			} catch (Exception e) {
-				ckfSession.rollback();
-				LoggerUtil.getInstance().updateExchangeAllianceLog(orderInfo, 2);
-				throw e;
-			} finally {
-				ckfSession.close();
-			}
-		}
+
 		return true;
 	}
 

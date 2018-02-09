@@ -1,6 +1,6 @@
 package com.geng.utils.myredis;
 
-import com.elex.cok.utils.xml.GameConfigManager;
+import com.geng.utils.xml.GameConfigManager;
 import org.apache.commons.lang.StringUtils;
 import redis.clients.jedis.Jedis;
 

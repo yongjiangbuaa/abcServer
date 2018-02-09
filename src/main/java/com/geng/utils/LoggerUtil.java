@@ -22,6 +22,10 @@ public class LoggerUtil {
 
     }
 
+    public void recordMailGiftLog(String uid, String senderUid, String targetUid, byte[] contents, String rewardId, Object o, long createTime) {
+
+    }
+
     public enum GoodsUseType {
     }
 

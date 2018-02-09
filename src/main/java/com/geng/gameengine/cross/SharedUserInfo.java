@@ -1,10 +1,7 @@
 package com.geng.gameengine.cross;
 
-import com.geng.gameengine.StatusService;
-import com.geng.gameengine.UserBuildingManager;
-import com.geng.puredb.model.UserBuilding;
+
 import com.geng.puredb.model.UserProfile;
-import com.geng.puredb.model.UserState;
 import com.geng.utils.Constants;
 import com.geng.utils.MyBatisSessionUtil;
 import com.geng.core.data.ISFSObject;
@@ -49,7 +46,7 @@ public class SharedUserInfo {
         level = userProfile.getLevel();
         picVer = userProfile.getPicVer();
         lang = userProfile.getLang();
-        if(userProfile.getUbManager()!=null) {
+        /*if(userProfile.getUbManager()!=null) {
             mainBuildingLevel =userProfile.getUbManager().getMainBuildingLevel();
         }else{
             SqlSession session = MyBatisSessionUtil.getInstance().getSession();
@@ -62,20 +59,20 @@ public class SharedUserInfo {
         }
         if (userProfile.getPlayerInfo() != null) {
             power = userProfile.getPlayerInfo().getPower();
-        }
+        }*/
         allianceAbbrName = userProfile.getAllianceSimpleName().or("");
         allianceId = userProfile.getAllianceId();
         gmFlag = userProfile.getGmFlag();
         crossFightSrcServerId = userProfile.getCrossFightSrcServerId();
-        vipLevel = userProfile.getUserVIPManager().getVIPLevel();
-        vipEndTime = userProfile.getUserVIPManager().getUserVip().getVipendtime();
+//        vipLevel = userProfile.getUserVIPManager().getVIPLevel();
+//        vipEndTime = userProfile.getUserVIPManager().getUserVip().getVipendtime();
         if(!StringUtils.isBlank(allianceId)){
-            rank = com.geng.puredb.model.AllianceMember.getRankById(uid);
+//            rank = com.geng.puredb.model.AllianceMember.getRankById(uid);
         }
         offLineTime = userProfile.getOffLineTime();
 
         //聊天Avatar皮肤
-        List<UserState> selectChatSkin = UserState.selectSkinByType2(uid, StatusService.MarchStatus.CHATSKIN.getStatusType());
+        /*List<UserState> selectChatSkin = UserState.selectSkinByType2(uid, StatusService.MarchStatus.CHATSKIN.getStatusType());
         if (selectChatSkin.size() > 0) {
             UserState userState = selectChatSkin.get(0);
             stateId =  userState.getStateId();
@@ -83,7 +80,7 @@ public class SharedUserInfo {
         } else {
             stateId = 0;
             stateEndTime = 0;
-        }
+        }*/
     }
 
     public SharedUserInfo(String json) {

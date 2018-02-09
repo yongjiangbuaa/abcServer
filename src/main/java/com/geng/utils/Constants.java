@@ -42,4 +42,5 @@ public class Constants {
     public static final String BIND_FIRST_GOOGLE_MAIL_ID = "";
     public static final String BIND_FIRST_APPSTORE_MAIL_ID = "";
     public static final String BIND_FIRST_VK_MAIL_ID = "";
+    public static final String DEFAULT_USER_PIC = "";
 }

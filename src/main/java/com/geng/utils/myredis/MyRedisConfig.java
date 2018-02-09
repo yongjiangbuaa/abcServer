@@ -1,6 +1,6 @@
 package com.geng.utils.myredis;
 
-import com.elex.cok.utils.properties.PropertyFileReader;
+import com.geng.utils.properties.PropertyFileReader;
 
 /**
  * Created by XuZiHui on 2017/3/20.

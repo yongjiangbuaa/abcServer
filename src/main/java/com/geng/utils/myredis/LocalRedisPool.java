@@ -1,6 +1,6 @@
 package com.geng.utils.myredis;
 
-import com.elex.cok.utils.RedisSessionUtil;
+import com.geng.utils.RedisSessionUtil;
 import redis.clients.jedis.Jedis;
 
 /**

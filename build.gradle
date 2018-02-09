@@ -13,6 +13,7 @@ dependencies {
     compile 'com.google.code.gson:gson:2.8.2'
     compile 'org.springframework:spring-context:4.1.1.RELEASE'
     compile 'org.springframework:spring-jdbc:4.1.1.RELEASE'
+    compile 'redis.clients:jedis:2.6.1'
     compile fileTree(dir: 'lib', include: '*.jar')
 }
 

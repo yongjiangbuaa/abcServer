@@ -1,7 +1,7 @@
 package com.geng.utils.myredis;
 
-import com.elex.cok.utils.RedisSessionUtil;
-import com.elex.cok.utils.properties.PropertyFileReader;
+import com.geng.utils.RedisSessionUtil;
+import com.geng.utils.properties.PropertyFileReader;
 import redis.clients.jedis.Jedis;
 
 /**

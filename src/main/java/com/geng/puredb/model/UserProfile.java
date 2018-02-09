@@ -557,4 +557,8 @@ public class UserProfile {
     public void setLastUpdateTime() {
 
     }
+
+    public String getAllianceId() {
+        return null;
+    }
 }

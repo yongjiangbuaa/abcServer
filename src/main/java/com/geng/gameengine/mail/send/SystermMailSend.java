@@ -3,7 +3,7 @@ package com.geng.gameengine.mail.send;
 import com.geng.gameengine.mail.MailSrcFuncType;
 import com.geng.gameengine.mail.MailType;
 import com.geng.gameengine.reward.RewardManager;
-import com.geng.gameengine.world.normal.AbstractWorldFightHandler;
+//import com.geng.gameengine.world.normal.AbstractWorldFightHandler;
 import com.geng.puredb.model.Mail;
 import com.geng.utils.CommonUtils;
 import com.geng.utils.LoggerUtil;
@@ -81,7 +81,7 @@ public class SystermMailSend extends AbstractMailSend{
     }
 
     public static void addFightMailInfo(Mail mail, ISFSObject mailObj) {
-        ISFSObject contentsObj = SFSObject.newFromJsonData(mail.getContentsStr());
+       /* ISFSObject contentsObj = SFSObject.newFromJsonData(mail.getContentsStr());
         ISFSObject preViewObj = SFSObject.newInstance();
         if(preViewObj.containsKey("warPoint")) {
             preViewObj.putUtfString("warPoint", contentsObj.getUtfString("warPoint"));
@@ -102,7 +102,7 @@ public class SystermMailSend extends AbstractMailSend{
         } else {
             preViewObj.putInt("win", AbstractWorldFightHandler.FightResult.FAIL.ordinal());
         }
-        mailObj.putSFSObject("contents", preViewObj);
+        mailObj.putSFSObject("contents", preViewObj);*/
     }
 
     @Override
@@ -214,7 +214,7 @@ public class SystermMailSend extends AbstractMailSend{
         boolean itemIdFlag = (mailType == MailType.GIFT_EXCHANGE) ? false : true;
         Mail mailItem = send(null, toUser, title, mailType, reward, createTime, contents, itemIdFlag, false, isCheckNum, true, null, forceSetNoReward,mailSrcFuncType);
         if (mailItem != null && mailType == MailType.GIFT_EXCHANGE && contentsParam.size() > 5){
-            LoggerUtil.getInstance().recordExchangeGiftLog(mailItem.getUid(), contentsParam.get(4), toUser, contentsParam.get(5), mailItem.getCreatetime());
+//            LoggerUtil.getInstance().recordExchangeGiftLog(mailItem.getUid(), contentsParam.get(4), toUser, contentsParam.get(5), mailItem.getCreatetime());
         }
         if(mailItem != null) {
             LoggerUtil.getInstance().logBySFS("mail send success to " + mailItem.getTouser() + "[uid:" + mailItem.getUid() + ",title:" + mailItem.getTitle() + ",reward:" + mailItem.getRewardStr() + "]");

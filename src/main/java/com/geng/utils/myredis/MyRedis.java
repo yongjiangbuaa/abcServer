@@ -4,9 +4,9 @@ package com.geng.utils.myredis;
  * Created by XuZiHui on 2017/3/20.
  */
 
-import com.elex.cok.utils.redis.RedisKey;
-import com.smartfoxserver.v2.entities.data.ISFSObject;
-import com.smartfoxserver.v2.entities.data.SFSObject;
+import com.geng.utils.redis.RedisKey;
+import com.geng.core.data.ISFSObject;
+import com.geng.core.data.SFSObject;
 import org.apache.commons.lang.StringUtils;
 import redis.clients.jedis.*;
 

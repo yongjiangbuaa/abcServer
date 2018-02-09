@@ -5,11 +5,38 @@
 package com.geng.gameengine;
 
 
+import com.geng.core.GameEngine;
+import com.geng.core.SFSException;
+import com.geng.exceptions.COKException;
+import com.geng.exceptions.ExceptionMonitorType;
+import com.geng.exceptions.GameExceptionCode;
+import com.geng.gameengine.account.AccountDeviceMapping;
+import com.geng.gameengine.cross.SharedUserInfo;
+import com.geng.gameengine.cross.SharedUserService;
+import com.geng.gameengine.friend.FriendManager;
+import com.geng.gameengine.login.COKLoginExceptionType;
 import com.geng.gameengine.login.LoginInfo;
-import com.geng.puredb.model.UserProfile;
-import com.geng.server.GameEngine;
-import com.geng.utils.Constants;
+import com.geng.gameengine.mail.MailServicePlus;
+import com.geng.gameengine.mail.MailSrcFuncType;
+import com.geng.gameengine.world.finalize.WorldClearDeadAccountTask;
+import com.geng.handlers.requesthandlers.mod.common.ModService;
+import com.geng.puredb.dao.UserProfileDao;
+import com.geng.puredb.model.*;
+import com.geng.utils.*;
+import com.geng.utils.distributed.GlobalDBProxy;
+import com.geng.utils.distributed.SqlParamsObj;
+import com.geng.utils.myredis.R;
 import com.geng.utils.properties.PropertyFileReader;
+import com.geng.utils.xml.GameConfigManager;
+import com.google.common.base.Optional;
+import com.geng.core.User;
+import com.geng.core.data.ISFSArray;
+import com.geng.core.data.ISFSObject;
+import com.geng.core.data.SFSObject;
+import com.smartfoxserver.v2.exceptions.SFSException;
+import com.smartfoxserver.v2.exceptions.SFSLoginException;
+import com.smartfoxserver.v2.extensions.ExtensionLogLevel;
+import com.geng.gameengine.login.LoginStrategy;
 import org.apache.commons.lang.StringUtils;
 import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
@@ -29,7 +56,7 @@ public class UserService {
     private static final Object RESOURCE_DEALER_REGISTER_FREQUENCY_LOCK = new Object();
     static {
         namePrefix = PropertyFileReader.getItem("name_prefix", "Empire");
-        defaultNameIndex = new AtomicLong(UserProfileDao.selectDefaultNameMaxIndex());
+        defaultNameIndex = new AtomicLong(UserProfile.getMaxNameIndex());
     }
 
     public static String[] generateDefaultUserName(){
@@ -42,7 +69,7 @@ public class UserService {
      */
     public static String[] generateDefaultUserName(LoginInfo loginInfo) {
         if (defaultNameIndex.get() == 0) {
-            defaultNameIndex = new AtomicLong(UserProfileDao.selectDefaultNameMaxIndex());
+            defaultNameIndex = new AtomicLong(UserProfile.getMaxNameIndex());
         }
         long time = System.currentTimeMillis();
         long serverStamp = time % 10000;
@@ -71,7 +98,7 @@ public class UserService {
     /**
      * 登录处理
      *
-     * @throws com.smartfoxserver.v2.exceptions.SFSException
+     * @throws
      */
     public static UserProfile handleLogin(User user, LoginInfo loginInfo, String address) throws SFSException {
         UserProfile userProfile;
@@ -83,40 +110,35 @@ public class UserService {
                 filterResourceDealerRegister(loginInfo, address);
             }
             userProfile = register(loginInfo, address);
-            new SharedUserService().updateUserInfo(userProfile);//注册时把其放入resis(gobal),防止在其未退出时其它使用redis查该用户的信息而找不到
+//            new SharedUserService().updateUserInfo(userProfile);//注册时把其放入resis(gobal),防止在其未退出时其它使用redis查该用户的信息而找不到
         } else {
-            userProfile = UserProfile.getLoggedUserProfile(gameUid, false, loginInfo);
-            if (userProfile == null) {
-                throw new SFSException(String.format("load user:%s error", gameUid));
-            }
-            userProfile.setLoginInfo(loginInfo);
+//            userProfile = UserProfile.getLoggedUserProfile(gameUid, false, loginInfo);
+//            if (userProfile == null) {
+//                throw new SFSException(String.format("load user:%s error", gameUid));
+//            }
+//            userProfile.setLoginInfo(loginInfo);
             synUserProfileProperty(userProfile);
         }
-        user.setProperty("uid", userProfile.getUid());
-        user.setProperty("name", userProfile.getName());
-        user.setProperty("version", userProfile.getAppVersion());
-        user.setProperty("loginTime", System.currentTimeMillis());
-        if (StringUtils.isNotBlank(userProfile.getLang())) {
-            user.setProperty("lang", userProfile.getLang());
-        }
-        if (StringUtils.isNotBlank(userProfile.getAllianceId())) {
-            user.setProperty("allianceId", userProfile.getAllianceId());
-        }
-        userProfile.setSfsUser(user);
+//        user.setProperty("uid", userProfile.getUid());
+//        user.setProperty("name", userProfile.getName());
+//        user.setProperty("version", userProfile.getAppVersion());
+//        user.setProperty("loginTime", System.currentTimeMillis());
+//        if (StringUtils.isNotBlank(userProfile.getLang())) {
+//            user.setProperty("lang", userProfile.getLang());
+//        }
+//        if (StringUtils.isNotBlank(userProfile.getAllianceId())) {
+//            user.setProperty("allianceId", userProfile.getAllianceId());
+//        }
+//        userProfile.setSfsUser(user);
         saveLoginInfo(userProfile);
         GameEngine.getInstance().addUserProfile(userProfile);
-        user.setProperty("logined", true);
-        user.setProperty("worldId", userProfile.getUserWorld().getWorldId());
+//        user.setProperty("logined", true);
+//        user.setProperty("worldId", userProfile.getUserWorld().getWorldId());
         userProfile.setLoginTime(StatLogin.writelog(userProfile, address));
-        new SharedUserService().updateUserOnline(userProfile.getUid(), true);//更新上线状态
-        //检查是否需要针对该登录用户发送伪侦查报告，该操作需要在GameEngine.getInstance().addUserProfile(userProfile);之后执行
-        PushPseudoScoutManager pushPseudoScoutManager = userProfile.getPushPseudoScoutManager();
-        if (pushPseudoScoutManager != null) {
-            pushPseudoScoutManager.scout();
-        }
+//        new SharedUserService().updateUserOnline(userProfile.getUid(), true);//更新上线状态
         if(isRegister){
             //新手发迁城道具 这里cache里已经存在userprofile
-            ItemManager.addItem(userProfile, GoodsType.WORLD_NEW_POINT_MV_CITY_V2.getGoodsId(), 2, 0, true, LoggerUtil.GoodsGetType.UPGRADE_BUILDING);
+//            ItemManager.addItem(userProfile, GoodsType.WORLD_NEW_POINT_MV_CITY_V2.getGoodsId(), 2, 0, true, LoggerUtil.GoodsGetType.UPGRADE_BUILDING);
             MailServicePlus.sendMailByMailXml(userProfile.getUid(), "11629", null, null, MailSrcFuncType.newUserItem);
 //            String pf=userProfile.getPf();
             if(SwitchConstant.ChinaUserMailSwitch.isSwitchOpen())
@@ -248,53 +270,7 @@ public class UserService {
      * @param address
      */
     public static void filterResourceDealerRegister(LoginInfo loginInfo, String address) throws SFSLoginException {
-        if (StringUtils.isBlank(address)) {
-            return;
-        }
 
-        Set<String> whitelist = R.Global().sMember(LoginStrategy.WHITELIST_IP_SET_KEY);
-        logger.error("address:" +address+" ========hyq test whitelist size is: "+whitelist.size());
-        long num = R.Local().incr(RESOURCE_DEALER_REGISTER_FREQUENCY_KEY_PREFIX+address);
-        if(num == 1){
-            R.Local().setExpireTime(RESOURCE_DEALER_REGISTER_FREQUENCY_KEY_PREFIX+address,3600);
-        }else if(num > 20){
-            //如果要封禁的ip不在白名单里也不在黑名单里，则加入黑名单
-            if(!R.Global().sIsMember(LoginStrategy.WHITELIST_IP_SET_KEY,address) &&
-                    !R.Local().sIsMember(LoginStrategy.BAN_IP_SET_KEY,address)) {
-                synchronized(RESOURCE_DEALER_REGISTER_FREQUENCY_LOCK) {
-                    if(!R.Local().sIsMember(LoginStrategy.BAN_IP_SET_KEY,address)) {
-                        //将问题当日该ip注册的账号封停
-                        Calendar todayStart = Calendar.getInstance();
-                        todayStart.set(Calendar.HOUR, 0);
-                        todayStart.set(Calendar.MINUTE, 0);
-                        todayStart.set(Calendar.SECOND, 0);
-                        todayStart.set(Calendar.MILLISECOND, 0);
-
-                        Calendar todayEnd = Calendar.getInstance();
-                        todayEnd.set(Calendar.HOUR, 23);
-                        todayEnd.set(Calendar.MINUTE, 59);
-                        todayEnd.set(Calendar.SECOND, 59);
-                        todayEnd.set(Calendar.MILLISECOND, 999);
-
-                        ISFSArray sqlData = SFSMysql.getInstance().query("select r.uid as uid from stat_reg r LEFT JOIN userprofile u ON u.uid=r.uid "
-                                +"where r.ip = '" + address + "' and r.time>=? and r.time <= ? and u.payTotal <= 0",
-                                new Object[]{todayStart.getTimeInMillis(), todayEnd.getTimeInMillis()});
-                        for (int i = 0; i < sqlData.size(); i++) {
-                            String uid = sqlData.getSFSObject(i).getUtfString("uid");
-                            UserProfile up = UserProfile.getWithUid(uid);
-                            up.setBanTime(Long.MAX_VALUE);
-                            up.updateBanTime();
-                        }
-                        //禁止该ip再次建号（只禁了本地和全局，资源商如果换到别的服，还可以注册）
-                        R.Local().sAdd(LoginStrategy.BAN_IP_SET_KEY, address); //本地redis里加入记录
-                        //R.Global().sAdd(LoginStrategy.BAN_IP_SET_KEY, address);//全局redis里加入记录
-                    }
-                }
-                //回复客户端ip被禁止注册的异常信息
-                loginInfo.raiseBanLoginException(COKLoginExceptionType.BAN_IP, Long.MAX_VALUE);
-                logger.error("address:" +address+" has been ban login =============hyq");
-            }
-        }
     }
     /**
      * 处理用户注册
@@ -771,13 +747,6 @@ public class UserService {
     }
 
     public static void removeCityIfSmallAccount(UserProfile userProfile) {
-        try {
-            if (!AccountService.isAccountHasBeenBind(userProfile.getUid()) && userProfile.getUbManager().getMainBuildingLevel() <= 6) {
-                WorldClearDeadAccountTask.clearAccount(userProfile.getUid());
-            }
-        } catch (Exception e) {
-            logger.error("error in removeCityIfSmallAccount.uid=" + userProfile != null ? userProfile.getUid() : "null", e);
-        }
     }
 
     public static class UserServerHelper {

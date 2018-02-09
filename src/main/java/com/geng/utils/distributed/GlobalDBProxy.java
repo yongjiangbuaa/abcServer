@@ -349,7 +349,7 @@ public class GlobalDBProxy {
         return bindPf;
     }
 
-/*    public static boolean checkAccountBind(String uid, String bindPf, String bindId) {
+    public static boolean checkAccountBind(String uid, String bindPf, String bindId) {
 //        String sql = "select * from userbindmapping where mappingType = ? and mappingValue = ? and gameUid = ? ";
 //        ISFSArray bindInfoArray = SFSMysql.getInstance().queryGlobal(sql, new Object[]{getRealBindPf(bindPf), bindId, uid});
 //        if (bindInfoArray.size() > 0)
@@ -484,7 +484,7 @@ public class GlobalDBProxy {
         return SFSMysql.getInstance().executeGlobalBatch(false, sqlList);
     }
 
-    *//**
+    /**
      * 去除旧账号绑定，绑定到新账号上
      * @param oldUid
      * @param newUid

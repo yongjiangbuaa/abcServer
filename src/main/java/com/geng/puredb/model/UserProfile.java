@@ -532,4 +532,12 @@ public class UserProfile {
     public Optional<String> getAllianceSimpleName() {
         return null;
     }
+
+    public void setLoginTime(Long writelog) {
+
+    }
+
+    public void setLastLoginTime(long l) {
+
+    }
 }

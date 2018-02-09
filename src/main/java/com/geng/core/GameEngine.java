@@ -21,4 +21,12 @@ public class GameEngine {
     public void pushMsgToRemoteUser(int serverId, String touser, String pushMail, String pushJson) {
 
     }
+
+    public void addUserProfile(UserProfile userProfile) {
+
+    }
+
+    public boolean isTestServer() {
+            return false;
+    }
 }

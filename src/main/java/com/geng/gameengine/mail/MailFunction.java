@@ -814,7 +814,7 @@ public class MailFunction {
 //            ChatUserInfoManager.setMailLastUpdateTime(userProfile.getUid(),uidList);
         }
         List<AbstractSameMailGroup> comparatorList = MailGroupGenerator.getAllMailGroup();
-        SqlSession session = MyBatisSessionUtil.getInstance().getBatchSession(srcServerId);
+        SqlSession session = MyBatisSessionUtil.getInstance().getBatchSession(1);//srcServerId);
         ISFSObject retObject = new SFSObject();
         try{
             if(mailList != null && mailList.size() > 0){
@@ -924,7 +924,7 @@ public class MailFunction {
                 }
             }
         }
-        SqlSession session = MyBatisSessionUtil.getInstance().getBatchSession(srcServerId);
+        SqlSession session = MyBatisSessionUtil.getInstance().getBatchSession(1);
         try {
             for (int rule : groupIndexMap.keySet()){
                 AbstractSameMailGroup comparator = MailGroupGenerator.getGroup(comparatorList, rule);

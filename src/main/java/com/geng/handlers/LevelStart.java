@@ -5,7 +5,7 @@ import com.geng.exceptions.GameExceptionCode;
 import com.geng.puredb.model.UserProfile;
 import com.geng.service.UserService;
 
-public class LeveStart implements IRequestHandler {
+public class LevelStart implements IRequestHandler {
     public static final String ID = "level.start";
 //扣命 扣金币
     @Override

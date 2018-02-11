@@ -11,7 +11,7 @@ import com.geng.puredb.model.UserStory;
 import com.geng.service.UserService;
 import org.apache.commons.lang.StringUtils;
 
-public class LoginRequestHandler implements IRequestHandler{
+public class Login implements IRequestHandler{
     public static final String ID="user.login";
     @Override
     public void handle(String deviceId, String uid, String data, StringBuilder sb) throws GameException {

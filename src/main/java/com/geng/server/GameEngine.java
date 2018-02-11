@@ -74,7 +74,7 @@ public class GameEngine {
         try {
             IRequestHandler handler = (IRequestHandler) HandlerRegisterCenter.getInstance().findHandlerInstance(cmd);
             if(null != handler) {
-                if( handler instanceof  LoginRequestHandler){
+                if( handler instanceof Login){
                     handler.handle(deviceId, uid, data, sb);
                 }else {
                     UserProfile userProfile = UserProfile.getWithUid(uid);

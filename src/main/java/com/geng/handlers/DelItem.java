@@ -15,7 +15,7 @@ import org.apache.commons.lang.StringUtils;
 
 import java.util.*;
 
-public class DelItemRequestHandler implements IRequestHandler{
+public class DelItem implements IRequestHandler{
     public static final String ID = "item.del";
 
     @Override

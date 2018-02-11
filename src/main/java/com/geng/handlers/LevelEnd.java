@@ -15,10 +15,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class LeveEnd implements IRequestHandler{
+public class LevelEnd implements IRequestHandler{
     public static final String ID = "level.end";
     public static final int ADD_GOLD = 200;
-    private final Logger logger = LoggerFactory.getLogger(LevelUpRequestHandler.class);
+    private final Logger logger = LoggerFactory.getLogger(LevelEnd.class);
 
 
     @Override

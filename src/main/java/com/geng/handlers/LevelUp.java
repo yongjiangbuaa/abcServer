@@ -1,11 +1,8 @@
 package com.geng.handlers;
 
-import com.geng.core.data.ISFSObject;
-import com.geng.core.data.SFSObject;
 import com.geng.exceptions.GameException;
 import com.geng.gameengine.ItemManager;
 import com.geng.puredb.model.UserProfile;
-import com.geng.puredb.model.UserStory;
 import com.geng.service.UserService;
 import com.geng.utils.LoggerUtil;
 import com.geng.utils.xml.GameConfigManager;
@@ -14,9 +11,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class LevelUpRequestHandler implements IRequestHandler{
+public class LevelUp implements IRequestHandler{
     public static final int ADD_GOLD = 200;
-    private final Logger logger = LoggerFactory.getLogger(LevelUpRequestHandler.class);
+    private final Logger logger = LoggerFactory.getLogger(LevelUp.class);
     public static final String ID = "level.up";//传所加star
 
     @Override

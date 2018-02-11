@@ -16,14 +16,14 @@ public class HandlerRegisterCenter {
     }
 
     private HandlerRegisterCenter(){
-        handlerRegisterMap.put(LoginRequestHandler.ID,LoginRequestHandler.class);
+        handlerRegisterMap.put(Login.ID,Login.class);
         handlerRegisterMap.put(SaveRequestHandler.ID,SaveRequestHandler.class);
-        handlerRegisterMap.put(LevelUpRequestHandler.ID,LevelUpRequestHandler.class);
-        handlerRegisterMap.put(LevelFailRequestHandler.ID,LevelFailRequestHandler.class);
-        handlerRegisterMap.put(LeveStart.ID,LeveStart.class);
-        handlerRegisterMap.put(LeveEnd.ID,LeveEnd.class);
-        handlerRegisterMap.put(DelItemRequestHandler.ID,DelItemRequestHandler.class);
-        handlerRegisterMap.put(UnlockStoryRequestHandler.ID,UnlockStoryRequestHandler.class);
+        handlerRegisterMap.put(LevelUp.ID,LevelUp.class);
+        handlerRegisterMap.put(LevelFail.ID,LevelFail.class);
+        handlerRegisterMap.put(LevelStart.ID,LevelStart.class);
+        handlerRegisterMap.put(LevelEnd.ID,LevelEnd.class);
+        handlerRegisterMap.put(DelItem.ID,DelItem.class);
+        handlerRegisterMap.put(UnlockStory.ID,UnlockStory.class);
         handlerRegisterMap.put(BuyItem.ID,BuyItem.class);
     }
 

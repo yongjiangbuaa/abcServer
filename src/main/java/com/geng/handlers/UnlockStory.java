@@ -10,13 +10,18 @@ import com.geng.puredb.model.UserProfile;
 import com.geng.puredb.model.UserStory;
 import com.geng.service.UserService;
 import com.geng.utils.G;
+import com.geng.utils.LoggerUtil;
 import com.geng.utils.xml.GameConfigManager;
+import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-public class UnlockStoryRequestHandler implements IRequestHandler {
+public class UnlockStory implements IRequestHandler {
     public static final String ID = "story.unlock";
+    public static final Logger logger = LoggerFactory.getLogger(UnlockStory.class);
     @Override
     public void handle(String deviceId, String uid, String data, StringBuilder sb) throws GameException {
 
@@ -54,6 +59,18 @@ public class UnlockStoryRequestHandler implements IRequestHandler {
         //扣星星
         userProfile.setStar(userProfile.getStar() - need);
         userProfile.update();
+
+        //扣物品
+//        String requireItem = new GameConfigManager("quest").getItem(storyid).get("requireItem");
+//        logger.info("requireItem {}", requireItem);
+//        synchronized (this) {
+//            String[] itemsProp = StringUtils.split(requireItem, ",");
+//            for (String desc : itemsProp) {
+//                String[] item_num_rate = StringUtils.split(desc, ":");
+//                    ItemManager.decItems(userProfile, item_num_rate[0], Integer.parseInt(item_num_rate[1]), 0, LoggerUtil.GoodsGetType.LEVEL_UP);
+//                }
+//        }
+
 
         //组织返回数据
 

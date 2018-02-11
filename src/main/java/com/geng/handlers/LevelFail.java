@@ -9,7 +9,7 @@ import com.geng.puredb.model.UserProfile;
 import com.geng.puredb.model.UserStory;
 import com.geng.service.UserService;
 
-public class LevelFailRequestHandler implements IRequestHandler{
+public class LevelFail implements IRequestHandler{
     public static final String ID = "level.fail";
 
     @Override

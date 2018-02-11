@@ -9,6 +9,7 @@ import com.geng.core.data.ISFSObject;
 import com.geng.core.data.SFSArray;
 import com.geng.core.data.SFSObject;
 import com.geng.exceptions.COKException;
+import com.geng.exceptions.GameException;
 import com.geng.exceptions.GameExceptionCode;
 import com.geng.puredb.model.UserItem;
 import com.geng.puredb.model.UserProfile;
@@ -16,6 +17,7 @@ import com.geng.server.GameEngine;
 import com.geng.utils.CommonUtils;
 import com.geng.utils.LoggerUtil;
 import com.geng.utils.xml.GameConfigManager;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
@@ -554,9 +556,64 @@ public class ItemManager {
         return null;
     }
 
-    //TODO make a thread safe using above method  "; |"
-    public static ISFSArray decItems(String a){
-        return null;
+    /**
+     * This method is threadsafe
+     */
+    public static void decItems(UserProfile userProfile,String costStr) throws GameException {
+        if(StringUtils.isBlank(costStr))
+            throw new COKException(GameExceptionCode.INVALID_OPT,"invalid params ! costString is blank");
+        String[] itemsProp = StringUtils.split(costStr,",");
+        if(ArrayUtils.isEmpty(itemsProp))
+            throw new COKException(GameExceptionCode.INVALID_OPT,"invalid params ! costString is not in good format");
+        String[] items = new String[itemsProp.length];
+        String[] nums = new String[itemsProp.length];
+        int i =0 ;
+        for(String desc :itemsProp) {
+            String[] item_num = StringUtils.split(desc, ":");
+            items[i] = item_num[0];
+            nums[i] = item_num[1];
+            i++;
+        }
+        decItems(userProfile,items,nums);
+
+    }
+
+    //  This method is threadsafe  thread safe using above method  "; |"
+    public static void decItems(UserProfile userProfile,String[] items,String[] nums) throws GameException {
+        if(items.length != nums.length)
+            throw new COKException(GameExceptionCode.INVALID_OPT,"item num length not equal!!");
+        Map<String,Integer> iMap  = new HashMap<>();
+        for(int i = 0;i < items.length;i++){
+            iMap.put(items[i],Integer.parseInt(nums[i]));
+        }
+        if(iMap.size() < items.length)
+            throw new GameException(GameExceptionCode.INVALID_OPT,"item error or repeat!!");
+
+        List itemList = new ArrayList();
+        Collections.addAll(itemList,items);
+
+        Object itemLock = userProfile.getItemLock();
+        if (itemLock == null) {
+            itemLock = new Object();
+            logger.warn("can't find item lock {}", userProfile.getUid());
+        }
+        synchronized (itemLock) {
+            List<UserItem> userItemList = UserItem.getMutiItemByItemIds(userProfile.getUid(), itemList);
+            if( null == userItemList || userItemList.size() == 0 || userItemList.size() != items.length)
+                throw new GameException(GameExceptionCode.ITEM_NOT_ENOUGH,"cheating item use!!");
+            for(UserItem u : userItemList){
+                if(u.getCount() < iMap.get(u.getItemId()) )
+                    throw new GameException(GameExceptionCode.INVALID_OPT,"cheating item use!!");
+                u.setCount(u.getCount() - iMap.get(u.getItemId()));
+
+            }
+            //update
+            for(UserItem userItem : userItemList){
+                userItem.update();
+            }
+        }
+        logger.info("uid {} items {} nums {} delete!",userProfile.getUid(),items,nums);
+
     }
 
 

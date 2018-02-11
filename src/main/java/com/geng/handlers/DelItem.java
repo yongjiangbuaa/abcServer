@@ -1,5 +1,6 @@
 package com.geng.handlers;
 
+import com.geng.core.data.ISFSArray;
 import com.geng.core.data.ISFSObject;
 import com.geng.core.data.SFSObject;
 import com.geng.exceptions.GameException;
@@ -36,37 +37,8 @@ public class DelItem implements IRequestHandler{
 
         String[] items = StringUtils.split(param.getItem(),"|");
         String[] nums = StringUtils.split(param.getNum(),"|");
-        if(items.length != nums.length)
-            throw new GameException(GameExceptionCode.INVALID_OPT,"item num length not equal!!");
-        Map<String,Integer> iMap  = new HashMap<>();
-        for(int i = 0;i < items.length;i++){
-            iMap.put(items[i],Integer.parseInt(nums[i]));
-        }
-        if(iMap.size() < items.length)
-            throw new GameException(GameExceptionCode.INVALID_OPT,"item error or repeat!!");
+         ItemManager.decItems(userProfile,items,nums);
 
-
-        List itemList = new ArrayList();
-        Collections.addAll(itemList,items);
-
-        synchronized (this) {
-            List<UserItem> userItemList = UserItem.getMutiItemByItemIds(userProfile.getUid(), itemList);
-            if( null == userItemList || userItemList.size() == 0 || userItemList.size() != items.length)
-                throw new GameException(GameExceptionCode.ITEM_NOT_ENOUGH,"cheating item use!!");
-            for(UserItem u : userItemList){
-                    if(u.getCount() < iMap.get(u.getItemId()) )
-                        throw new GameException(GameExceptionCode.INVALID_OPT,"cheating item use!!");
-                    u.setCount(u.getCount() - iMap.get(u.getItemId()));
-
-            }
-            //update
-            for(UserItem userItem : userItemList){
-                userItem.update();
-            }
-
-            List<UserItem> res = UserItem.getItems(userProfile.getUid());
-//            sb.append("{\"items\":").append(G.toJson(res)).append("}");
-        }
 
         sb.append(UserService.fillAll(userProfile).toJson());
     }

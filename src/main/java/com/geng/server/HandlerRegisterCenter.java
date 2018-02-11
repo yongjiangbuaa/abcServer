@@ -20,6 +20,8 @@ public class HandlerRegisterCenter {
         handlerRegisterMap.put(SaveRequestHandler.ID,SaveRequestHandler.class);
         handlerRegisterMap.put(LevelUpRequestHandler.ID,LevelUpRequestHandler.class);
         handlerRegisterMap.put(LevelFailRequestHandler.ID,LevelFailRequestHandler.class);
+        handlerRegisterMap.put(LeveStart.ID,LeveStart.class);
+        handlerRegisterMap.put(LeveEnd.ID,LeveEnd.class);
         handlerRegisterMap.put(DelItemRequestHandler.ID,DelItemRequestHandler.class);
         handlerRegisterMap.put(UnlockStoryRequestHandler.ID,UnlockStoryRequestHandler.class);
         handlerRegisterMap.put(BuyItem.ID,BuyItem.class);

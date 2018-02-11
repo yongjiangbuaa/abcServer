@@ -5,10 +5,12 @@ import com.geng.core.data.SFSObject;
 import com.geng.exceptions.GameException;
 import com.geng.exceptions.GameExceptionCode;
 import com.geng.gameengine.ItemManager;
+import com.geng.gameengine.login.LoginInfo;
 import com.geng.puredb.model.UidBind;
 import com.geng.puredb.model.UserProfile;
 import com.geng.puredb.model.UserStory;
 import com.geng.service.UserService;
+import com.geng.utils.G;
 import org.apache.commons.lang.StringUtils;
 
 public class LoginRequestHandler implements IRequestHandler{
@@ -16,14 +18,15 @@ public class LoginRequestHandler implements IRequestHandler{
     @Override
     public void handle(String deviceId, String uid, String data, StringBuilder sb) throws GameException {
         UserProfile userProfile = null;
-        ISFSObject initObj = SFSObject.newInstance();
+        String ipAddress = "";
         if(!StringUtils.isEmpty(deviceId) && StringUtils.isEmpty(uid)){
             UidBind bind = UidBind.getWithbindId(deviceId);
             if(null == bind) {
-                //TODO find deviceMapping uid
-//                if(StringUtils.isBlank(data))
-//                    throw new GameException(GameExceptionCode.INVALID_OPT,"param not valid!! no data!");
-                userProfile = UserService.Register(deviceId, data);//注册
+                LoginInfo loginInfo = null;
+                if(StringUtils.isNotBlank(data)){
+                    loginInfo = G.fromJson(data,LoginInfo.class);
+                }
+                userProfile = com.geng.gameengine.UserService.handleLogin(loginInfo,ipAddress);
             }else{
                 userProfile = UserProfile.getWithUid(bind.getUid());
             }

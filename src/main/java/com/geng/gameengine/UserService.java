@@ -100,6 +100,7 @@ public class UserService {
      *
      * @throws
      */
+    //Users对象包裹了连接 包含连接状态及用户属性  在短连接甚至无连接服务里不用。
 //    public static UserProfile handleLogin(User user, LoginInfo loginInfo, String address) throws SFSException {
     public static UserProfile handleLogin(LoginInfo loginInfo, String address) throws COKException {
         UserProfile userProfile;
@@ -111,9 +112,9 @@ public class UserService {
 //                filterResourceDealerRegister(loginInfo, address);
             }
             userProfile = register(loginInfo, address);
-//            new SharedUserService().updateUserInfo(userProfile);//注册时把其放入resis(gobal),防止在其未退出时其它使用redis查该用户的信息而找不到
+            new SharedUserService().updateUserInfo(userProfile);//注册时把其放入resis(gobal),防止在其未退出时其它使用redis查该用户的信息而找不到
         } else {
-//            userProfile = UserProfile.getLoggedUserProfile(gameUid, false, loginInfo);
+//            userProfile = UserProfile.getLoggedUserProfile(gameUid, false, loginInfo);//不包括登录状态的
             userProfile = UserProfile.getWithUid(gameUid);
             if (userProfile == null) {
                 throw new COKException(GameExceptionCode.UID_NOT_EXIST,"uid not exist!!");

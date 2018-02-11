@@ -62,8 +62,9 @@ public class UnlockStory implements IRequestHandler {
 
         //扣物品
         String requireItem = new GameConfigManager("quest").getItem(storyid).get("requireItem");
-        logger.info("requireItem {}", requireItem);
-        ItemManager.decItems(userProfile,requireItem);
+        logger.info("uid {} storyid {} requireItem {}", userProfile.getUid(),storyid,requireItem);
+        if(!StringUtils.isBlank(requireItem) && !StringUtils.equals(requireItem,"0"))
+            ItemManager.decItems(userProfile,requireItem);
 
 
         //组织返回数据

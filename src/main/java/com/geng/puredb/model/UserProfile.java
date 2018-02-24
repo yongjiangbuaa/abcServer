@@ -361,7 +361,7 @@ public class UserProfile {
 
     public   void insert(){
 
-        SqlSession session = MyBatisSessionUtil.getSession();
+        SqlSession session = MyBatisSessionUtil.getInstance().getSession();
         try {
             UserProfileMapper mapper = session.getMapper(UserProfileMapper.class);
             mapper.insert(this);
@@ -371,7 +371,7 @@ public class UserProfile {
     }
 
     public   void update(){
-        SqlSession session = MyBatisSessionUtil.getSession();
+        SqlSession session = MyBatisSessionUtil.getInstance().getSession();
         try {
             UserProfileMapper mapper = session.getMapper(UserProfileMapper.class);
             mapper.updateByPrimaryKeySelective(this);
@@ -381,7 +381,7 @@ public class UserProfile {
     }
 
     public static UserProfile getWithUid(String uid){
-        SqlSession session = MyBatisSessionUtil.getSession();
+        SqlSession session = MyBatisSessionUtil.getInstance().getSession();
         try {
             UserProfileMapper mapper = session.getMapper(UserProfileMapper.class);
             UserProfile userProfile = mapper.selectByPrimaryKey(uid);
@@ -404,7 +404,7 @@ public class UserProfile {
 
     public static long getMaxNameIndex() {
         long idx= 0 ;
-        SqlSession session = MyBatisSessionUtil.getSession();
+        SqlSession session = MyBatisSessionUtil.getInstance().getSession();
         try {
             UserProfileMapper mapper = session.getMapper(UserProfileMapper.class);
              idx = mapper.getMaxNameIndex();

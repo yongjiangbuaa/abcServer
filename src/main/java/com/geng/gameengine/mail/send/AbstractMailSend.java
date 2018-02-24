@@ -104,7 +104,7 @@ public abstract class AbstractMailSend {
             if(targetUserProfile.getCrossFightSrcServerId() == -1 && targetUserProfile.getBanTime() == Long.MAX_VALUE){
                 if(StringUtils.isNotBlank(senderUid)) {
                     int srcServerId = senderUserProfile.getCrossFightSrcServerId();
-                    session = MyBatisSessionUtil.getInstance().getBatchSession(srcServerId);
+                    session = MyBatisSessionUtil.getInstance().getBatchSession();
                     if (session == null) {
                         COKLoggerFactory.monitorException(String.format("can not get remote server %s db session when send mail to src server", srcServerId), ExceptionMonitorType.CROSS_KINGDOM_FIGHT, COKLoggerFactory.ExceptionOwner.BSL);
                     }
@@ -112,7 +112,7 @@ public abstract class AbstractMailSend {
             }
         }
         if(session == null){
-           session = MyBatisSessionUtil.getInstance().getBatchSession(1);//srcServerId);
+           session = MyBatisSessionUtil.getInstance().getBatchSession();
         }
         Mail mail;
         try {

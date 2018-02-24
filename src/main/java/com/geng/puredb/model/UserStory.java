@@ -71,7 +71,7 @@ public class UserStory {
 
     public   void insert(){
 
-        SqlSession session = MyBatisSessionUtil.getSession();
+        SqlSession session = MyBatisSessionUtil.getInstance().getSession();
         try {
             UserStoryMapper mapper = session.getMapper(UserStoryMapper.class);
             mapper.insert(this);
@@ -81,7 +81,7 @@ public class UserStory {
     }
 
     public   void update(){
-        SqlSession session = MyBatisSessionUtil.getSession();
+        SqlSession session = MyBatisSessionUtil.getInstance().getSession();
         try {
             UserStoryMapper mapper = session.getMapper(UserStoryMapper.class);
             mapper.updateByPrimaryKeySelective(this);
@@ -105,7 +105,7 @@ public class UserStory {
 
     public static List<UserStory> getByUserId(String uid){
         List<UserStory> list = null;
-        SqlSession session = MyBatisSessionUtil.getSession();
+        SqlSession session = MyBatisSessionUtil.getInstance().getSession();
         try {
             UserStoryMapper mapper = session.getMapper(UserStoryMapper.class);
             list = mapper.selectByUserId(uid);

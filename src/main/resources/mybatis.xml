@@ -1,14 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
-    <environments default="development">
-        <environment id="development">
+    <environments default="pro">
+        <environment id="pro">
             <transactionManager type="JDBC"/>
-            <dataSource type="POOLED">
-                <property name="driver" value="${driver}"/>
-                <property name="url" value="${url}"/>
-                <property name="username" value="${username}"/>
-                <property name="password" value="${password}"/>
+            <dataSource type="com.elex.cok.utils.BoneCPDataSourceFactory">
+                <property name="driverClass" value="${local.jdbc.driver}"/>
+                <property name="jdbcUrl" value="${local.jdbc.url}"/>
+                <property name="username" value="${local.jdbc.user}"/>
+                <property name="password" value="${local.jdbc.password}"/>
+                <property name="partitionCount" value="${bonecp.partitionCount}"/>
+                <property name="maxConnectionsPerPartition" value="${bonecp.maxConnectionsPerPartition}"/>
+                <property name="minConnectionsPerPartition" value="${bonecp.minConnectionsPerPartition}"/>
+                <property name="acquireIncrement" value="${bonecp.acquireIncrement}"/>
+                <property name="disableConnectionTracking" value="true"/>
+                <property name="disableJMX" value="true"/>
+                <property name="connectionTimeoutInMs" value="${bonecp.connectionTimeout}"/>
             </dataSource>
         </environment>
     </environments>

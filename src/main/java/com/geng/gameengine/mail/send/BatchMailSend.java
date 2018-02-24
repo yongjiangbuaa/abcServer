@@ -154,9 +154,9 @@ public class BatchMailSend extends AbstractMailSend {
 		}
 		SqlSession session;
 		if(serverId == Constants.SERVER_ID) {
-			session = MyBatisSessionUtil.getInstance().getBatchSession(srcServerId);
+			session = MyBatisSessionUtil.getInstance().getBatchSession();
 		}else {
-			 session = MyBatisSessionUtil.getInstance().getBatchSession(serverId);
+			 session = MyBatisSessionUtil.getInstance().getBatchSession();
 			if (null == session){
 				COKLoggerFactory.monitorException(String.format("can not get remote server %s db session", serverId), ExceptionMonitorType.CROSS_KINGDOM_FIGHT, COKLoggerFactory.ExceptionOwner.BSL);
 			}

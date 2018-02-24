@@ -43,4 +43,5 @@ public class Constants {
     public static final String BIND_FIRST_APPSTORE_MAIL_ID = "";
     public static final String BIND_FIRST_VK_MAIL_ID = "";
     public static final String DEFAULT_USER_PIC = "";
+    public static final String PROPERTY_REAL_TIME_FLAG = "realtime";
 }

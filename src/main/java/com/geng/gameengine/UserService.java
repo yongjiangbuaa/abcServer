@@ -230,7 +230,7 @@ public class UserService {
      * @return
      */
     private static UserProfile register(LoginInfo loginInfo, String ipAddress) throws COKException {
-        SqlSession session = MyBatisSessionUtil.getInstance().getBatchSession(1);
+        SqlSession session = MyBatisSessionUtil.getInstance().getBatchSession();
         UserProfile userProfile = null;
         try {
 //            userProfile =  UserProfile.newInstance(session, loginInfo)

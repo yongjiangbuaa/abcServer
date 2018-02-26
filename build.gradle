@@ -14,6 +14,7 @@ dependencies {
     compile 'org.springframework:spring-context:4.1.1.RELEASE'
     compile 'org.springframework:spring-jdbc:4.1.1.RELEASE'
     compile 'redis.clients:jedis:2.6.1'
+    compile 'com.jolbox:bonecp:0.8.0.RELEASE'
     compile fileTree(dir: 'lib', include: '*.jar')
 }
 

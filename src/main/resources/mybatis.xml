@@ -4,7 +4,7 @@
     <environments default="pro">
         <environment id="pro">
             <transactionManager type="JDBC"/>
-            <dataSource type="com.elex.cok.utils.BoneCPDataSourceFactory">
+            <dataSource type="com.geng.utils.BoneCPDataSourceFactory">
                 <property name="driverClass" value="${local.jdbc.driver}"/>
                 <property name="jdbcUrl" value="${local.jdbc.url}"/>
                 <property name="username" value="${local.jdbc.user}"/>

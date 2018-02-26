@@ -97,7 +97,7 @@ public class MyBatisSessionUtil {
             Thread.currentThread().setContextClassLoader(extensionLoader);
 
             Properties properties = GameEngine.getInstance().getConfigProperties();
-            properties.setProperty("local.jdbc.url", PropertyFileReader.getRealTimeItem("local.jdbc.url"));
+            properties.setProperty("local.jdbc.url", PropertyFileReader.getItem("local.jdbc.url"));
             if (!properties.containsKey("bonecp.connectionTimeout")) {
                 // 设置获取连接的timeout时间
                 properties.setProperty("bonecp.connectionTimeout", "3000");

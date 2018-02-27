@@ -4,11 +4,10 @@ import com.geng.core.data.ISFSObject;
 import com.geng.core.data.SFSObject;
 import com.geng.exceptions.GameException;
 import com.geng.exceptions.GameExceptionCode;
-import com.geng.gameengine.ItemManager;
 import com.geng.puredb.model.UidBind;
 import com.geng.puredb.model.UserProfile;
-import com.geng.puredb.model.UserStory;
-import com.geng.service.UserService;
+//import com.geng.service.UserService;
+import com.geng.gameengine.UserService;
 import org.apache.commons.lang.StringUtils;
 
 public class Login implements IRequestHandler{
@@ -23,7 +22,7 @@ public class Login implements IRequestHandler{
                 //TODO find deviceMapping uid
 //                if(StringUtils.isBlank(data))
 //                    throw new GameException(GameExceptionCode.INVALID_OPT,"param not valid!! no data!");
-                userProfile = UserService.Register(deviceId, data);//注册
+                userProfile = UserService.handleLogin(deviceId, data);//注册
             }else{
                 userProfile = UserProfile.getWithUid(bind.getUid());
             }
@@ -32,10 +31,10 @@ public class Login implements IRequestHandler{
              userProfile = UserProfile.getWithUid(uid);
              if (null == userProfile) throw new GameException(GameExceptionCode.UID_NOT_EXIST,"uid not exist!");
         }
-        UserService.checkHeartTime(userProfile);
+        com.geng.service.UserService.checkHeartTime(userProfile);
 
         //组织返回数据
-        sb.append(UserService.fillAll(userProfile).toJson());
+        sb.append(com.geng.service.UserService.fillAll(userProfile).toJson());
 
     }
 

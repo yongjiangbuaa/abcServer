@@ -561,4 +561,12 @@ public class UserProfile {
     public String getAllianceId() {
         return null;
     }
+
+    public static UserProfile newInstance(SqlSession session, LoginInfo loginInfo) {
+        return null;
+    }
+
+    public UserProfile onRegister(SqlSession session) {
+        return null;
+    }
 }

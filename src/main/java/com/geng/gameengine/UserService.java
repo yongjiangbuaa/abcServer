@@ -100,21 +100,24 @@ public class UserService {
      *
      * @throws
      */
-    //Users对象包裹了连接 包含连接状态及用户属性  在短连接甚至无连接服务里不用。
+    //User对象包裹了连接。UserProfile持有User。间接持有连接。
+    // 包含连接状态及用户属性  在短连接甚至无连接服务里不用,只在使用保持状态的TCP连接时使用。
+    //连接时认为是在线状态。
+
 //    public static UserProfile handleLogin(User user, LoginInfo loginInfo, String address) throws SFSException {
+//    }
+
+    //不包含连接对象的方式  没有登录状态。 不缓存登录对象
     public static UserProfile handleLogin(LoginInfo loginInfo, String address) throws COKException {
         UserProfile userProfile;
         String gameUid = loginInfo.getGameUid();
         boolean isRegister = false;
         if (StringUtils.isBlank(gameUid)) {
             isRegister = true;
-            if(SwitchConstant.ResourceDealerRegisterFilter.isSwitchOpen()) {
-//                filterResourceDealerRegister(loginInfo, address);
-            }
             userProfile = register(loginInfo, address);
             new SharedUserService().updateUserInfo(userProfile);//注册时把其放入resis(gobal),防止在其未退出时其它使用redis查该用户的信息而找不到
         } else {
-//            userProfile = UserProfile.getLoggedUserProfile(gameUid, false, loginInfo);//不包括登录状态的
+//            userProfile = UserProfile.getLoggedUserProfile(gameUid, false, loginInfo);//TODO 从缓存层取已注册过的用户
             userProfile = UserProfile.getWithUid(gameUid);
             if (userProfile == null) {
                 throw new COKException(GameExceptionCode.UID_NOT_EXIST,"uid not exist!!");
@@ -123,43 +126,21 @@ public class UserService {
             userProfile.setLoginInfo(loginInfo);
             synUserProfileProperty(userProfile);
         }
-//        user.setProperty("uid", userProfile.getUid());
-//        user.setProperty("name", userProfile.getName());
-//        user.setProperty("version", userProfile.getAppVersion());
-//        user.setProperty("loginTime", System.currentTimeMillis());
-//        if (StringUtils.isNotBlank(userProfile.getLang())) {
-//            user.setProperty("lang", userProfile.getLang());
-//        }
-//        if (StringUtils.isNotBlank(userProfile.getAllianceId())) {
-//            user.setProperty("allianceId", userProfile.getAllianceId());
-//        }
-//        userProfile.setSfsUser(user);
         saveLoginInfo(userProfile);
         GameEngine.getInstance().addUserProfile(userProfile);
-//        user.setProperty("logined", true);
-//        user.setProperty("worldId", userProfile.getUserWorld().getWorldId());
         userProfile.setLoginTime(StatLogin.writelog(userProfile, address));
-//        new SharedUserService().updateUserOnline(userProfile.getUid(), true);//更新上线状态
+
+        //新手逻辑.....
         if(isRegister){
-            //新手发迁城道具 这里cache里已经存在userprofile
+
 //            ItemManager.addItem(userProfile, GoodsType.WORLD_NEW_POINT_MV_CITY_V2.getGoodsId(), 2, 0, true, LoggerUtil.GoodsGetType.UPGRADE_BUILDING);
-            MailServicePlus.sendMailByMailXml(userProfile.getUid(), "11629", null, null, MailSrcFuncType.newUserItem);
-//            String pf=userProfile.getPf();
-            if(SwitchConstant.ChinaUserMailSwitch.isSwitchOpen())
-            {
-//                if(pf!=null && pf.toLowerCase().startsWith("cn_"))
-//                {
-                    try
-                    {
-                        MailServicePlus.sendMailByMailXml(userProfile.getUid(), "11906", null, null, MailSrcFuncType.newUserItem);
-                    }catch (Exception e)
-                    {
-                        e.printStackTrace();
-                    }
+//            MailServicePlus.sendMailByMailXml(userProfile.getUid(), "11629", null, null, MailSrcFuncType.newUserItem);
 
-//                }
+            //分渠道新手逻辑
+            String pf=userProfile.getPf();
+            if(SwitchConstant.ChinaUserMailSwitch.isSwitchOpen()) {
+
             }
-
         }
         return userProfile;
     }
@@ -233,15 +214,15 @@ public class UserService {
         SqlSession session = MyBatisSessionUtil.getInstance().getBatchSession();
         UserProfile userProfile = null;
         try {
-//            userProfile =  UserProfile.newInstance(session, loginInfo)
-//                    .onRegister(session);
-//            StatReg.writelog(userProfile, session, loginInfo, ipAddress);
-//            StatAf.writelog(userProfile, session, loginInfo);
-//            session.commit();
-//            userProfile.setLoginInfo(loginInfo);
+            userProfile =  UserProfile.newInstance(session, loginInfo)
+                    .onRegister(session);
+            StatReg.writelog(userProfile, session, loginInfo, ipAddress);
+            StatAf.writelog(userProfile, session, loginInfo);
+            session.commit();
+            userProfile.setLoginInfo(loginInfo);
             UserService.insertGlobalAccount(userProfile);
             AccountDeviceMapping.addMapping(userProfile.getUid(), loginInfo.getDeviceId(), AccountDeviceMapping.AccountDeviceMappingType.REGISTER);
-//            UserService.insertPhoneStatInfo(userProfile);
+            UserService.insertPhoneStatInfo(userProfile);
             userProfile.setLastUpdateTime();
         } catch (Exception e) {
             session.rollback();
@@ -269,16 +250,6 @@ public class UserService {
 //                    }
                 }
             }
-            //韩国时间5.22 12:00到6.4 24:00注册奖励
-//            if(userProfile != null && "tstore".equals(userProfile.getPf())){
-//                if(System.currentTimeMillis() > 1432263600000l && System.currentTimeMillis() < 1433430000000l){
-//                    String title = "TSTORE 신규가입 이벤트 보너스 발송";
-//                    //150000木头*1，150000粮食*1，喇叭*4, 50体力*2，8h战争守护
-//                    String reward = "goods,209302,1|goods,209332,1|goods,200011,4|goods,200381,2|goods,200410,1";
-//                    String contents = "안녕하세요! Clash Of Kings TSTORE버전 신규 가입을 축하드립니다. 아래 보너스를 받으시고 게임내에서 유용하게 사용하시길 바랍니다. 즐거운 Clash Of Kings 되세요!";
-//                    MailServicePlus.sendSystemMail(userProfile.getUid(), title, MailType.System, reward, contents, false, System.currentTimeMillis());
-//                }
-//            }
         }
         return userProfile;
     }

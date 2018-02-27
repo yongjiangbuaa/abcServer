@@ -11,9 +11,9 @@ import org.slf4j.LoggerFactory;
 public class COKLoggerFactory {
     private static final ThreadLocalStringBuilder threadLocalStringBuilderHolder = new ThreadLocalStringBuilder(128);
 
-    public static final Logger userLogger = LoggerFactory.getLogger("com.elex.cok.user");
-    public static final Logger exceptionLogger = LoggerFactory.getLogger("com.elex.cok.MoniterTestException");
-    public static final Logger USER_RESOURCE_LOGGER = LoggerFactory.getLogger("com.elex.cok.es.user.resource");
+    public static final Logger userLogger = LoggerFactory.getLogger("com.geng.user");
+    public static final Logger exceptionLogger = LoggerFactory.getLogger("com.geng.MoniterTestException");
+    public static final Logger USER_RESOURCE_LOGGER = LoggerFactory.getLogger("com.geng.es.user.resource");
 
     public static final Logger zhengchengLogger = LoggerFactory.getLogger("zhengcheng@elex-tech.com");
     public static final Logger wangzhiyuanLogger = LoggerFactory.getLogger("wangzhiyuan@elex-tech.com");

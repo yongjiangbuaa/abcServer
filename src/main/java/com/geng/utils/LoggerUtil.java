@@ -22,11 +22,15 @@ public class LoggerUtil {
 
     }
 
+    public void recordMailGiftLog(String uid, String senderUid, String targetUid, byte[] contents, String rewardId, Object o, long createTime) {
+
+    }
+
     public enum GoodsUseType {
     }
 
     public enum GoodsGetType {
-         LEVEL_UP, BUY;
+         LEVEL_UP, BUY, REWARD_RANDOM;
     }
     public static LoggerUtil getInstance() {
         return LazyHolder.INSTANCE;

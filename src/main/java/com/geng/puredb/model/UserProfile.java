@@ -2,12 +2,13 @@ package com.geng.puredb.model;
 
 import com.geng.core.data.ISFSObject;
 import com.geng.core.data.SFSObject;
-import com.geng.db.MyBatisSessionUtil;
 import com.geng.exceptions.COKException;
 import com.geng.exceptions.GameExceptionCode;
 import com.geng.gameengine.login.LoginInfo;
 import com.geng.puredb.dao.UserProfileMapper;
 import com.geng.utils.LoggerUtil;
+import com.geng.utils.MyBatisSessionUtil;
+import com.google.common.base.Optional;
 import org.apache.ibatis.session.SqlSession;
 
 public class UserProfile {
@@ -360,7 +361,7 @@ public class UserProfile {
 
     public   void insert(){
 
-        SqlSession session = MyBatisSessionUtil.getSession();
+        SqlSession session = MyBatisSessionUtil.getInstance().getSession();
         try {
             UserProfileMapper mapper = session.getMapper(UserProfileMapper.class);
             mapper.insert(this);
@@ -370,7 +371,7 @@ public class UserProfile {
     }
 
     public   void update(){
-        SqlSession session = MyBatisSessionUtil.getSession();
+        SqlSession session = MyBatisSessionUtil.getInstance().getSession();
         try {
             UserProfileMapper mapper = session.getMapper(UserProfileMapper.class);
             mapper.updateByPrimaryKeySelective(this);
@@ -380,7 +381,7 @@ public class UserProfile {
     }
 
     public static UserProfile getWithUid(String uid){
-        SqlSession session = MyBatisSessionUtil.getSession();
+        SqlSession session = MyBatisSessionUtil.getInstance().getSession();
         try {
             UserProfileMapper mapper = session.getMapper(UserProfileMapper.class);
             UserProfile userProfile = mapper.selectByPrimaryKey(uid);
@@ -403,7 +404,7 @@ public class UserProfile {
 
     public static long getMaxNameIndex() {
         long idx= 0 ;
-        SqlSession session = MyBatisSessionUtil.getSession();
+        SqlSession session = MyBatisSessionUtil.getInstance().getSession();
         try {
             UserProfileMapper mapper = session.getMapper(UserProfileMapper.class);
              idx = mapper.getMaxNameIndex();
@@ -425,7 +426,7 @@ public class UserProfile {
         return outData;
     }
 
-    private void getLoginInfo(ISFSObject outData){
+    public void getLoginInfo(ISFSObject outData){
         ISFSObject userInfoObj = new SFSObject();
         userInfoObj.putUtfString("uuid", loginInfo != null ? loginInfo.getUuid() : "");
         userInfoObj.putUtfString("name", name);
@@ -514,5 +515,50 @@ public class UserProfile {
         }
 
         return remainTotal;
+    }
+
+    public LoginInfo getLoginInfo() {
+        return loginInfo;
+    }
+
+    public static String getLastUpdateInfoTime(String fromUser) {
+        return null;
+    }
+
+    public Object getMailLock() {
+        return new Object();
+    }
+
+    public Optional<String> getAllianceSimpleName() {
+        return null;
+    }
+
+    public void setLoginTime(Long writelog) {
+
+    }
+
+    public void setLastLoginTime(long l) {
+
+    }
+
+    public void setLoginInfo(LoginInfo loginInfo) {
+
+    }
+
+
+    public long getLoginTime() {
+        return 0;
+    }
+
+    public static String selectName(String uid) {
+        return null;
+    }
+
+    public void setLastUpdateTime() {
+
+    }
+
+    public String getAllianceId() {
+        return null;
     }
 }

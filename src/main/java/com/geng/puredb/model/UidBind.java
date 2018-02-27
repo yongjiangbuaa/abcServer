@@ -1,6 +1,6 @@
 package com.geng.puredb.model;
 
-import com.geng.db.MyBatisSessionUtil;
+import com.geng.utils.MyBatisSessionUtil;
 import com.geng.puredb.dao.UidBindMapper;
 import org.apache.ibatis.session.SqlSession;
 
@@ -47,7 +47,7 @@ public class UidBind {
 
     public  static void insert(UidBind bind){
 
-        SqlSession session = MyBatisSessionUtil.getSession();
+        SqlSession session = MyBatisSessionUtil.getInstance().getSession();
         try {
             UidBindMapper mapper = session.getMapper(UidBindMapper.class);
             mapper.insert(bind);
@@ -57,7 +57,7 @@ public class UidBind {
     }
 
     public  static void update(UidBind UidBind){
-        SqlSession session = MyBatisSessionUtil.getSession();
+        SqlSession session = MyBatisSessionUtil.getInstance().getSession();
         try {
             UidBindMapper mapper = session.getMapper(UidBindMapper.class);
             mapper.updateByPrimaryKeySelective(UidBind);
@@ -67,7 +67,7 @@ public class UidBind {
     }
 
     public static UidBind getWithbindId(String bindId){
-        SqlSession session = MyBatisSessionUtil.getSession();
+        SqlSession session = MyBatisSessionUtil.getInstance().getSession();
         try {
             UidBindMapper mapper = session.getMapper(UidBindMapper.class);
             UidBind UidBind = mapper.selectByPrimaryKey(bindId);

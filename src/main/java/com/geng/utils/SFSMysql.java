@@ -1,12 +1,20 @@
 /**
  * @author: lifangkai@elex-tech.com
  * @date: 2013年9月4日 下午3:00:22
- *//*
-
+ */
 package com.geng.utils;
 
-import com.geng.core.db.IDBManager;
+import com.geng.exceptions.ExceptionMonitorType;
 import com.geng.utils.distributed.SqlParamsObj;
+import com.geng.utils.properties.PropertyFileReader;
+import com.geng.utils.xml.GameConfigManager;
+import com.google.common.base.Optional;
+import com.geng.core.db.DBConfig;
+import com.geng.core.db.IDBManager;
+import com.geng.core.db.SFSDBManager;
+import com.geng.core.Zone;
+import com.geng.core.data.ISFSArray;
+import com.geng.core.data.SFSArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -17,14 +25,15 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-*/
 /**
  * Mysql数据库操作接口
- *//*
-
+ */
 public class SFSMysql {
     private static final Logger logger = LoggerFactory.getLogger(SFSMysql.class);
     private static final String JDBC_URL = "jdbc:mysql://%s:3306/%s";
@@ -49,13 +58,11 @@ public class SFSMysql {
         return instance;
     }
 
-    */
-/**
+    /**
      * 获取数据库连接，方便灵活使用
      *
      * @return
-     *//*
-
+     */
     public Optional<Connection> getConnection() {
         try {
             Connection connection = dbManager.getConnection();
@@ -76,14 +83,12 @@ public class SFSMysql {
 		}
 	}
 
-    */
-/**
+    /**
      * 有事务的批量执行
      *
      * @param isAutoCommit
      * @param sqlList
-     *//*
-
+     */
     public boolean executeBatch(boolean isAutoCommit, List<String> sqlList) {
         boolean flag = false;
         Optional<Connection> connectionOptional = getConnection();
@@ -127,11 +132,9 @@ public class SFSMysql {
         return flag;
     }
 
-    */
-/**
+    /**
      * 有事务的批量执行
-     *//*
-
+     */
     public boolean executeUpdateWithTransaction(List<SqlParamsObj> sqlParamsObjList) {
         boolean flag = false;
         Optional<Connection> connectionOptional;
@@ -179,14 +182,12 @@ public class SFSMysql {
         return flag;
     }
 
-    */
-/**
+    /**
      * 有事务的批量执行
      *
      * @param isAutoCommit
      * @param sqlList
-     *//*
-
+     */
     public boolean executeGlobalBatch(boolean isAutoCommit, List<String> sqlList) {
         boolean flag = false;
         Optional<Connection> connectionOptional = getGlobalConnection();
@@ -231,11 +232,9 @@ public class SFSMysql {
         return flag;
     }
 
-    */
-/**
+    /**
      * 有事务的批量执行
-     *//*
-
+     */
     public boolean executeUpdateGlobalWithTransaction(List<SqlParamsObj> sqlParamsObjList) {
         boolean flag = false;
         Optional<Connection> connectionOptional = getGlobalConnection();
@@ -280,15 +279,13 @@ public class SFSMysql {
         return flag;
     }
 
-    */
-/**
+    /**
      * 本服查询
      *
      * @param sql
      * @param params
      * @return
-     *//*
-
+     */
     public ISFSArray query(String sql, Object[] params) {
         ISFSArray retArray = new SFSArray();
         try {
@@ -304,14 +301,12 @@ public class SFSMysql {
         return query(sql, new Object[]{});
     }
 
-    */
-/**
+    /**
      * 本服插入更新
      *
      * @param sql
      * @param params
-     *//*
-
+     */
     public void execute(String sql, Object[] params) {
         try {
             dbManager.executeUpdate(sql, params);
@@ -329,16 +324,14 @@ public class SFSMysql {
         execute(sql, new Object[]{});
     }
 
-	*/
-/**
+	/**
 	 * 使用MySQL的insert ... values ()... ON DUPLICATE KEY UPDATE ... 来进行批量插入更新
 	 * @param tableName
 	 * @param fieldList
 	 * @param values
 	 * @param updateFields
 	 * @param batchCount
-	 *//*
-
+	 */
     public static void insertBatchWithUpdate(String tableName, List<String> fieldList, List<String> values, List<String> updateFields, int batchCount) {
 		StringBuilder sqlBuilder = new StringBuilder(512);
 		sqlBuilder.append("insert into ").append(tableName).append("(").append(fieldList.get(0));
@@ -378,14 +371,12 @@ public class SFSMysql {
 		}
 	}
 
-    */
-/**
+    /**
      * 批量插入
      *
      * @param values
      * @param batchCount
-     *//*
-
+     */
     public static void insertBatch(String tableName, List<String> fieldList, List<String> values, int batchCount) {
         StringBuilder sqlBuilder = new StringBuilder(512);
         sqlBuilder.append("insert into ").append(tableName).append("(").append(fieldList.get(0));
@@ -413,14 +404,12 @@ public class SFSMysql {
         }
     }
 
-    */
-/**
+    /**
      * 返回批量插入的sql列表
      *
      * @param values
      * @param batchCount
-     *//*
-
+     */
     public static List<String> generateInsertBatchSqlList(String tableName, List<String> fieldList, List<String> values, int batchCount) {
         List<String> sqlList = new ArrayList<>();
         StringBuilder sqlBuilder = new StringBuilder("insert into ");
@@ -450,15 +439,13 @@ public class SFSMysql {
         return sqlList;
     }
 
-    */
-/**
+    /**
      * 全局查询
      *
      * @param sql
      * @param params
      * @return
-     *//*
-
+     */
     public ISFSArray queryGlobal(String sql, Object[] params) {
         ISFSArray retArray = new SFSArray();
         try {
@@ -470,14 +457,12 @@ public class SFSMysql {
         return retArray;
     }
 
-    */
-/**
+    /**
      * 全局执行
      *
      * @param sql
      * @param params
-     *//*
-
+     */
     public boolean executeGlobal(String sql, Object[] params) {
         try {
             globalDBManager.executeUpdate(sql, params);
@@ -489,14 +474,12 @@ public class SFSMysql {
         }
     }
 
-    */
-/**
+    /**
      * 全局插入
      * @param sql
      * @param params
      * @return
-     *//*
-
+     */
     public Object executeGlobalSave(String sql, Object[] params){
         try {
             Object ret = globalDBManager.executeInsert(sql, params);
@@ -538,14 +521,12 @@ public class SFSMysql {
         payDBManager.executeUpdate(sql, params);
     }
 
-    */
-/**
+    /**
      * 跨服数据库连接
      *
      * @param serverId
      * @return
-     *//*
-
+     */
     private JdbcTemplate getJdbcTemplate(int serverId) {
         JdbcTemplate jdbcTemplate;
         if (serverJdbcTemplateMap.containsKey(serverId)) {
@@ -599,16 +580,14 @@ public class SFSMysql {
     }
 
 
-	*/
-/**
+	/**
      *
      * @deprecated  Please use queryCrossServer(int serverId, String sql) or
      *                  queryCrossServer(int serverId, String sql, Object ... args )
      * @param sql
      * @param serverId
      * @return
-     *//*
-
+     */
     @Deprecated
     public Map<String, Object> queryCrossServer(String sql, int serverId) {
         Map<String, Object> map = new HashMap<>();
@@ -668,13 +647,11 @@ public class SFSMysql {
         this.dbManager.init(null);
     }
 
-    */
-/**
+    /**
      * 初始化全局数据库连接
      *
      * @param zone
-     *//*
-
+     */
     private void initGlobalDBManager(Zone zone) {
         DBConfig dbConfig = new DBConfig();
         dbConfig.active = true;
@@ -692,13 +669,11 @@ public class SFSMysql {
         globalDBManager.init(zone);
     }
 
-    */
-/**
+    /**
      * 初始化支付数据库连接
      *
      * @param zone
-     *//*
-
+     */
     private void initPayDBManager(Zone zone) {
         DBConfig dbConfig = new DBConfig();
         dbConfig.active = true;
@@ -716,11 +691,9 @@ public class SFSMysql {
         payDBManager.init(zone);
     }
 
-    */
-/**
+    /**
      * 单元测试方法，线上不可用
-     *//*
-
+     */
     public void initTestDbManager() {
         DBConfig dbConfig = new DBConfig();
         dbConfig.active = true;
@@ -745,4 +718,3 @@ public class SFSMysql {
         }
     }
 }
-*/

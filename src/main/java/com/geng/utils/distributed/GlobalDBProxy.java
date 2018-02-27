@@ -1,10 +1,15 @@
 package com.geng.utils.distributed;
 
-import com.geng.core.data.*;
+import com.geng.gameengine.AccountService;
 import com.geng.gameengine.login.LoginInfo;
 import com.geng.puredb.model.UserProfile;
-import com.geng.service.AccountService;
-import org.apache.commons.lang3.StringUtils;
+import com.geng.utils.CommonUtils;
+import com.geng.utils.Constants;
+import com.geng.utils.SFSMysql;
+import com.google.api.client.repackaged.com.google.common.base.Joiner;
+import com.google.common.base.Optional;
+import com.geng.core.data.*;
+import org.apache.commons.lang.StringUtils;
 
 import java.util.*;
 
@@ -198,7 +203,7 @@ public class GlobalDBProxy {
         return weakBindMap.keySet().contains(pf);
     }
 
-/*    public static boolean insertGlobalAccount(UserProfile userProfile, String googleAccount, String facebookAccount, String facebookAccountName, String gcName, int serverId) {
+    public static boolean insertGlobalAccount(UserProfile userProfile, String googleAccount, String facebookAccount, String facebookAccountName, String gcName, int serverId) {
         String gameUid = userProfile.getUid();
         List<SqlParamsObj> sqlParamsObjList = new ArrayList<>();
         List<String> accountFields = new ArrayList<>(Arrays.asList("uuid", "gameUid", "server", "deviceId"));
@@ -284,25 +289,25 @@ public class GlobalDBProxy {
         sb.append(")");
         sqlParamsObjList.add(0, new SqlParamsObj(sb.toString(), accountParams.toArray()));
         return SFSMysql.getInstance().executeUpdateGlobalWithTransaction(sqlParamsObjList);
-    }*/
+    }
 
     //自动绑定的渠道不允许start new game
     public static boolean canStartNewGame(String uid) {
         //由于渠道数量太多，取消bindlist的判断
-//        ISFSArray bindInfo = getAccountBindInfo(uid, null, MAPPING_TYPE.multiPlatformList);
-//        if (bindInfo.size() > 0) {
-//            return false;
-//        }
+        ISFSArray bindInfo = getAccountBindInfo(uid, null, MAPPING_TYPE.multiPlatformList);
+        if (bindInfo.size() > 0) {
+            return false;
+        }
         return true;
     }
 
     /**
      * 查看玩家绑定的账号
-     * @param
-     * @param  ①为null，表示不分pf ②不为null且有值，根据需要查询相关数据
+     * @param uid
+     * @param bindPfList ①为null，表示不分pf ②不为null且有值，根据需要查询相关数据
      * @return
      */
-    /*public static ISFSArray getAccountBindInfo(String uid, List<String> bindPfList, List<String> nonBindPfList) {
+    public static ISFSArray getAccountBindInfo(String uid, List<String> bindPfList, List<String> nonBindPfList) {
         String sql = "select * from userbindmappingreverse where gameUid = ?";
         ISFSArray bindInfo = new SFSArray();
         List<String> paramList = new ArrayList<>();
@@ -336,7 +341,7 @@ public class GlobalDBProxy {
 //            }
         }
         return bindInfo;
-    }*/
+    }
 
     //自动绑定的版本，多个包可能绑定同一个账号
     public static String getRealBindPf(String bindPf){
@@ -345,11 +350,11 @@ public class GlobalDBProxy {
         return bindPf;
     }
 
-/*    public static boolean checkAccountBind(String uid, String bindPf, String bindId) {
-//        String sql = "select * from userbindmapping where mappingType = ? and mappingValue = ? and gameUid = ? ";
-//        ISFSArray bindInfoArray = SFSMysql.getInstance().queryGlobal(sql, new Object[]{getRealBindPf(bindPf), bindId, uid});
-//        if (bindInfoArray.size() > 0)
-//            return true;
+    public static boolean checkAccountBind(String uid, String bindPf, String bindId) {
+        String sql = "select * from userbindmapping where mappingType = ? and mappingValue = ? and gameUid = ? ";
+        ISFSArray bindInfoArray = SFSMysql.getInstance().queryGlobal(sql, new Object[]{getRealBindPf(bindPf), bindId, uid});
+        if (bindInfoArray.size() > 0)
+            return true;
         return false;
     }
 
@@ -480,7 +485,7 @@ public class GlobalDBProxy {
         return SFSMysql.getInstance().executeGlobalBatch(false, sqlList);
     }
 
-    *//**
+    /**
      * 去除旧账号绑定，绑定到新账号上
      * @param oldUid
      * @param newUid
@@ -488,7 +493,7 @@ public class GlobalDBProxy {
      * @param account
      * @param accountName
      * @return
-     *//*
+     */
     public static boolean updateDeviceCorrelation(String oldUid, String newUid, MAPPING_TYPE mappingType, String account, String accountName){
         List<SqlParamsObj> uidSqlParamsList = GlobalDBProxy.toUpdateAccountByType(oldUid, mappingType, "", "",  null);//解绑
         List<SqlParamsObj> uidSqlParamsList2 = GlobalDBProxy.toUpdateAccountByType(newUid, mappingType, account, accountName, null);//解绑
@@ -635,14 +640,14 @@ public class GlobalDBProxy {
         return retObj;
     }
 
-    *//**
+    /**
      * 旧版绑定，新加绑定请使用下面一个方法
      *
      * @param gameUid
      * @param mappingType
      * @param mappingValue
      * @return
-     *//*
+     */
     public static SqlParamsObj toInsertAccountMappingObj(String gameUid, MAPPING_TYPE mappingType, String mappingValue) {
         return new SqlParamsObj("insert usermapping(gameUid, mappingType, mappingValue) values(?, ?, ?)", new Object[]{gameUid, mappingType.toString(), mappingValue});
     }
@@ -780,5 +785,5 @@ public class GlobalDBProxy {
         }
 
         return retObj;
-    }*/
+    }
 }

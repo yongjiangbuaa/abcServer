@@ -1,5 +1,8 @@
 echo 0=$0
 echo 1=$1
+echo 2=$2
+echo 3=$3
+ARG=`echo $1|sed 's/,/;/g'`
 WWW=123.206.90.153:9933
 LOCAL=10.1.33.220:8080
 IP=$LOCAL
@@ -7,6 +10,6 @@ IP=$LOCAL
 #then
 #	IP=$WWW
 #fi
-CMD="curl -d '$1' -X POST http://$IP "
+CMD="curl -d $ARG -X POST http://$IP "
 echo "CMD=$CMD"
 `$CMD`

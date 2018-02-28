@@ -1,5 +1,6 @@
 package com.geng.puredb.model;
 
+import com.geng.core.ConcurrentLock;
 import com.geng.core.data.ISFSObject;
 import com.geng.core.data.SFSObject;
 import com.geng.exceptions.COKException;
@@ -9,7 +10,10 @@ import com.geng.puredb.dao.UserProfileMapper;
 import com.geng.utils.LoggerUtil;
 import com.geng.utils.MyBatisSessionUtil;
 import com.google.common.base.Optional;
+import org.apache.commons.lang.StringUtils;
 import org.apache.ibatis.session.SqlSession;
+
+import java.util.Stack;
 
 public class UserProfile {
     private String uid;
@@ -516,6 +520,54 @@ public class UserProfile {
 
         return remainTotal;
     }
+
+    /*public static UserProfile getLoggedUserProfile(String uid, boolean checkLock){
+        return getLoggedUserProfile(uid, checkLock, null);
+    }
+
+    public static UserProfile getLoggedUserProfile(String uid, boolean checkLock, LoginInfo loginInfo){
+        if(checkLock && isUserOnLogin(uid)){
+            return null;
+        }
+        ConcurrentLock.LockValue lock = new ConcurrentLock.LockValue(ConcurrentLock.LockType.USER_LOGIN_IN, uid);
+        ConcurrentLock.getInstance().lock(lock);
+        Stack<String> loginDebugStack = new Stack<>();
+        UserProfile userProfile;
+        SqlSession session = MyBatisSessionUtil.getInstance().getBatchSession();
+        try{
+            userProfile = session.getMapper(UserProfileMapper.class).selectByUID(uid);
+            if(userProfile == null){
+                return null;
+            }else if(loginInfo != null){
+                userProfile.setPlayerLogin(true);
+                if(StringUtils.isNotBlank(userProfile.getAppVersion())){
+                    userProfile.setLastAppVersion(userProfile.getAppVersion());
+                }
+                if(StringUtils.isNotBlank(loginInfo.getClientVersion())){
+                    userProfile.setAppVersion(loginInfo.getClientVersion());
+                }
+                if(StringUtils.isNotBlank(loginInfo.getPf())){
+                    userProfile.setPf(loginInfo.getPf());
+                }
+                if(StringUtils.isNotBlank(loginInfo.getRecallId())){
+                    userProfile.setPromotionId(loginInfo.getRecallId());
+                }
+            }
+            userProfile.onLogin(session, loginDebugStack);
+            session.commit();
+            return userProfile;
+        }catch(Exception e){
+            String errorStage = loginDebugStack.isEmpty() ? "start" : loginDebugStack.pop();
+            String errMsg = String.format("loading user %s in %s", uid, errorStage);
+            COKLoggerFactory.monitorException(errMsg, ExceptionMonitorType.LOGIN, COKLoggerFactory.ExceptionOwner.COMMON, e);
+            logger.error(COKLoggerFactory.formatLog(ExceptionMonitorType.LOGIN, COKLoginExceptionType.DATA_LOAD, uid, errorStage));
+            return null;
+        }finally{
+            session.close();
+            session = null; //huangyuanqiang
+            ConcurrentLock.getInstance().unLock(lock);
+        }
+    }*/
 
     public LoginInfo getLoginInfo() {
         return loginInfo;

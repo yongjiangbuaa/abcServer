@@ -2,8 +2,11 @@ package com.geng.utils;
 
 import com.geng.exceptions.ExceptionMonitorType;
 import com.geng.gameengine.login.COKLoginExceptionType;
+import com.geng.utils.stat.StatType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 /**
  * Created by lifangkai on 15/1/15.
@@ -91,7 +94,7 @@ public class COKLoggerFactory {
                 .append(Constants.LOG_SEPARATOR).append(desc);
         return log.toString();
     }
-/**
+
     public static String formatLog(StatType type, Object[] array) {
         StringBuilder log = threadLocalStringBuilderHolder.get().getStringBuilder();
         log.append(Constants.SERVER_ID);
@@ -114,5 +117,5 @@ public class COKLoggerFactory {
             }
         }
         return log.toString();
-    }**/
+    }
 }

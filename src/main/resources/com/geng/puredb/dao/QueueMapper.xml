@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.geng.puredb.dao.QueueMapper">
+    <resultMap id="QueueMap" type="com.geng.puredb.model.Queue">
+        <id column="uuid" jdbcType="VARCHAR" property="uuid" />
+        <result column="ownerId" jdbcType="VARCHAR" property="ownerId" />
+        <result column="qid" jdbcType="INTEGER" property="qid" />
+        <result column="type" jdbcType="INTEGER" property="type" />
+        <result column="itemId" jdbcType="VARCHAR" property="itemId" />
+        <result column="startTime" jdbcType="BIGINT" property="startTime" />
+        <result column="endTime" jdbcType="BIGINT" property="endTime" />
+        <result column="updateTime" jdbcType="BIGINT" property="updateTime" />
+        <result column="isHelped" jdbcType="INTEGER" property="isHelped" />
+        <result column="para" jdbcType="INTEGER" property="para" />
+        <result column="farmernum" jdbcType="INTEGER" property="farmerNum" />
+    </resultMap>
+
+    <select id="select" parameterType="java.lang.String" resultMap="QueueMap">
+        select
+        *
+        from queue
+        where ownerId = #{ownerId,jdbcType=VARCHAR}
+        order by updateTime asc
+    </select>
+
+    <insert id="insert" parameterType="com.geng.puredb.model.Queue">
+        insert into queue (uuid, ownerId, qid, type, itemId, startTime, endTime, updateTime, isHelped, para,farmernum)
+        values
+          (
+          #{uuid,jdbcType=VARCHAR}, #{ownerId,jdbcType=VARCHAR},
+          #{qid,jdbcType=INTEGER}, #{type,jdbcType=INTEGER},
+          #{itemId,jdbcType=VARCHAR}, #{startTime,jdbcType=BIGINT}, #{endTime,jdbcType=BIGINT},
+          #{updateTime,jdbcType=BIGINT}, 0, #{para,jdbcType=INTEGER},#{farmerNum,jdbcType=INTEGER}
+          )
+    </insert>
+
+    <insert id="insertBatch" parameterType="java.util.List">
+        INSERT INTO queue (uuid, ownerId, qid, type, itemId, startTime, endTime, updateTime, isHelped, para,farmernum)
+        VALUES
+        <foreach collection="list" index="index" item="item" separator=",">
+            (
+            #{item.uuid,jdbcType=VARCHAR}, #{item.ownerId,jdbcType=VARCHAR},
+            #{item.qid,jdbcType=INTEGER}, #{item.type,jdbcType=INTEGER},
+            #{item.itemId,jdbcType=VARCHAR}, #{item.startTime,jdbcType=BIGINT}, #{item.endTime,jdbcType=BIGINT},
+            #{item.updateTime,jdbcType=BIGINT}, #{item.isHelped,jdbcType=INTEGER}, #{item.para,jdbcType=INTEGER},#{item.farmerNum,jdbcType=INTEGER}
+            )
+        </foreach>
+    </insert>
+
+    <update id="update" parameterType="com.geng.puredb.model.Queue">
+        update queue
+        set
+          itemId = #{itemId,jdbcType=VARCHAR},
+          startTime = #{startTime,jdbcType=BIGINT},
+          endTime = #{endTime,jdbcType=BIGINT},
+          updateTime = #{updateTime,jdbcType=BIGINT},
+          isHelped = #{isHelped,jdbcType=INTEGER},
+          para = #{para,jdbcType=INTEGER},
+          farmernum=#{farmerNum,jdbcType=INTEGER}
+        where uuid = #{uuid,jdbcType=VARCHAR}
+    </update>
+
+    <delete id="deleteByQidType" parameterType="java.util.Map" >
+      delete from queue where qid = #{qid,jdbcType=INTEGER}
+        and type = #{type,jdbcType=INTEGER}
+    </delete>
+
+    <delete id="delete" parameterType="java.lang.String" >
+        delete from queue where uuid = #{uuid,jdbcType=VARCHAR}
+    </delete>
+
+    <delete id="delUserQueues" parameterType="java.lang.String" >
+        delete from queue where ownerId = #{ownerId,jdbcType=VARCHAR} and type != 0
+    </delete>
+</mapper>

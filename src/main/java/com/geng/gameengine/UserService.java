@@ -108,6 +108,10 @@ public class UserService {
         return  handleLogin(loginInfo,"");
     }
 
+    private static LoginInfo transData2LoginInfo(String data) {
+        return null;
+    }
+
 
     /**
      * 登录处理 tcp长连接
@@ -139,9 +143,8 @@ public class UserService {
 //                throw new SFSException(String.format("load user:%s error", gameUid));
             }
             userProfile.setLoginInfo(loginInfo);
-            synUserProfileProperty(userProfile);
         }
-        saveLoginInfo(userProfile);
+        saveLoginInfo(userProfile);//In Redis
         GameEngine.getInstance().addUserProfile(userProfile);
         userProfile.setLoginTime(StatLogin.writelog(userProfile, address));
 
@@ -160,9 +163,7 @@ public class UserService {
         return userProfile;
     }
 
-    private static void synUserProfileProperty(UserProfile userProfile) {
 
-    }
 
     public static void updateIOSPlayerDeviceId(UserProfile userProfile, ISFSObject loginRetObj) {
         LoginInfo loginInfo = userProfile.getLoginInfo();
@@ -210,6 +211,10 @@ public class UserService {
         }
     }
 
+    /**
+     * 缓存登录信息 主要用到deviceId获取
+     * @param userProfile
+     */
     private static void saveLoginInfo(UserProfile userProfile) {
         LoginInfo loginInfo = userProfile.getLoginInfo();
         if (loginInfo != null && StringUtils.isNotBlank(loginInfo.getDeviceId())) {

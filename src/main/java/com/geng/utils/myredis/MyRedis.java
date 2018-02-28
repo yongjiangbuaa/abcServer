@@ -476,12 +476,13 @@ public final class MyRedis {
 
 
     public long hSet(String key, String field, String value) {
-        Jedis jedis = getClient();
+/*        Jedis jedis = getClient();
         try {
             return jedis.hset(key, field, value);
         } finally {
             jedis.close();
-        }
+        }*/
+        return 0L;
     }
 
     public Set<byte[]> hKeys(byte[] key) {

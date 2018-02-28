@@ -671,7 +671,7 @@ public class UserProfile {
 //        userProfile.setPromotionId(loginInfo.getRecallId());
 
 
-        //三消属性初始化 
+        //三消属性初始化
         userProfile.setHeart(5);
         userProfile.setGold(1000);
         userProfile.setStar(0);

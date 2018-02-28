@@ -16,21 +16,24 @@ public class Login implements IRequestHandler{
     public void handle(String deviceId, String uid, String data, StringBuilder sb) throws GameException {
         UserProfile userProfile = null;
         ISFSObject initObj = SFSObject.newInstance();
-//        if(!StringUtils.isEmpty(deviceId) && StringUtils.isEmpty(uid)){
-//            UidBind bind = UidBind.getWithbindId(deviceId);
-//            if(null == bind) {
+        if(!StringUtils.isEmpty(deviceId) && StringUtils.isEmpty(uid)){
+            UidBind bind = UidBind.getWithbindId(deviceId);
+            if(null == bind) {
                 //TODO find deviceMapping uid
 //                if(StringUtils.isBlank(data))
 //                    throw new GameException(GameExceptionCode.INVALID_OPT,"param not valid!! no data!");
-                userProfile = UserService.handleLogin(deviceId, data);//注册
-//            }else{
-//                userProfile = UserProfile.getWithUid(bind.getUid());
-//            }
+                userProfile = com.geng.service.UserService.Register(deviceId, data);//注册
+            }else{
+                userProfile = UserProfile.getWithUid(bind.getUid());
+            }
 
-//        }else if(!StringUtils.isEmpty(uid)){
-//             userProfile = UserProfile.getWithUid(uid);
-//             if (null == userProfile) throw new GameException(GameExceptionCode.UID_NOT_EXIST,"uid not exist!");
-//        }
+        }else if(!StringUtils.isEmpty(uid)){
+             userProfile = UserProfile.getWithUid(uid);
+             if (null == userProfile) throw new GameException(GameExceptionCode.UID_NOT_EXIST,"uid not exist!");
+        }
+
+//        userProfile = UserService.handleLogin(deviceId, data);//TODO 新协议支持登录时带入的信息存储及相关分析
+
         com.geng.service.UserService.checkHeartTime(userProfile);
 
         //组织返回数据

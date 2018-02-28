@@ -8,6 +8,7 @@ import com.geng.exceptions.COKException;
 import com.geng.exceptions.ExceptionMonitorType;
 import com.geng.exceptions.GameExceptionCode;
 //import com.geng.gameengine.GeoIpService;
+import com.geng.gameengine.GeoIpService;
 import com.geng.gameengine.ItemManager;
 //import com.geng.gameengine.Versions;
 //import com.geng.gameengine.pay.HexBin;
@@ -1120,9 +1121,9 @@ public final class CommonUtils {
         return flag;
     }
 
-//    public static String ip2Country(String ip) {
-//        return GeoIpService.getCountryCode(ip);
-//    }
+    public static String ip2Country(String ip) {
+        return GeoIpService.getCountryCode(ip);
+    }
 
     public static int checkAndMultiply(int left, int right) throws COKException {
         int result = left * right;

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.geng.puredb.dao.StatRegMapper" >
+  <resultMap id="BaseResultMap" type="com.geng.puredb.model.StatReg" >
+    <id column="uid" property="uid" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="INTEGER" />
+    <result column="time" property="time" jdbcType="BIGINT" />
+    <result column="pf" property="pf" jdbcType="VARCHAR" />
+    <result column="pfId" property="pfid" jdbcType="VARCHAR" />
+    <result column="referrer" property="referrer" jdbcType="VARCHAR" />
+    <result column="country" property="country" jdbcType="VARCHAR" />
+    <result column="ip" property="ip" jdbcType="VARCHAR" />
+    <result column="ipcountry" property="ipcountry" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    uid, type, time, pf, pfId, referrer, country, ip, ipcountry
+  </sql>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from stat_reg
+    where uid = #{uid,jdbcType=VARCHAR} order by time desc
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from stat_reg
+    where uid = #{uid,jdbcType=VARCHAR}
+  </delete>
+
+  <insert id="insert" parameterType="com.geng.puredb.model.StatReg" >
+    insert into stat_reg (uid, time, pf, 
+      pfId, referrer, country, type, ip, ipcountry
+      )
+    values (#{uid,jdbcType=VARCHAR}, #{time,jdbcType=BIGINT}, #{pf,jdbcType=VARCHAR}, 
+      #{pfid,jdbcType=VARCHAR}, #{referrer,jdbcType=VARCHAR}, #{country,jdbcType=VARCHAR}, #{type,jdbcType=INTEGER}
+      , #{ip,jdbcType=VARCHAR}, #{ipcountry,jdbcType=VARCHAR}
+      ) on duplicate key update type = type
+  </insert>
+
+</mapper>

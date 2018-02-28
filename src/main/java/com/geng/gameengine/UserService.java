@@ -21,6 +21,7 @@ import com.geng.gameengine.mail.MailSrcFuncType;
 //import com.geng.gameengine.world.finalize.WorldClearDeadAccountTask;
 //import com.geng.handlers.requesthandlers.mod.common.ModService;
 //import com.geng.puredb.dao.UserProfileDao;
+import com.geng.handlers.Login;
 import com.geng.puredb.model.*;
 import com.geng.utils.*;
 import com.geng.utils.distributed.GlobalDBProxy;
@@ -96,7 +97,20 @@ public class UserService {
     }
 
     /**
-     * 登录处理
+     * 登录处理 tcp/udp短连接
+     * @param deviceId
+     * @param data
+     * @return
+     * @throws COKException
+     */
+    public static UserProfile handleLogin(String deviceId,String data) throws COKException{
+        LoginInfo loginInfo= transData2LoginInfo(data);
+        return  handleLogin(loginInfo,"");
+    }
+
+
+    /**
+     * 登录处理 tcp长连接
      *
      * @throws
      */
@@ -106,6 +120,7 @@ public class UserService {
 
 //    public static UserProfile handleLogin(User user, LoginInfo loginInfo, String address) throws SFSException {
 //    }
+
 
     //不包含连接对象的方式  没有登录状态。 不缓存登录对象
     public static UserProfile handleLogin(LoginInfo loginInfo, String address) throws COKException {
@@ -349,7 +364,7 @@ public class UserService {
             userInfo = new SharedUserInfo(uid, obj);
         }
         return Optional.fromNullable(userInfo);
-    }
+    }**/
 
     private static void insertPhoneStatInfo(UserProfile userProfile) {
         LoginInfo loginInfo = userProfile.getLoginInfo();
@@ -362,7 +377,7 @@ public class UserService {
                                     loginInfo.getPhone_width(),
                                     loginInfo.getPhone_height()});
         }
-    }*/
+    }
 
     /**
      * 绑定账号

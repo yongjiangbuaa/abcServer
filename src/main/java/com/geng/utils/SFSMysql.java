@@ -644,7 +644,7 @@ public class SFSMysql {
         dbConfig.exhaustedPoolAction = PropertyFileReader.getItem("global_db_exhaustedPoolAction");
         dbConfig.testSql = "select 1";
         this.dbManager = new SFSDBManager(dbConfig);
-        this.dbManager.init(null);
+        this.dbManager.init(new Zone());
     }
 
     /**

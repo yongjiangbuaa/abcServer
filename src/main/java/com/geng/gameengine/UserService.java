@@ -109,7 +109,8 @@ public class UserService {
     }
 
     private static LoginInfo transData2LoginInfo(String data) {
-        return null;
+        ISFSObject loginData = SFSObject.newFromJsonData(data);
+        return new LoginInfo(loginData,"");
     }
 
 
@@ -250,27 +251,9 @@ public class UserService {
             throw new COKException(GameExceptionCode.INVALID_OPT,"register error");
         } finally {
             session.close();
-            session = null; //huangyuanqiang
-            if (userProfile != null && GameEngine.getInstance().isTestServer()) {
-//                RedisSession rs = null;
-                try {
-//                    rs = new RedisSession(false);
-                    String normalRegister = R.Local().hGet(Constants.TEST_SERVER_REGISTER_NORMAL, loginInfo.getDeviceId());
-                    if (normalRegister == null) {
-//                        new NPCPlayer(userProfile);
-                        R.Local().hincrBy(Constants.TEST_SERVER_REGISTER_COUNT_DAILY, String.valueOf(Constants.SERVER_ID), 1);
-//                        userProfile.getAchievementManager().addNewOnStrongHolderLevel();
-//                        userProfile.getAchievementManager().triggerAchievements(null);
-                    }
-                } catch (Exception e) {
-                    logger.error("set npc player error", e);
-                } finally {
-//                    if (rs != null) {
-//                        rs.close();
-//                    }
-                }
+//omit some of register test code !!
             }
-        }
+//        }
         return userProfile;
     }
 

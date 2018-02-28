@@ -5,10 +5,13 @@ import com.geng.core.data.ISFSObject;
 import com.geng.core.data.SFSObject;
 import com.geng.exceptions.COKException;
 import com.geng.exceptions.GameExceptionCode;
+import com.geng.gameengine.UserService;
 import com.geng.gameengine.login.LoginInfo;
 import com.geng.puredb.dao.UserProfileMapper;
+import com.geng.utils.Constants;
 import com.geng.utils.LoggerUtil;
 import com.geng.utils.MyBatisSessionUtil;
+import com.geng.utils.xml.GameConfigManager;
 import com.google.common.base.Optional;
 import org.apache.commons.lang.StringUtils;
 import org.apache.ibatis.session.SqlSession;
@@ -582,7 +585,7 @@ public class UserProfile {
     }
 
     public Optional<String> getAllianceSimpleName() {
-        return null;
+        return Optional.fromNullable("");
     }
 
     public void setLoginTime(Long writelog) {
@@ -615,10 +618,69 @@ public class UserProfile {
     }
 
     public static UserProfile newInstance(SqlSession session, LoginInfo loginInfo) {
-        return null;
+        UserProfile userProfile = new UserProfile();
+        String[] nameIdArr = UserService.generateDefaultUserName(loginInfo);
+        if(loginInfo != null && StringUtils.isNotBlank(loginInfo.getGooglePlayAccount())){
+            userProfile.setName(loginInfo.getGooglePlayAccount());
+        }else{
+            userProfile.setName(nameIdArr[0]);
+        }
+        userProfile.setUid(nameIdArr[1]);
+        userProfile.setLevel(1);
+        int ranPicNum;
+        int rd = Math.random() > 0.5 ? 1 : 0;
+        if(rd == 1){
+            ranPicNum = 3;
+        }else{
+            ranPicNum = 0;
+        }
+//        GameConfigManager picConfigMap = new GameConfigManager("characters");
+//        String ranPic = picConfigMap.getItem(Constants.PICTURE_CODE_PREFIX + ranPicNum).get("name");//得到具体的随机图片
+        String ranPic = "g052";//客户端要求初始化头像固定
+//        userProfile.setExp(0L);
+        userProfile.setPic(ranPic);
+        userProfile.setCrystal(0);
+        userProfile.setGcmRegisterId(loginInfo.getGcmRegisterId());
+        userProfile.setParseRegisterId(null);
+        userProfile.setCountry(loginInfo.getCountry());
+        userProfile.setRegTime(System.currentTimeMillis());
+        userProfile.setDeviceId(loginInfo.getDeviceId());
+        userProfile.setGaid(loginInfo.getGaid());
+        userProfile.setPlatform(loginInfo.getPlatform());
+        userProfile.setPf(loginInfo.getPf());
+        userProfile.setLang(loginInfo.getLang());
+        userProfile.setAppVersion(loginInfo.getClientVersion());
+        userProfile.setLastAppVersion(loginInfo.getClientVersion());
+        userProfile.setLastOnlineTime(System.currentTimeMillis());
+//        userProfile.setAllianceId("");
+        userProfile.setGmail(loginInfo.getGmail());
+        userProfile.setServerId(Constants.SERVER_ID);
+        userProfile.setCrossFightSrcServerId(- 1);
+//        userProfile.setNationalFlag(randomNationalFlag(loginInfo.getFromCountry())); //由ip所在国确定
+//        userProfile.setDragonEggType(0);//默认为0
+//        userProfile.culDragonEggEndTime();
+//        int eggInitDurationTime = Integer.parseInt(new GameConfigManager("item").getItem("hatch_dragon_egg").get("k1"));    //龙蛋孵化初始持续时间，默认20小时，按秒配置
+//        userProfile.setDragonEggDurationTime(eggInitDurationTime * 1000);
+        userProfile.setLastLoginTime(System.currentTimeMillis());
+//        userProfile.setCurGaid(loginInfo.getGaid());
+//        userProfile.setIsBusinessman(0);
+//        userProfile.setDragonEndTime(- 1);
+        UserProfileMapper userMapper = session.getMapper(UserProfileMapper.class);
+        userMapper.insert(userProfile);
+//        userProfile.setNewAccount(true);
+//        userProfile.setPromotionId(loginInfo.getRecallId());
+
+
+        //三消属性初始化 
+        userProfile.setHeart(5);
+        userProfile.setGold(1000);
+        userProfile.setStar(0);
+        userProfile.setHearttime(0L);
+        return userProfile;
     }
 
     public UserProfile onRegister(SqlSession session) {
-        return null;
+        //TODO business logic onRegister called here
+        return this;
     }
 }

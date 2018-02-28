@@ -30,6 +30,7 @@ public class SFSDBManager extends AbstractDBManager {
                 this.setupDriver();
                 this.active = true;
                 if (this.config.testSql != null && this.config.testSql.length() > 0) {
+                    this.log.info(this.config.testSql);
                     this.testSQLStatement();
                 }
             } catch (Exception ex) {

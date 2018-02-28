@@ -225,7 +225,7 @@ public class GameEngine {
 
 
     public void addUserProfile(UserProfile userProfile) {
-        userCache.put(userProfile.getUid(), userProfile);
+//        userCache.put(userProfile.getUid(), userProfile);
 //        ActorRef actorRef = createActor(PlayerActor.class, userProfile.getUid());
 //        userProfile.setActorRef(actorRef);
     }
@@ -651,7 +651,7 @@ public class GameEngine {
     }
 
     private void initDBManager() {
-//        SFSMysql.getInstance().init(cokExtension.getParentZone());
+        SFSMysql.getInstance().init(new Zone());
         MyBatisSessionUtil.getInstance().init();
     }
 
@@ -665,32 +665,32 @@ public class GameEngine {
         ClassLoader origLoader = Thread.currentThread().getContextClassLoader();
         ClassLoader extensionLoader = getClass().getClassLoader();
         Thread.currentThread().setContextClassLoader(extensionLoader);
-        String clientConfigFile = String.format("%s/rpcClient.xml", Constants.GAME_CONFIG_PATH);
-        File clientFile = new File(clientConfigFile);
-        // 首先检测带ServerId的配置文件, 这个是为了配合同一台物理服务器上面,同时共存多个区的情况
-        File serverFile = new File(String.format("%s/rpcServer%s.xml", Constants.GAME_CONFIG_PATH, Constants.SERVER_ID_STR));
-        String serverConfigFile = "/rpcServer.xml";
-        if (!clientFile.exists() && StringUtils.isBlank(getConfigProperties().getProperty("rpc_client_url"))) {
-            // 没有新的rpc模式的配置文件,使用旧的配置文件
-            serverConfigFile = String.format("%s/rmiServer%s.xml", Constants.GAME_CONFIG_PATH, getZoneIdStr());
-            clientConfigFile = String.format("%s/rmiClient.xml", Constants.GAME_CONFIG_PATH);
-        } else {
-            if (serverFile.exists()) {
-                serverConfigFile = serverFile.getPath();
-            }else {
-                // 再检测是否存在不带Server ID的通用配置文件
-                serverFile = new File(String.format("%s/rpcServer.xml", Constants.GAME_CONFIG_PATH));
-                if(serverFile.exists()) {
-                    serverConfigFile = serverFile.getPath();
-                }
-            }
-        }
-        if(serverContext == null){
-            logger.info("init spring server context with config {}", serverConfigFile);
-            Resource serverResource = new ClassPathResource(serverConfigFile, extensionLoader);
-            serverContext = new GenericXmlApplicationContext(serverResource);
-        }
-        initSpringClientContext(extensionLoader, clientConfigFile);
+//        String clientConfigFile = String.format("%s/rpcClient.xml", Constants.GAME_CONFIG_PATH);
+//        File clientFile = new File(clientConfigFile);
+//        // 首先检测带ServerId的配置文件, 这个是为了配合同一台物理服务器上面,同时共存多个区的情况
+//        File serverFile = new File(String.format("%s/rpcServer%s.xml", Constants.GAME_CONFIG_PATH, Constants.SERVER_ID_STR));
+//        String serverConfigFile = "/rpcServer.xml";
+//        if (!clientFile.exists() && StringUtils.isBlank(getConfigProperties().getProperty("rpc_client_url"))) {
+//            // 没有新的rpc模式的配置文件,使用旧的配置文件
+//            serverConfigFile = String.format("%s/rmiServer%s.xml", Constants.GAME_CONFIG_PATH, getZoneIdStr());
+//            clientConfigFile = String.format("%s/rmiClient.xml", Constants.GAME_CONFIG_PATH);
+//        } else {
+//            if (serverFile.exists()) {
+//                serverConfigFile = serverFile.getPath();
+//            }else {
+//                // 再检测是否存在不带Server ID的通用配置文件
+//                serverFile = new File(String.format("%s/rpcServer.xml", Constants.GAME_CONFIG_PATH));
+//                if(serverFile.exists()) {
+//                    serverConfigFile = serverFile.getPath();
+//                }
+//            }
+//        }
+//        if(serverContext == null){
+//            logger.info("init spring server context with config {}", serverConfigFile);
+//            Resource serverResource = new ClassPathResource(serverConfigFile, extensionLoader);
+//            serverContext = new GenericXmlApplicationContext(serverResource);
+//        }
+//        initSpringClientContext(extensionLoader, clientConfigFile);
         Thread.currentThread().setContextClassLoader(origLoader);
     }
 

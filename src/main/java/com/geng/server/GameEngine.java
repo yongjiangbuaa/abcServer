@@ -32,6 +32,7 @@ public class GameEngine {
     public void init(){
         HandlerRegisterCenter.getInstance();
         GameConfigManager.init();
+        com.geng.core.GameEngine.getInstance().init();
 
     }
 

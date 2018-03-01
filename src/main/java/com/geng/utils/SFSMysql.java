@@ -633,8 +633,8 @@ public class SFSMysql {
         DBConfig dbConfig = new DBConfig();
         dbConfig.active = true;
         dbConfig.driverName = "com.mysql.jdbc.Driver";
-        logger.debug("local db manager url:" + PropertyFileReader.getRealTimeItem("local.jdbc.url"));
-        dbConfig.connectionString = PropertyFileReader.getRealTimeItem("local.jdbc.url");
+        logger.debug("local db manager url:" + PropertyFileReader.getItem("local.jdbc.url"));
+        dbConfig.connectionString = PropertyFileReader.getItem("local.jdbc.url");
         dbConfig.userName = PropertyFileReader.getItem("local.jdbc.user");
         dbConfig.password = PropertyFileReader.getItem("local.jdbc.password");
 

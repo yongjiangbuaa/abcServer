@@ -47,7 +47,7 @@ public class PropertyFileReader {
         return cachedPropertyReader.getBooleanItem(key, defaultValue);
     }
 
-    public static String getRealTimeItem(String key, String defaultValue) {
+/*    public static String getRealTimeItem(String key, String defaultValue) {
         return realTimePropertyReader.getItem(key, defaultValue);
     }
 
@@ -86,5 +86,5 @@ public class PropertyFileReader {
 
     public static boolean getRealBooleanItem(String key, String defaultValue) {
         return realTimePropertyReader.getBooleanItem(key, defaultValue);
-    }
+    }*/
 }

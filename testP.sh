@@ -8,13 +8,13 @@ for a in "$@"; do
 done
 echo args=$ARGS
 ARG=`echo $1|sed 's/,/;/g'`
-WWW=123.206.90.153:9933
+WWW=123.206.90.153:5666
 LOCAL=10.1.33.220:8080
 IP=$LOCAL
-#if [ -n $2 ]
-#then
-#	IP=$WWW
-#fi
+if [ -n $2 ]
+then
+	IP=$WWW
+fi
 curl -d $ARG -X POST http://$IP 
 #CMD=curl -d $ARG{"deviceId":"1"} -X POST http://$IP 
 #echo "CMD=$CMD"

@@ -159,7 +159,7 @@ public class MyBatisSessionUtil {
 	 * 更新默认的SQL执行超时时间
 	 */
 	public int updateStatementTimeout() {
-		defaultStatementTimeout = PropertyFileReader.getRealTimeIntItem("mybatis.stmt.timeout", "30");
+		defaultStatementTimeout = PropertyFileReader.getIntItem("mybatis.stmt.timeout", "30");
 		setStatementTimeout(sqlSessionFactory, defaultStatementTimeout);
 		setStatementTimeout(unpooledSqlSessionFactory, defaultStatementTimeout);
 		return defaultStatementTimeout;
@@ -198,7 +198,7 @@ public class MyBatisSessionUtil {
         this.autoCloseLeakSessions = false;
     }
     private void refreshFlag(){
-		enableLeakSessionStackCapture = PropertyFileReader.getRealBooleanItem("mybatis.leak_session_stack","false");
+		enableLeakSessionStackCapture = PropertyFileReader.getBooleanItem("mybatis.leak_session_stack","false");
 		if (enableLeakSessionStackCapture){
 			logger.warn("Leak session stack capture enabled. Use this feature in product environment with caution.");
 		}

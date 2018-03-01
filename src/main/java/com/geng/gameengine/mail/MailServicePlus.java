@@ -461,7 +461,7 @@ public class MailServicePlus {
             contents =  StringUtils.replaceEach(contents, new String[]{"\\n"}, new String[]{"\n"});
             mailObj.putUtfString("contents", contents);
             if(isTranslate){
-                if(PropertyFileReader.getRealBooleanItem("mail_translation", "true"))
+                if(PropertyFileReader.getBooleanItem("mail_translation", "true"))
                     if(lang != null)
                         if(mType == 22 || mType == 24){
                             if(StringUtils.isNotBlank(translationId))

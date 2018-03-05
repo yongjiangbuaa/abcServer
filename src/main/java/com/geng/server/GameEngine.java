@@ -70,7 +70,6 @@ public class GameEngine {
 
     private void dispatchOp(String cmd, String data, String uid, String deviceId,StringBuilder sb) {
         logger.info("uid={} cmd={} device={} data={}",uid,cmd,deviceId,data);
-        logger.debug("uid={} cmd={} device={} data={}",uid,cmd,deviceId,data);
         //操作派发到相应类
         try {
             IRequestHandler handler = (IRequestHandler) HandlerRegisterCenter.getInstance().findHandlerInstance(cmd);

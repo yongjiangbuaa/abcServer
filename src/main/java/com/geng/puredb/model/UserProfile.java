@@ -459,6 +459,11 @@ public class UserProfile {
         initObj.putInt("heart",getHeart());
         initObj.putInt("level",getLevel());
         initObj.putLong("heartTime",getHearttime());
+        initObj.putUtfString("name",getName());
+        initObj.putUtfString("country",getCountry());
+        initObj.putUtfString("lang",getLang());
+        initObj.putUtfString("pf",getPf());
+
     }
 
     /**

@@ -9,6 +9,44 @@
     <result column="star" jdbcType="INTEGER" property="star" />
     <result column="heartTime" jdbcType="BIGINT" property="hearttime" />
     <result column="level" jdbcType="INTEGER" property="level" />
+    <!-- below extended feature -->
+    <result column="name" property="name" jdbcType="VARCHAR"/>
+    <result column="exp" property="exp" jdbcType="BIGINT"/>
+    <result column="gold" property="gold" jdbcType="BIGINT"/>
+    <result column="crystal" property="crystal" jdbcType="BIGINT"/>
+    <result column="paidGold" property="paidGold" jdbcType="BIGINT"/>
+    <result column="payTotal" property="payTotal" jdbcType="BIGINT"/>
+    <result column="parseRegisterId" property="parseRegisterId" jdbcType="VARCHAR"/>
+    <result column="gcmRegisterId" property="gcmRegisterId" jdbcType="VARCHAR"/>
+    <result column="openedPos" property="openedPos" jdbcType="VARCHAR"/>
+    <result column="pic" property="pic" jdbcType="VARCHAR"/>
+    <result column="picVer" property="picVer" jdbcType="INTEGER"/>
+    <result column="country" property="country" jdbcType="VARCHAR"/>
+    <result column="allianceId" property="allianceId" jdbcType="VARCHAR"/>
+    <result column="chNameCount" property="chNameCount" jdbcType="INTEGER"/>
+    <result column="deviceId" property="deviceId" jdbcType="VARCHAR"/>
+    <result column="gaid" property="gaid" jdbcType="VARCHAR"/>
+    <result column="platform" property="platform" jdbcType="VARCHAR"/>
+    <result column="pf" property="pf" jdbcType="VARCHAR"/>
+    <result column="lang" property="lang" jdbcType="VARCHAR"/>
+    <result column="appVersion" property="appVersion" jdbcType="VARCHAR"/>
+    <result column="gmFlag" property="gmFlag" jdbcType="INTEGER"/>
+    <result column="regTime" property="regTime" jdbcType="BIGINT"/>
+    <result column="offLineTime" property="offLineTime" jdbcType="BIGINT"/>
+    <result column="banTime" property="banTime" jdbcType="BIGINT"/>
+    <result column="chatBanTime" property="chatBanTime" jdbcType="BIGINT"/>
+    <result column="banGMName" property="banGMName" jdbcType="VARCHAR"/>
+    <result column="noticeBanTime" property="noticeBanTime" jdbcType="BIGINT"/>
+    <result column="lastOnlineTime" property="lastOnlineTime" jdbcType="BIGINT"/>
+    <result column="gmail" property="gmail" jdbcType="VARCHAR"/>
+    <result column="serverId" property="serverId" jdbcType="INTEGER"/>
+    <result column="bustPic" property="bustPic" jdbcType="VARCHAR"/>
+    <result column="lastLoginTime" property="lastLoginTime" jdbcType="BIGINT"/>
+    <result column="curGaid" property="curGaid" jdbcType="VARCHAR"/>
+    <result column="isBusinessman" property="isBusinessman" jdbcType="INTEGER" />
+    <result column="dragonEggType" property="dragonEggType" jdbcType="INTEGER"/>
+    <result column="dragonEggDurationTime" property="dragonEggDurationTime" jdbcType="BIGINT"/>
+    <result column="dragonEndTime" property="dragonEndTime" jdbcType="BIGINT"/>
   </resultMap>
   <sql id="Base_Column_List">
     uid, heart, gold, star, heartTime, level
@@ -24,12 +62,30 @@
     where uid = #{uid,jdbcType=VARCHAR}
   </delete>
   <insert id="insert" parameterType="com.geng.puredb.model.UserProfile">
-    insert into user_profile (uid, heart, gold, 
-      star, heartTime, level
+    insert into user_profile (uid, heart, gold, star, heartTime, level,
+    name,  exp, gold,crystal, paidGold, payTotal,parseRegisterId, gcmRegisterId,
+    openedPos, pic, picVer, country, allianceId, chNameCount, deviceId, gaid, platform, pf, lang, appVersion, gmFlag, nationalFlag,
+    regTime, offLineTime, lastOnlineTime, gmail, serverId, crossFightSrcServerId, lastModGoldGetTime, modGoldGetTimeInterval, modGoldAmount, beTrainingModTime,
+    lastAppVersion,bustPic,lastLoginTime, curGaid, isBusinessman,dragonEggType, dragonEggDurationTime, dragonEndTime)
       )
     values (#{uid,jdbcType=VARCHAR}, #{heart,jdbcType=INTEGER}, #{gold,jdbcType=INTEGER}, 
       #{star,jdbcType=INTEGER}, #{hearttime,jdbcType=BIGINT}, #{level,jdbcType=INTEGER}
-      )
+    #{name,jdbcType=VARCHAR},#{exp,jdbcType=BIGINT},
+    #{gold,jdbcType=BIGINT},
+    #{crystal,jdbcType=BIGINT},
+    #{paidGold, jdbcType=BIGINT},
+    #{payTotal, jdbcType=BIGINT},
+    #{parseRegisterId,jdbcType=VARCHAR}, #{gcmRegisterId,jdbcType=VARCHAR}, #{openedPos,jdbcType=VARCHAR},
+    #{pic,jdbcType=VARCHAR}, #{picVer,jdbcType=INTEGER}, #{country,jdbcType=VARCHAR}, #{allianceId,jdbcType=VARCHAR},
+    #{chNameCount,jdbcType=INTEGER}, #{deviceId,jdbcType=VARCHAR}, #{gaid,jdbcType=VARCHAR},
+    #{platform,jdbcType=VARCHAR}, #{pf,jdbcType=VARCHAR}, #{lang,jdbcType=VARCHAR}, #{appVersion,jdbcType=VARCHAR},
+    #{gmFlag,jdbcType=INTEGER}, #{nationalFlag, jdbcType=VARCHAR},
+    #{regTime,jdbcType=BIGINT}, #{offLineTime,jdbcType=BIGINT}, #{lastOnlineTime,jdbcType=BIGINT},
+    #{gmail,jdbcType=VARCHAR}, #{serverId,jdbcType=INTEGER}, #{crossFightSrcServerId,jdbcType=INTEGER},
+    #{lastModGoldGetTime,jdbcType=BIGINT},#{modGoldGetTimeInterval,jdbcType=BIGINT},
+    #{modGoldAmount,jdbcType=BIGINT},#{beTrainingModTime,jdbcType=BIGINT},#{lastAppVersion,jdbcType=VARCHAR},
+    #{bustPic,jdbcType=VARCHAR},#{lastLoginTime,jdbcType=BIGINT},
+    #{curGaid, jdbcType=VARCHAR},#{isBusinessman,jdbcType=INTEGER},#{dragonEggType,jdbcType=INTEGER}, #{dragonEggDurationTime,jdbcType=BIGINT},#{dragonEndTime,jdbcType=BIGINT} )
   </insert>
   <insert id="insertSelective" parameterType="com.geng.puredb.model.UserProfile">
     insert into user_profile

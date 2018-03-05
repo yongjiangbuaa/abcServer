@@ -7,6 +7,7 @@ import com.geng.puredb.model.UidBind;
 import com.geng.puredb.model.UserProfile;
 import com.geng.puredb.model.UserStory;
 import com.geng.utils.CommonUtils;
+import com.geng.utils.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,20 +35,20 @@ public class UserService {
     }
 
     public static void checkHeartTime(UserProfile userProfile) {
-        logger.info("uid={} heartTime={}",userProfile.getUid(), userProfile.getHearttime());
+        logger.info("uid={} heartTime={}",userProfile.getUid(), DateUtils.fromTimeToStr(userProfile.getHearttime()));
         long now = System.currentTimeMillis();
         int oldHeart = userProfile.getHeart();
         if(userProfile.getHearttime() != 0L && userProfile.getHearttime() <= now ){
-            int pastSince = Math.toIntExact (now - userProfile.getHearttime() - recoverTime);
+            int pastSince = Math.toIntExact (now - userProfile.getHearttime() + recoverTime);
             int heartNeedAdd = pastSince/Math.toIntExact(recoverTime) ;
             int timeRemain  = pastSince%Math.toIntExact(recoverTime);
-            logger.info("pastSince={} heartNeedAdd={} timeRemain={}",pastSince,heartNeedAdd,timeRemain);
+            logger.info("uid={} pastSince={} heartNeedAdd={} timeRemain={}",userProfile.getUid(),pastSince,heartNeedAdd,timeRemain);
             if(userProfile.getHeart() + heartNeedAdd >= maxHeart) {//满，时间数据清0
                 userProfile.setHearttime(0L);
                 logger.error("uid={} heart will be max.set heartTime=0",userProfile.getUid());
             } else {//未满，下一恢复周期。需要根据流逝时间计算。
                 userProfile.setHearttime(System.currentTimeMillis() + recoverTime  - timeRemain);
-                logger.error("uid={} heart is not  max yet.set heartTime in next 30 mins.that is {} ",userProfile.getUid(),userProfile.getHearttime());
+                logger.error("uid={} heart is not  max yet.set heartTime in next 30 mins.that is {} ",userProfile.getUid(),DateUtils.fromTimeToStr(userProfile.getHearttime()));
             }
 
             if(userProfile.getHeart() < maxHeart) {

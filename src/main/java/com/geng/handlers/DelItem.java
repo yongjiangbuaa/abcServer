@@ -26,6 +26,7 @@ public class DelItem implements IRequestHandler{
 
     @Override
     public void handle(String deviceId, UserProfile userProfile, String data, StringBuilder sb) throws GameException {
+        UserService.checkHeartTime(userProfile);
         if(StringUtils.isBlank(data))
             throw new GameException(GameExceptionCode.INVALID_OPT,"param not valid!! no data!");
 

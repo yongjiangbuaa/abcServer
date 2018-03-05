@@ -28,6 +28,7 @@ public class LevelEnd implements IRequestHandler{
 
     @Override
     public void handle(String deviceId, UserProfile userProfile, String data, StringBuilder sb) throws GameException {
+        UserService.checkHeartTime(userProfile);
         if(StringUtils.isBlank(data))
             throw new COKException(GameExceptionCode.INVALID_OPT,"param invalid ! no data");
         ISFSObject param = SFSObject.newFromJsonData(data);
@@ -35,7 +36,6 @@ public class LevelEnd implements IRequestHandler{
             throw new COKException(GameExceptionCode.INVALID_OPT,"param invalid ! no data");
 
         if(1 == param.getInt("succ")) {
-            UserService.checkHeartTime(userProfile);
             userProfile.setGold(userProfile.getGold() + new GameConfigManager("matchlevel").getItem(String.valueOf(1000000 + userProfile.getLevel())).getInt("coin", ADD_GOLD));
             userProfile.setStar(userProfile.getStar() + new GameConfigManager("matchlevel").getItem(String.valueOf(1000000 + userProfile.getLevel())).getInt("star", 1));
             userProfile.setLevel(userProfile.getLevel() + 1);

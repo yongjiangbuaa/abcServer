@@ -30,6 +30,7 @@ public class UnlockStory implements IRequestHandler {
 
     @Override
     public void handle(String deviceId, UserProfile userProfile, String data, StringBuilder sb) throws GameException {
+        UserService.checkHeartTime(userProfile);
         if(StringUtils.isBlank(data))
             throw new GameException(GameExceptionCode.INVALID_OPT,"param not valid!! no data!");
         if(userProfile.getStar() <= 0)
@@ -38,6 +39,8 @@ public class UnlockStory implements IRequestHandler {
         if(param == null || StringUtils.isBlank(param.getStoryid()) ){
             throw new GameException(GameExceptionCode.INVALID_OPT,"param has no storyid");
         }
+
+
         String storyid = param.getStoryid();
         int need = new GameConfigManager("quest").getItem(storyid).getInt("requireStar");
         if(userProfile.getStar() < need)
@@ -54,7 +57,6 @@ public class UnlockStory implements IRequestHandler {
             story.setStoryid(storyid);
             story.update();
         }
-
 
         //扣星星
         userProfile.setStar(userProfile.getStar() - need);

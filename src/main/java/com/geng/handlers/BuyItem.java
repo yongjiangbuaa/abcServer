@@ -44,6 +44,8 @@ public class BuyItem implements IRequestHandler {
 
     @Override
     public void handle(String deviceId, UserProfile userProfile, String data, StringBuilder sb) throws GameException {
+        UserService.checkHeartTime(userProfile);
+
         ISFSObject retObj;
         ISFSObject params = SFSObject.newFromJsonData(data);
         retObj = handleRetObj(userProfile, params);

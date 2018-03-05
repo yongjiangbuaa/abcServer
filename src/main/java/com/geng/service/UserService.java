@@ -41,7 +41,7 @@ public class UserService {
             int pastSince = Math.toIntExact (now - userProfile.getHearttime() - recoverTime);
             int heartNeedAdd = pastSince/Math.toIntExact(recoverTime) ;
             int timeRemain  = pastSince%Math.toIntExact(recoverTime);
-
+            logger.info("pastSince={} heartNeedAdd={} timeRemain={}");
             if(userProfile.getHeart() + heartNeedAdd >= maxHeart) {//满，时间数据清0
                 userProfile.setHearttime(0L);
                 logger.error("uid={} heart will be max.set heartTime=0",userProfile.getUid());
@@ -51,9 +51,9 @@ public class UserService {
             }
 
             if(userProfile.getHeart() < maxHeart) {
-                userProfile.setHeart(userProfile.getHeart() + heartNeedAdd);
-                userProfile.setHeart(userProfile.getHeart() > maxHeart ? 5 : userProfile.getHeart());
-                logger.info("uid={}  heart= added {} now heart={}",userProfile.getUid(),userProfile.getHeart() - oldHeart,userProfile.getHeart());
+                if(oldHeart + heartNeedAdd > maxHeart) heartNeedAdd = maxHeart - oldHeart;
+                userProfile.setHeart(oldHeart+ heartNeedAdd);
+                logger.info("uid={}  heart= added {} now heart={}",userProfile.getUid(),heartNeedAdd,userProfile.getHeart());
             }
             userProfile.update();
         }

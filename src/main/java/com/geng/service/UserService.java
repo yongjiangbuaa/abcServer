@@ -35,7 +35,7 @@ public class UserService {
     }
 
     public static void checkHeartTime(UserProfile userProfile) {
-        logger.info("uid={} heartTime={}",userProfile.getUid(), DateUtils.fromTimeToStr(userProfile.getHearttime()));
+        logger.info("uid={} heartTime={}",userProfile.getUid(), DateUtils.fromTimeToStandardStr(userProfile.getHearttime()));
         long now = System.currentTimeMillis();
         int oldHeart = userProfile.getHeart();
         if(userProfile.getHearttime() != 0L && userProfile.getHearttime() <= now ){
@@ -48,7 +48,7 @@ public class UserService {
                 logger.error("uid={} heart will be max.set heartTime=0",userProfile.getUid());
             } else {//未满，下一恢复周期。需要根据流逝时间计算。
                 userProfile.setHearttime(System.currentTimeMillis() + recoverTime  - timeRemain);
-                logger.error("uid={} heart is not  max yet.set heartTime in next 30 mins.that is {} ",userProfile.getUid(),DateUtils.fromTimeToStr(userProfile.getHearttime()));
+                logger.error("uid={} heart is not  max yet.set heartTime in next 30 mins.that is {} ",userProfile.getUid(),DateUtils.fromTimeToStandardStr(userProfile.getHearttime()));
             }
 
             if(userProfile.getHeart() < maxHeart) {

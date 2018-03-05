@@ -6,12 +6,16 @@ import com.geng.gameengine.ItemManager;
 import com.geng.puredb.model.UidBind;
 import com.geng.puredb.model.UserProfile;
 import com.geng.puredb.model.UserStory;
+import com.geng.utils.CommonUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.atomic.AtomicLong;
 
 public class UserService {
     public static final int maxHeart = 5;
     public static final long recoverTime = 30 * 60 * 1000L;
+    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
     private static AtomicLong defaultNameIndex = new AtomicLong();
     public static UserProfile Register(String deviceId, String data) {
         defaultNameIndex = new AtomicLong(UserProfile.getMaxNameIndex());//"select count(uid) from user_profile;"
@@ -30,13 +34,27 @@ public class UserService {
     }
 
     public static void checkHeartTime(UserProfile userProfile) {
-        if(userProfile.getHearttime() <= System.currentTimeMillis() ){
-            if(userProfile.getHeart() + 1 >= maxHeart)
+        logger.info("uid={} heartTime={}",userProfile.getUid(), userProfile.getHearttime());
+        long now = System.currentTimeMillis();
+        int oldHeart = userProfile.getHeart();
+        if(userProfile.getHearttime() <= now ){
+            int pastSince = Math.toIntExact (now - userProfile.getHearttime() - recoverTime);
+            int heartNeedAdd = pastSince/Math.toIntExact(recoverTime) ;
+            int timeRemain  = pastSince%Math.toIntExact(recoverTime);
+
+            if(userProfile.getHeart() + heartNeedAdd >= maxHeart) {//满，时间数据清0
                 userProfile.setHearttime(0L);
-            else
-                userProfile.setHearttime(System.currentTimeMillis() + recoverTime);
-            if(userProfile.getHeart() < maxHeart)
-                userProfile.setHeart(userProfile.getHeart() + 1);
+                logger.error("uid={} heart will be max.set heartTime=0",userProfile.getUid());
+            } else {//未满，下一恢复周期。需要根据流逝时间计算。
+                userProfile.setHearttime(System.currentTimeMillis() + recoverTime  - timeRemain);
+                logger.error("uid={} heart is not  max yet.set heartTime in next 30 mins.that is {} ",userProfile.getUid(),userProfile.getHearttime());
+            }
+
+            if(userProfile.getHeart() < maxHeart) {
+                userProfile.setHeart(userProfile.getHeart() + heartNeedAdd);
+                userProfile.setHeart(userProfile.getHeart() > maxHeart ? 5 : userProfile.getHeart());
+                logger.info("uid={}  heart= added {} now heart={}",userProfile.getUid(),userProfile.getHeart() - oldHeart,userProfile.getHeart());
+            }
             userProfile.update();
         }
 

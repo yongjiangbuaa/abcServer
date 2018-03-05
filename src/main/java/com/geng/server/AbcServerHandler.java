@@ -47,7 +47,7 @@ public class AbcServerHandler extends SimpleChannelInboundHandler<Object> {
 
             //log of http access
             buf1.setLength(0);
-            buf1.append("VERSION: ").append(request.protocolVersion()).append("\r\n");
+/*            buf1.append("VERSION: ").append(request.protocolVersion()).append("\r\n");
             buf1.append("HOSTNAME: ").append(request.headers().get(HttpHeaderNames.HOST, "unknown")).append("\r\n");
             buf1.append("REQUEST_URI: ").append(request.uri()).append("\r\n\r\n");
             HttpHeaders headers1 = request.headers();
@@ -59,7 +59,7 @@ public class AbcServerHandler extends SimpleChannelInboundHandler<Object> {
                 }
                 buf1.append("\r\n");
             }
-            logger.info(buf1.toString());
+            logger.info(buf1.toString());*/
             //log of http access  end
 
         }

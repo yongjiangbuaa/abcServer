@@ -26,25 +26,13 @@ public class UserProfile {
     private long gold;
     private long paidGold;
     private Integer star;
-
-    public long getGold() {
-        return gold;
-    }
-
-    public void setGold(long gold) {
-        this.gold = gold;
-    }
-
     private Long hearttime;
-
+    private String storyId;
 
     private String name;
-    private Integer level;
+    private int level;
+    private long exp;
     private long crystal;
-
-
-
-
     private long payTotal;
     private String gcmRegisterId;
     private String parseRegisterId;
@@ -53,17 +41,14 @@ public class UserProfile {
     private int picVer;
     private String country;
 
-
-
+    private String nationalFlag;
+    private int chNameCount;
+    private int worldPoint;
     private String deviceId;
     private String gaid;
     private String platform;
     private String pf;
     private String lang;
-    private Object itemLock = new Object();
-
-
-    private String storyId;
     private String appVersion;
     private String lastAppVersion;
     private int gmFlag;
@@ -71,9 +56,6 @@ public class UserProfile {
     private String openedPos;
     private long offLineTime;
     private long banTime;
-
-
-
     private long chatBanTime;
     private long noticeBanTime;
     private long lastOnlineTime;
@@ -81,8 +63,20 @@ public class UserProfile {
     private int serverId;
     private int crossFightSrcServerId;
     private String phoneDevice;
-
     private LoginInfo loginInfo;
+    private int dragonEggType;
+    private long dragonEggEndTime;  //龙蛋孵化结束时间
+    private long dragonEggDurationTime; //龙蛋孵化需要的持续时间
+    private long dragonEndTime;//龙蛋孵化结束时间，害怕以前的字段有其他用处所以没有复用上面那个字段
+    private String bustPic;
+    //上次登录时间只许在登录时修改其他地方不能进行任何修改
+    private long lastLoginTime;
+    private String curGaid;
+    private String promotionId; //deeplink的promotion id
+    private int isBusinessman; //资源商标记
+
+    private Object itemLock = new Object();
+
 
     public String getUid() {
         return uid;
@@ -100,6 +94,13 @@ public class UserProfile {
         this.heart = heart;
     }
 
+    public long getGold() {
+        return gold;
+    }
+
+    public void setGold(long gold) {
+        this.gold = gold;
+    }
 
     public Integer getStar() {
         return star;
@@ -353,6 +354,109 @@ public class UserProfile {
 
     public void setCrossFightSrcServerId(int crossFightSrcServerId) {
         this.crossFightSrcServerId = crossFightSrcServerId;
+    }
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
+    public long getExp() {
+        return exp;
+    }
+
+    public void setExp(long exp) {
+        this.exp = exp;
+    }
+
+    public String getNationalFlag() {
+        return nationalFlag;
+    }
+
+    public void setNationalFlag(String nationalFlag) {
+        this.nationalFlag = nationalFlag;
+    }
+
+    public int getChNameCount() {
+        return chNameCount;
+    }
+
+    public void setChNameCount(int chNameCount) {
+        this.chNameCount = chNameCount;
+    }
+
+    public int getWorldPoint() {
+        return worldPoint;
+    }
+
+    public void setWorldPoint(int worldPoint) {
+        this.worldPoint = worldPoint;
+    }
+
+    public int getDragonEggType() {
+        return dragonEggType;
+    }
+
+    public void setDragonEggType(int dragonEggType) {
+        this.dragonEggType = dragonEggType;
+    }
+
+    public long getDragonEggEndTime() {
+        return dragonEggEndTime;
+    }
+
+    public void setDragonEggEndTime(long dragonEggEndTime) {
+        this.dragonEggEndTime = dragonEggEndTime;
+    }
+
+    public long getDragonEggDurationTime() {
+        return dragonEggDurationTime;
+    }
+
+    public void setDragonEggDurationTime(long dragonEggDurationTime) {
+        this.dragonEggDurationTime = dragonEggDurationTime;
+    }
+
+    public long getDragonEndTime() {
+        return dragonEndTime;
+    }
+
+    public void setDragonEndTime(long dragonEndTime) {
+        this.dragonEndTime = dragonEndTime;
+    }
+
+    public String getBustPic() {
+        return bustPic;
+    }
+
+    public void setBustPic(String bustPic) {
+        this.bustPic = bustPic;
+    }
+
+    public long getLastLoginTime() {
+        return lastLoginTime;
+    }
+
+    public String getCurGaid() {
+        return curGaid;
+    }
+
+    public void setCurGaid(String curGaid) {
+        this.curGaid = curGaid;
+    }
+
+    public String getPromotionId() {
+        return promotionId;
+    }
+
+    public void setPromotionId(String promotionId) {
+        this.promotionId = promotionId;
+    }
+
+    public int getIsBusinessman() {
+        return isBusinessman;
+    }
+
+    public void setIsBusinessman(int isBusinessman) {
+        this.isBusinessman = isBusinessman;
     }
 
     public String getPhoneDevice() {

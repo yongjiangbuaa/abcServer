@@ -12,7 +12,6 @@
     <!-- below extended feature -->
     <result column="name" property="name" jdbcType="VARCHAR"/>
     <result column="exp" property="exp" jdbcType="BIGINT"/>
-    <result column="gold" property="gold" jdbcType="BIGINT"/>
     <result column="crystal" property="crystal" jdbcType="BIGINT"/>
     <result column="paidGold" property="paidGold" jdbcType="BIGINT"/>
     <result column="payTotal" property="payTotal" jdbcType="BIGINT"/>
@@ -48,30 +47,26 @@
     <result column="dragonEggDurationTime" property="dragonEggDurationTime" jdbcType="BIGINT"/>
     <result column="dragonEndTime" property="dragonEndTime" jdbcType="BIGINT"/>
   </resultMap>
-  <sql id="Base_Column_List">
-    uid, heart, gold, star, heartTime, level
-  </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
-    <include refid="Base_Column_List" />
-    from user_profile
+      *
+    from userprofile
     where uid = #{uid,jdbcType=VARCHAR}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
-    delete from user_profile
+    delete from userprofile
     where uid = #{uid,jdbcType=VARCHAR}
   </delete>
   <insert id="insert" parameterType="com.geng.puredb.model.UserProfile">
-    insert into user_profile (uid, heart, gold, star, heartTime, level,
-    name,  exp, gold,crystal, paidGold, payTotal,parseRegisterId, gcmRegisterId,
+    insert into userprofile (uid, heart, gold, star, heartTime, level,
+    name,  exp, crystal, paidGold, payTotal,parseRegisterId, gcmRegisterId,
     openedPos, pic, picVer, country, allianceId, chNameCount, deviceId, gaid, platform, pf, lang, appVersion, gmFlag, nationalFlag,
-    regTime, offLineTime, lastOnlineTime, gmail, serverId, crossFightSrcServerId, lastModGoldGetTime, modGoldGetTimeInterval, modGoldAmount, beTrainingModTime,
+    regTime, offLineTime, lastOnlineTime, gmail, serverId, crossFightSrcServerId,
     lastAppVersion,bustPic,lastLoginTime, curGaid, isBusinessman,dragonEggType, dragonEggDurationTime, dragonEndTime)
       )
     values (#{uid,jdbcType=VARCHAR}, #{heart,jdbcType=INTEGER}, #{gold,jdbcType=INTEGER}, 
       #{star,jdbcType=INTEGER}, #{hearttime,jdbcType=BIGINT}, #{level,jdbcType=INTEGER}
     #{name,jdbcType=VARCHAR},#{exp,jdbcType=BIGINT},
-    #{gold,jdbcType=BIGINT},
     #{crystal,jdbcType=BIGINT},
     #{paidGold, jdbcType=BIGINT},
     #{payTotal, jdbcType=BIGINT},
@@ -81,14 +76,12 @@
     #{platform,jdbcType=VARCHAR}, #{pf,jdbcType=VARCHAR}, #{lang,jdbcType=VARCHAR}, #{appVersion,jdbcType=VARCHAR},
     #{gmFlag,jdbcType=INTEGER}, #{nationalFlag, jdbcType=VARCHAR},
     #{regTime,jdbcType=BIGINT}, #{offLineTime,jdbcType=BIGINT}, #{lastOnlineTime,jdbcType=BIGINT},
-    #{gmail,jdbcType=VARCHAR}, #{serverId,jdbcType=INTEGER}, #{crossFightSrcServerId,jdbcType=INTEGER},
-    #{lastModGoldGetTime,jdbcType=BIGINT},#{modGoldGetTimeInterval,jdbcType=BIGINT},
-    #{modGoldAmount,jdbcType=BIGINT},#{beTrainingModTime,jdbcType=BIGINT},#{lastAppVersion,jdbcType=VARCHAR},
+    #{gmail,jdbcType=VARCHAR}, #{serverId,jdbcType=INTEGER}, #{crossFightSrcServerId,jdbcType=INTEGER}, #{lastAppVersion,jdbcType=VARCHAR},
     #{bustPic,jdbcType=VARCHAR},#{lastLoginTime,jdbcType=BIGINT},
     #{curGaid, jdbcType=VARCHAR},#{isBusinessman,jdbcType=INTEGER},#{dragonEggType,jdbcType=INTEGER}, #{dragonEggDurationTime,jdbcType=BIGINT},#{dragonEndTime,jdbcType=BIGINT} )
   </insert>
   <insert id="insertSelective" parameterType="com.geng.puredb.model.UserProfile">
-    insert into user_profile
+    insert into userprofile
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="uid != null">
         uid,
@@ -131,7 +124,7 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.geng.puredb.model.UserProfile">
-    update user_profile
+    update userprofile
     <set>
       <if test="heart != null">
         heart = #{heart,jdbcType=INTEGER},
@@ -152,17 +145,52 @@
     where uid = #{uid,jdbcType=VARCHAR}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.geng.puredb.model.UserProfile">
-    update user_profile
+    update userprofile
     set heart = #{heart,jdbcType=INTEGER},
       gold = #{gold,jdbcType=INTEGER},
       star = #{star,jdbcType=INTEGER},
       heartTime = #{hearttime,jdbcType=BIGINT},
-      level = #{level,jdbcType=INTEGER}
+      level = #{level,jdbcType=INTEGER},
+    name = #{name,jdbcType=VARCHAR},
+    exp = #{exp,jdbcType=BIGINT},
+    crystal = #{crystal,jdbcType=BIGINT},
+    paidGold = #{paidGold,jdbcType=BIGINT},
+    payTotal = #{payTotal,jdbcType=BIGINT},
+    parseRegisterId = #{parseRegisterId,jdbcType=VARCHAR},
+    gcmRegisterId = #{gcmRegisterId,jdbcType=VARCHAR},
+    openedPos = #{openedPos,jdbcType=VARCHAR},
+    pic = #{pic,jdbcType=VARCHAR},
+    picVer = #{picVer,jdbcType=INTEGER},
+    allianceId = #{allianceId,jdbcType=VARCHAR},
+    chNameCount = #{chNameCount,jdbcType=INTEGER},
+    deviceId = #{deviceId,jdbcType=VARCHAR},
+    gaid = #{gaid,jdbcType=VARCHAR},
+    offLineTime = #{offLineTime,jdbcType=BIGINT},
+    appVersion = #{appVersion,jdbcType=VARCHAR},
+    chatBanTime = #{chatBanTime,jdbcType=BIGINT},
+    banGMName = #{banGMName,jdbcType=VARCHAR},
+    lastOnlineTime = #{lastOnlineTime,jdbcType=BIGINT},
+    gmFlag = #{gmFlag,jdbcType=INTEGER},
+    gmail = #{gmail,jdbcType=VARCHAR},
+    lang = #{lang,jdbcType=VARCHAR},
+    nationalFlag = #{nationalFlag, jdbcType=VARCHAR},
+    pf = #{pf,jdbcType=VARCHAR},
+    serverId = #{serverId,jdbcType=INTEGER},
+    crossFightSrcServerId = #{crossFightSrcServerId,jdbcType=INTEGER},
+    phoneDevice = #{phoneDevice,jdbcType=VARCHAR},
+    lastAppVersion = #{lastAppVersion,jdbcType=VARCHAR},
+    dragonEggType=#{dragonEggType,jdbcType=INTEGER},
+    dragonEggDurationTime=#{dragonEggDurationTime,jdbcType=BIGINT},
+    bustPic=#{bustPic,jdbcType=VARCHAR},
+    lastLoginTime=#{lastLoginTime,jdbcType=BIGINT},
+    curGaid=#{curGaid,jdbcType=VARCHAR},
+    isBusinessman = #{isBusinessman,jdbcType=INTEGER},
+    dragonEndTime = #{dragonEndTime,jdbcType=BIGINT}
     where uid = #{uid,jdbcType=VARCHAR}
   </update>
 
   <select id="getMaxNameIndex" resultType="int">
-    select  count(uid) from user_profile
+    select  count(uid) from userprofile
   </select>
 
 </mapper>

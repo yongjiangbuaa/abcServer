@@ -37,7 +37,7 @@ public class UserService {
         logger.info("uid={} heartTime={}",userProfile.getUid(), userProfile.getHearttime());
         long now = System.currentTimeMillis();
         int oldHeart = userProfile.getHeart();
-        if(userProfile.getHearttime() <= now ){
+        if(userProfile.getHearttime() != 0L && userProfile.getHearttime() <= now ){
             int pastSince = Math.toIntExact (now - userProfile.getHearttime() - recoverTime);
             int heartNeedAdd = pastSince/Math.toIntExact(recoverTime) ;
             int timeRemain  = pastSince%Math.toIntExact(recoverTime);

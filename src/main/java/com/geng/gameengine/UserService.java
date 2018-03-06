@@ -97,19 +97,29 @@ public class UserService {
     }
 
     /**
-     * 登录处理 tcp/udp短连接
+     * 登录处理入口 tcp/udp短连接
      * @param deviceId
      * @param data
      * @return
      * @throws COKException
      */
-    public static UserProfile handleLogin(String deviceId,String data) throws COKException{
-        LoginInfo loginInfo= transData2LoginInfo(data);
+    public static UserProfile handleLogin(String deviceId,String uid,String data) throws COKException{
+        LoginInfo loginInfo= transData2LoginInfo(deviceId,uid,data);
         return  handleLogin(loginInfo,"");
     }
 
-    private static LoginInfo transData2LoginInfo(String data) {
-        ISFSObject loginData = SFSObject.newFromJsonData(data);
+    //适配
+    private static LoginInfo transData2LoginInfo(String deviceId,String uid,String data) {
+        ISFSObject defaultObj = SFSObject.newInstance();
+        //适配 默认加入信息deviceId gameUid
+        defaultObj.putUtfString("deviceId",StringUtils.isBlank(deviceId) ? "" :deviceId);
+        defaultObj.putUtfString("gameUid",StringUtils.isBlank(uid) ? "" : uid);
+
+        ISFSObject loginData = StringUtils.isNotBlank(data) ? SFSObject.newFromJsonData(data) : defaultObj;
+
+        //适配 默认加入信息deviceId gameUid
+        loginData.putUtfString("deviceId",StringUtils.isBlank(deviceId) ? "" :deviceId);
+        loginData.putUtfString("gameUid",StringUtils.isBlank(uid) ? "" : uid);
         return new LoginInfo(loginData,"");
     }
 
@@ -126,7 +136,13 @@ public class UserService {
 //    public static UserProfile handleLogin(User user, LoginInfo loginInfo, String address) throws SFSException {
 //    }
 
-
+    /**
+     * 登录处理 tcp/udp短连接
+     * @param
+     * @param
+     * @return
+     * @throws COKException
+     */
     //不包含连接对象的方式  没有登录状态。 不缓存登录对象
     public static UserProfile handleLogin(LoginInfo loginInfo, String address) throws COKException {
         UserProfile userProfile;

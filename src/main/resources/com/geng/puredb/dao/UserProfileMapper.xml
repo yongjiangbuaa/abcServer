@@ -65,7 +65,7 @@
     lastAppVersion,bustPic,lastLoginTime, curGaid, isBusinessman,dragonEggType, dragonEggDurationTime, dragonEndTime)
       )
     values (#{uid,jdbcType=VARCHAR}, #{heart,jdbcType=INTEGER}, #{gold,jdbcType=INTEGER}, 
-      #{star,jdbcType=INTEGER}, #{hearttime,jdbcType=BIGINT}, #{level,jdbcType=INTEGER}
+      #{star,jdbcType=INTEGER}, #{hearttime,jdbcType=BIGINT}, #{level,jdbcType=INTEGER},
     #{name,jdbcType=VARCHAR},#{exp,jdbcType=BIGINT},
     #{crystal,jdbcType=BIGINT},
     #{paidGold, jdbcType=BIGINT},

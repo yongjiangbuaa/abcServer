@@ -194,7 +194,7 @@ public class StatReg  implements Serializable {
 
     public static boolean isStartNewGame(String deviceId){
 //        RedisSession rs = new RedisSession(true);
-        long stat = R.Local().hDel("NEW_ACCOUNT_RECORD", deviceId);
+        long stat =  R.Local().hDel("NEW_ACCOUNT_RECORD", deviceId);
         return stat == 1;
     }
 

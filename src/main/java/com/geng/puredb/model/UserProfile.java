@@ -74,6 +74,8 @@ public class UserProfile {
     private String curGaid;
     private String promotionId; //deeplink的promotion id
     private int isBusinessman; //资源商标记
+    private String allianceId;
+
 
     private Object itemLock = new Object();
 
@@ -467,6 +469,11 @@ public class UserProfile {
         this.phoneDevice = phoneDevice;
     }
 
+    public void setAllianceId(String allianceId) {
+        this.allianceId = allianceId;
+    }
+
+
 
 
 
@@ -746,7 +753,7 @@ public class UserProfile {
 //        GameConfigManager picConfigMap = new GameConfigManager("characters");
 //        String ranPic = picConfigMap.getItem(Constants.PICTURE_CODE_PREFIX + ranPicNum).get("name");//得到具体的随机图片
         String ranPic = "g052";//客户端要求初始化头像固定
-//        userProfile.setExp(0L);
+        userProfile.setExp(0L);
         userProfile.setPic(ranPic);
         userProfile.setCrystal(0);
         userProfile.setGcmRegisterId(loginInfo.getGcmRegisterId());
@@ -761,23 +768,23 @@ public class UserProfile {
         userProfile.setAppVersion(loginInfo.getClientVersion());
         userProfile.setLastAppVersion(loginInfo.getClientVersion());
         userProfile.setLastOnlineTime(System.currentTimeMillis());
-//        userProfile.setAllianceId("");
+        userProfile.setAllianceId("");
         userProfile.setGmail(loginInfo.getGmail());
         userProfile.setServerId(Constants.SERVER_ID);
         userProfile.setCrossFightSrcServerId(- 1);
-//        userProfile.setNationalFlag(randomNationalFlag(loginInfo.getFromCountry())); //由ip所在国确定
-//        userProfile.setDragonEggType(0);//默认为0
+        userProfile.setNationalFlag(""); //由ip所在国确定
+        userProfile.setDragonEggType(0);//默认为0
 //        userProfile.culDragonEggEndTime();
 //        int eggInitDurationTime = Integer.parseInt(new GameConfigManager("item").getItem("hatch_dragon_egg").get("k1"));    //龙蛋孵化初始持续时间，默认20小时，按秒配置
-//        userProfile.setDragonEggDurationTime(eggInitDurationTime * 1000);
+        userProfile.setDragonEggDurationTime(0L);
         userProfile.setLastLoginTime(System.currentTimeMillis());
-//        userProfile.setCurGaid(loginInfo.getGaid());
-//        userProfile.setIsBusinessman(0);
-//        userProfile.setDragonEndTime(- 1);
+        userProfile.setCurGaid(loginInfo.getGaid());
+        userProfile.setIsBusinessman(0);
+        userProfile.setDragonEndTime(- 1);
         UserProfileMapper userMapper = session.getMapper(UserProfileMapper.class);
         userMapper.insert(userProfile);
 //        userProfile.setNewAccount(true);
-//        userProfile.setPromotionId(loginInfo.getRecallId());
+        userProfile.setPromotionId(loginInfo.getRecallId());
 
 
         //三消属性初始化
@@ -785,6 +792,7 @@ public class UserProfile {
         userProfile.setGold(1000);
         userProfile.setStar(0);
         userProfile.setHearttime(0L);
+
         return userProfile;
     }
 

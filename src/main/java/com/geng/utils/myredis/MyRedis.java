@@ -457,21 +457,23 @@ public final class MyRedis {
     }
 
     public long hDel(String key, String... fields) {
-        Jedis jedis = getClient();
+        /*Jedis jedis = getClient();
         try {
             return jedis.hdel(key, fields);
         } finally {
             jedis.close();
-        }
+        }*/
+        return 0L;
     }
 
     public long hSet(byte[] key, byte[] field, byte[] value) {
-        Jedis jedis = getClient();
-        try {
-            return jedis.hset(key, field, value);
-        } finally {
-            jedis.close();
-        }
+//        Jedis jedis = getClient();
+//        try {
+//            return jedis.hset(key, field, value);
+//        } finally {
+//            jedis.close();
+//        }
+        return 0L;
     }
 
 

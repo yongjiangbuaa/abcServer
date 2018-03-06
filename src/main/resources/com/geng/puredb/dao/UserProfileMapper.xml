@@ -59,11 +59,11 @@
   </delete>
   <insert id="insert" parameterType="com.geng.puredb.model.UserProfile">
     insert into userprofile (uid, heart, gold, star, heartTime, level,
-    name,  exp, crystal, paidGold, payTotal,parseRegisterId, gcmRegisterId,
+    name, exp, crystal, paidGold, payTotal,parseRegisterId, gcmRegisterId,
     openedPos, pic, picVer, country, allianceId, chNameCount, deviceId, gaid, platform, pf, lang, appVersion, gmFlag, nationalFlag,
     regTime, offLineTime, lastOnlineTime, gmail, serverId, crossFightSrcServerId,
-    lastAppVersion,bustPic,lastLoginTime, curGaid, isBusinessman,dragonEggType, dragonEggDurationTime, dragonEndTime)
-      )
+    lastAppVersion,bustPic,lastLoginTime, curGaid, isBusinessman,dragonEggType, dragonEggDurationTime, dragonEndTime
+    )
     values (#{uid,jdbcType=VARCHAR}, #{heart,jdbcType=INTEGER}, #{gold,jdbcType=INTEGER}, 
       #{star,jdbcType=INTEGER}, #{hearttime,jdbcType=BIGINT}, #{level,jdbcType=INTEGER},
     #{name,jdbcType=VARCHAR},#{exp,jdbcType=BIGINT},
@@ -78,7 +78,8 @@
     #{regTime,jdbcType=BIGINT}, #{offLineTime,jdbcType=BIGINT}, #{lastOnlineTime,jdbcType=BIGINT},
     #{gmail,jdbcType=VARCHAR}, #{serverId,jdbcType=INTEGER}, #{crossFightSrcServerId,jdbcType=INTEGER}, #{lastAppVersion,jdbcType=VARCHAR},
     #{bustPic,jdbcType=VARCHAR},#{lastLoginTime,jdbcType=BIGINT},
-    #{curGaid, jdbcType=VARCHAR},#{isBusinessman,jdbcType=INTEGER},#{dragonEggType,jdbcType=INTEGER}, #{dragonEggDurationTime,jdbcType=BIGINT},#{dragonEndTime,jdbcType=BIGINT} )
+    #{curGaid, jdbcType=VARCHAR},#{isBusinessman,jdbcType=INTEGER},#{dragonEggType,jdbcType=INTEGER}, #{dragonEggDurationTime,jdbcType=BIGINT},#{dragonEndTime,jdbcType=BIGINT}
+    )
   </insert>
   <insert id="insertSelective" parameterType="com.geng.puredb.model.UserProfile">
     insert into userprofile

@@ -755,7 +755,7 @@ public class UserProfile {
         String ranPic = "g052";//客户端要求初始化头像固定
         userProfile.setExp(0L);
         userProfile.setPic(ranPic);
-        userProfile.setCrystal(0);
+        userProfile.setCrystal(0L);
         userProfile.setGcmRegisterId(loginInfo.getGcmRegisterId());
         userProfile.setParseRegisterId(null);
         userProfile.setCountry(loginInfo.getCountry());
@@ -781,10 +781,6 @@ public class UserProfile {
         userProfile.setCurGaid(loginInfo.getGaid());
         userProfile.setIsBusinessman(0);
         userProfile.setDragonEndTime(- 1);
-        UserProfileMapper userMapper = session.getMapper(UserProfileMapper.class);
-        userMapper.insert(userProfile);
-//        userProfile.setNewAccount(true);
-        userProfile.setPromotionId(loginInfo.getRecallId());
 
 
         //三消属性初始化
@@ -792,6 +788,11 @@ public class UserProfile {
         userProfile.setGold(1000);
         userProfile.setStar(0);
         userProfile.setHearttime(0L);
+
+        UserProfileMapper userMapper = session.getMapper(UserProfileMapper.class);
+        userMapper.insert(userProfile);
+//        userProfile.setNewAccount(true);
+        userProfile.setPromotionId(loginInfo.getRecallId());
 
         return userProfile;
     }

@@ -120,6 +120,10 @@ public class UserService {
         //适配 默认加入信息deviceId gameUid
         loginData.putUtfString("deviceId",StringUtils.isBlank(deviceId) ? "" :deviceId);
         loginData.putUtfString("gameUid",StringUtils.isBlank(uid) ? "" : uid);
+
+        //TODO 默认值
+        if(!loginData.containsKey("lang")) loginData.putUtfString("lang","cn");//默认语言cn
+        if(!loginData.containsKey("pf")) loginData.putUtfString("pf","cn");//默认渠道cn
         return new LoginInfo(loginData,"");
     }
 

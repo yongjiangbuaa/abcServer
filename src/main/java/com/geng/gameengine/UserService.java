@@ -123,7 +123,7 @@ public class UserService {
 
         //TODO 默认值
         if(!loginData.containsKey("lang")) loginData.putUtfString("lang","cn");//默认语言cn
-        if(!loginData.containsKey("pf")) loginData.putUtfString("pf","cn");//默认渠道cn
+        if(!loginData.containsKey("pf")) loginData.putUtfString("pf","cn");//默认渠道
         return new LoginInfo(loginData,"");
     }
 
@@ -152,11 +152,14 @@ public class UserService {
         UserProfile userProfile;
         String gameUid = loginInfo.getGameUid();
         boolean isRegister = false;
-        if (StringUtils.isBlank(gameUid)) {
+        ISFSArray ret = SFSMysql.getInstance().queryGlobal("select gameUid from usermapping where mappingType='device' and mappingValue=?",new Object[]{loginInfo.getDeviceId()});
+        if (ret == null || (ret != null && ret.size() == 0) ) {
+//        if (StringUtils.isBlank(gameUid)) { //TODO 检查该设备是否是新注册
             isRegister = true;
             userProfile = register(loginInfo, address);
             new SharedUserService().updateUserInfo(userProfile);//注册时把其放入resis(gobal),防止在其未退出时其它使用redis查该用户的信息而找不到
         } else {
+             gameUid = ret.getSFSObject(0).getUtfString("gameUid");
 //            userProfile = UserProfile.getLoggedUserProfile(gameUid, false, loginInfo);//TODO 从缓存层取已注册过的用户
             userProfile = UserProfile.getWithUid(gameUid);
             if (userProfile == null) {

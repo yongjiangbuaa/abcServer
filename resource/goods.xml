@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-  <Group>
+<Group id="item">
     <ItemSpec id="200001" type="0" lv="1" lv_limit="1" price="500"/>
     <ItemSpec id="200002" type="0" lv="1" lv_limit="1" price="2000"/>
-    <ItemSpec id="200003" type="0" lv="1" lv_limit="1" price="900"/>
-    <ItemSpec id="200004" type="0" lv="1" lv_limit="1" price="900"/>
-    <ItemSpec id="200005" type="0" lv="1" lv_limit="1" price="900"/>
-    <ItemSpec id="200006" type="0" lv="1" lv_limit="1" price="600"/>
-  </Group>
+    <ItemSpec id="200003" type="1" lv="1" lv_limit="1" price="900"/>
+    <ItemSpec id="200004" type="1" lv="1" lv_limit="1" price="900"/>
+    <ItemSpec id="200005" type="1" lv="1" lv_limit="1" price="900"/>
+    <ItemSpec id="200006" type="1" lv="1" lv_limit="1" price="600"/>
+    <ItemSpec id="200007" type="2" lv="1" lv_limit="1" price="900"/>
+</Group>
+

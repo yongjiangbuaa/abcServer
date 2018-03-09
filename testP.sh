@@ -9,11 +9,11 @@ done
 echo args=$ARGS
 ARG=`echo $1|sed 's/,/;/g'`
 WWW=123.206.90.153:9933
-LOCAL=10.1.33.220:8080
+LOCAL=10.1.36.91:8080
 IP=$LOCAL
 if [ -n $2 ]
 then
-	IP=$WWW
+	IP=$LOCAL
 fi
 curl -d $ARG -X POST http://$IP 
 #CMD=curl -d $ARG{"deviceId":"1"} -X POST http://$IP 

@@ -43,7 +43,7 @@ public class UserProfile {
 
     private String nationalFlag;
     private int chNameCount;
-    private int worldPoint;
+    private int worldPoint;//三消中用于记录重复挑战次数
     private String deviceId;
     private String gaid;
     private String platform;
@@ -73,7 +73,7 @@ public class UserProfile {
     private long lastLoginTime;
     private String curGaid;
     private String promotionId; //deeplink的promotion id
-    private int isBusinessman; //资源商标记
+    private int isBusinessman;
     private String allianceId;
 
 
@@ -492,7 +492,7 @@ public class UserProfile {
         SqlSession session = MyBatisSessionUtil.getInstance().getSession();
         try {
             UserProfileMapper mapper = session.getMapper(UserProfileMapper.class);
-            mapper.updateByPrimaryKeySelective(this);
+            mapper.updateByPrimaryKey(this);
         } finally {
             session.close();
         }
@@ -570,6 +570,7 @@ public class UserProfile {
         initObj.putInt("heart",getHeart());
         initObj.putInt("level",getLevel());
         initObj.putLong("heartTime",getHearttime());
+        initObj.putInt("fivemore",getWorldPoint());//增加5步的次数
         initObj.putUtfString("name",getName());
         initObj.putUtfString("country",getCountry());
         initObj.putUtfString("lang",getLang());

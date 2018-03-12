@@ -26,6 +26,7 @@ public class HandlerRegisterCenter {
         handlerRegisterMap.put(UnlockStory.ID,UnlockStory.class);
         handlerRegisterMap.put(BuyItem.ID,BuyItem.class);
         handlerRegisterMap.put(GoldBuyHeart.ID,GoldBuyHeart.class);
+        handlerRegisterMap.put(GoldBuyStep.ID,GoldBuyStep.class);
     }
 
     public Object findHandlerInstance(String cmd) throws IllegalAccessException, InstantiationException {

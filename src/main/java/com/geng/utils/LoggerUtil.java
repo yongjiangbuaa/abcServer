@@ -43,7 +43,8 @@ public class LoggerUtil {
         ITEM,
         CD,
         UNLOCK_STORY,
-        HEART
+        HEART,
+        STEP
         ;
 
         public static GoldCostType getCDType(Queue.QueueType queueType) {

@@ -46,6 +46,7 @@
     <result column="dragonEggType" property="dragonEggType" jdbcType="INTEGER"/>
     <result column="dragonEggDurationTime" property="dragonEggDurationTime" jdbcType="BIGINT"/>
     <result column="dragonEndTime" property="dragonEndTime" jdbcType="BIGINT"/>
+    <result column="worldPoint" property="worldPoint" jdbcType="INTEGER"/>
   </resultMap>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 

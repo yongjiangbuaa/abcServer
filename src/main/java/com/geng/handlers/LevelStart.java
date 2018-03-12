@@ -7,7 +7,7 @@ import com.geng.service.UserService;
 
 public class LevelStart implements IRequestHandler {
     public static final String ID = "level.start";
-//扣命 扣金币
+//扣命 扣金币 清除重复挑战次数
     @Override
     public void handle(String deviceId, String uid, String data, StringBuilder sb) throws GameException {
 
@@ -20,6 +20,8 @@ public class LevelStart implements IRequestHandler {
             throw new GameException(GameExceptionCode.LIFE_NOT_ENOUGH,"heart not enough!!");
         userProfile.setHeart(userProfile.getHeart() -  1);
         if(userProfile.getHearttime() == 0L) userProfile.setHearttime(System.currentTimeMillis() + UserService.recoverTime);
+
+        userProfile.setWorldPoint(0);
         userProfile.update();
 
         sb.append(UserService.fillAll(userProfile).toJson());

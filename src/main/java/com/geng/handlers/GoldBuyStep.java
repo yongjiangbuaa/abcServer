@@ -9,12 +9,17 @@ import com.geng.puredb.model.UserProfile;
 import com.geng.service.UserService;
 import com.geng.utils.LoggerUtil;
 import com.geng.utils.xml.GameConfigManager;
+import org.apache.commons.lang.StringUtils;
 
 /**
- * 仅仅在heart为0时金币购买heart
+ * 仅仅在step为0时金币购买5步
+ * 服务端根据 level.fiveMore这个协议的请求次数扣金币。重新发level.start时次数清零。
+ 服务端负责正确扣除金币。
+ 扣成功客户端就给5步。
+ * 根据请求次数记录当前关卡
  */
-public class GoldBuyHeart implements  IRequestHandler {
-    public static final String ID = "heart.buy";
+public class GoldBuyStep implements  IRequestHandler {
+    public static final String ID = "level.fivemore";
 
     @Override
     public void handle(String deviceId, String uid, String data, StringBuilder sb) throws GameException {
@@ -23,15 +28,16 @@ public class GoldBuyHeart implements  IRequestHandler {
 
     @Override
     public void handle(String deviceId, UserProfile u, String data, StringBuilder sb) throws GameException {
+        //TODO 次数到最大了 按最大金额扣
+        String priceStr = new GameConfigManager("setting").getItem("stepsBuy").get("price");
+        String[] priceArr = StringUtils.split(priceStr,"|");
+        int price = Integer.parseInt(priceArr[u.getWorldPoint() > priceArr.length ? priceArr.length - 1 : u.getWorldPoint() ]);
 
-        if(u.getHeart() > 0)
-            throw new COKException(GameExceptionCode.INVALID_OPT,"heart is not zero.but request goldBuyHeart!");
-        int price = new GameConfigManager("setting").getItem("life").getInt("livesPrice");
         if(u.getGold() == 0 || u.getGold() < price)
             throw new COKException(GameExceptionCode.USERGOLD_IS_NOT_ENOUGH,"gold not enough");
         ISFSObject errObj = SFSObject.newInstance();
-        u.decrAllGold(LoggerUtil.GoldCostType.HEART,price,0,0,errObj);
-        u.setHeart(new GameConfigManager("setting").getItem("life").getInt("maxLives"));
+        u.decrAllGold(LoggerUtil.GoldCostType.STEP,price,0,0,errObj);
+        u.setWorldPoint(u.getWorldPoint() + 1);//增加重复挑战次数
         u.update();
         sb.append(UserService.fillAll(u).toJson());
 

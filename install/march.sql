@@ -17,7 +17,7 @@ CREATE TABLE `userprofile` (
   `country` varchar(40) COLLATE utf8_unicode_ci NOT NULL,
   `allianceId` varchar(40) COLLATE utf8_unicode_ci DEFAULT NULL,
   `chNameCount` varchar(255) COLLATE utf8_unicode_ci DEFAULT '0',
-  `worldPoint` int(11) DEFAULT NULL,
+  `worldPoint` int(11) DEFAULT '0',
   `deviceId` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `gaid` varchar(40) COLLATE utf8_unicode_ci DEFAULT NULL,
   `platform` varchar(40) COLLATE utf8_unicode_ci DEFAULT NULL,

@@ -187,7 +187,8 @@
     lastLoginTime=#{lastLoginTime,jdbcType=BIGINT},
     curGaid=#{curGaid,jdbcType=VARCHAR},
     isBusinessman = #{isBusinessman,jdbcType=INTEGER},
-    dragonEndTime = #{dragonEndTime,jdbcType=BIGINT}
+    dragonEndTime = #{dragonEndTime,jdbcType=BIGINT},
+    worldPoint = #{worldPoint,jdbcType=INTEGER}
     where uid = #{uid,jdbcType=VARCHAR}
   </update>
 

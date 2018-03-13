@@ -108,4 +108,20 @@ CREATE TABLE `stat_reg` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
  
-
+CREATE TABLE `gold_cost_record` (
+  `uid` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `userId` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `goldType` int(11) DEFAULT NULL,
+  `type` int(11) NOT NULL,
+  `param1` int(11) DEFAULT NULL,
+  `param2` int(11) DEFAULT NULL,
+  `originalGold` bigint(20) NOT NULL,
+  `cost` int(11) NOT NULL,
+  `remainGold` bigint(11) NOT NULL,
+  `mailSrcType` int(11) NOT NULL DEFAULT '0' COMMENT '奖励来源',
+  `time` bigint(20) NOT NULL,
+  PRIMARY KEY (`uid`),
+  KEY `index_goldType` (`goldType`) USING BTREE,
+  KEY `index_user_time` (`userId`,`time`),
+  KEY `index_time_user` (`time`,`userId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

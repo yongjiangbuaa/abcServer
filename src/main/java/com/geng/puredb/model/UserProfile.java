@@ -568,7 +568,7 @@ public class UserProfile {
         initObj.putLong("gold",getGold());
         initObj.putInt("star",getStar());
         initObj.putInt("heart",getHeart());
-        initObj.putInt("level",getLevel());
+        initObj.putInt("level",getLevel() + 1);
         initObj.putLong("heartTime",getHearttime());
         initObj.putInt("fivemore",getWorldPoint());//增加5步的次数
         initObj.putUtfString("name",getName());

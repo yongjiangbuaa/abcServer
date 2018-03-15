@@ -56,13 +56,16 @@ public class LevelEnd implements IRequestHandler{
                         String[] item_num_rate = StringUtils.split(desc, ":");
                         boolean add = false;
                         int got = RandomUtils.nextInt(1, 100);
-                        if (got <= Integer.parseInt(item_num_rate[2])) add = true;
-                        else
+                        logger.info("uid {} name {} rate {} but got {}", userProfile.getUid(),userProfile.getName(),item_num_rate[2], got);
+                        if (got <= Integer.parseInt(item_num_rate[2])){
+                            add = true;
+                        } else
                             logger.info("rate {} but got {}", item_num_rate[2], got);
 
                         //add items
                         if (add) {
                             ItemManager.addItem(userProfile, item_num_rate[0], Integer.parseInt(item_num_rate[1]), 0, LoggerUtil.GoodsGetType.LEVEL_UP);
+                            logger.info("uid {} name {} addItem {} {}",userProfile.getUid(),userProfile.getName(),item_num_rate[0],Integer.parseInt(item_num_rate[1]));
                         }
                     }
                 }

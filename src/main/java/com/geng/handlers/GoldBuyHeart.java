@@ -32,6 +32,7 @@ public class GoldBuyHeart implements  IRequestHandler {
         ISFSObject errObj = SFSObject.newInstance();
         u.decrAllGold(LoggerUtil.GoldCostType.HEART,price,0,0,errObj);
         u.setHeart(new GameConfigManager("setting").getItem("life").getInt("maxLives"));
+        u.setHearttime(0L);
         u.update();
         sb.append(UserService.fillAll(u).toJson());
 

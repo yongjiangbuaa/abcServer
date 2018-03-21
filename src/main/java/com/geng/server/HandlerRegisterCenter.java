@@ -1,6 +1,7 @@
 package com.geng.server;
 
 import com.geng.handlers.*;
+import com.geng.handlers.requesthandlers.account.ModifyUserNickNameHandler;
 
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -27,6 +28,7 @@ public class HandlerRegisterCenter {
         handlerRegisterMap.put(BuyItem.ID,BuyItem.class);
         handlerRegisterMap.put(GoldBuyHeart.ID,GoldBuyHeart.class);
         handlerRegisterMap.put(GoldBuyStep.ID,GoldBuyStep.class);
+        handlerRegisterMap.put(ModifyUserNickNameHandler.ID,ModifyUserNickNameHandler.class);
     }
 
     public Object findHandlerInstance(String cmd) throws IllegalAccessException, InstantiationException {

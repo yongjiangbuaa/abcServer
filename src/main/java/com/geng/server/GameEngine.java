@@ -83,6 +83,8 @@ public class GameEngine {
 
                     handler.handle(deviceId, userProfile, data, sb);
                 }
+            }else{
+                throw new GameException(GameExceptionCode.INVALID_OPT,"cmd no handler!!");
             }
         } catch (GameException e) {
             logger.error(e.getMessage());

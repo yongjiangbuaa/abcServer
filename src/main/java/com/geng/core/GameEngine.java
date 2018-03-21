@@ -656,6 +656,8 @@ public class GameEngine {
     }
 
     private void initGameDate() {
+        CommonUtils.loadBadWordsList();
+//        CommonUtils.loadBadNameWorldsList();
 
     }
 

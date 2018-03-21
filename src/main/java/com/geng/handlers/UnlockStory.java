@@ -41,11 +41,29 @@ public class UnlockStory implements IRequestHandler {
         }
 
 
+
         String storyid = param.getStoryid();
+
         int need = new GameConfigManager("quest").getItem(storyid).getInt("requireStar");
         if(userProfile.getStar() < need)
             throw new COKException(GameExceptionCode.STAR_NOT_ENOUGH,"star not enough!");
+        //检查物品
+        String requireItem = new GameConfigManager("quest").getItem(storyid).get("requireItem");
+        //TODO check item
+//        if(!ItemManager.checkItem(userProfile.getUid(),requireItem){
+//
+//        }
 
+        //扣星星
+        userProfile.setStar(userProfile.getStar() - need);
+        userProfile.update();
+
+        //扣物品
+        logger.info("uid {} storyid {} requireItem {}", userProfile.getUid(),storyid,requireItem);
+        if(!StringUtils.isBlank(requireItem) && !StringUtils.equals(requireItem,"0"))
+            ItemManager.decItems(userProfile,requireItem);
+
+        //解锁
         UserStory story = null;
         List<UserStory> storyList = UserStory.getByUserId(userProfile.getUid());
         if (null == storyList || storyList.size() == 0) {
@@ -57,16 +75,6 @@ public class UnlockStory implements IRequestHandler {
             story.setStoryid(storyid);
             story.update();
         }
-
-        //扣星星
-        userProfile.setStar(userProfile.getStar() - need);
-        userProfile.update();
-
-        //扣物品
-        String requireItem = new GameConfigManager("quest").getItem(storyid).get("requireItem");
-        logger.info("uid {} storyid {} requireItem {}", userProfile.getUid(),storyid,requireItem);
-        if(!StringUtils.isBlank(requireItem) && !StringUtils.equals(requireItem,"0"))
-            ItemManager.decItems(userProfile,requireItem);
 
 
         //组织返回数据

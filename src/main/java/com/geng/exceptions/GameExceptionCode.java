@@ -34,7 +34,8 @@ public enum GameExceptionCode {
     CHAT_CHANGE_NAME("E100195"),//目前您还未达到在世界频道发言的条件
     CHAT_BAD_LEVEL("E100195"),
     //ACCOUNT
-    ACCOUNT_ALREADY_USERNAME("105251"),//此名称已存在，或含有非法字符。
+    ACCOUNT_ALREADY_USERNAME("105251"),//此名称已存在
+    ACCOUNT_ALREADY_USERNAME_BADWORDS("105252"),//此名称含有非法字符。
     CASTLE_ACCOUNT_TOO_NEW("108792"),//城堡等级太低而且注册时间太短（防止小号）
     ACCOUNT_TOO_NEW("108793"),//账号太新
     ACCOUNT_NOT_BIND("E100180"),//账号未绑定

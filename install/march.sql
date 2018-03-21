@@ -53,7 +53,11 @@ CREATE TABLE `userprofile` (
   `curGaid` varchar(40) COLLATE utf8_unicode_ci DEFAULT NULL,
   `isBusinessman` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否是资源商',
   `dragonEndTime` bigint(20) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`uid`)
+  PRIMARY KEY (`uid`),
+  KEY `name_index` (`name`) USING BTREE,
+  KEY `allianceid_lasttime_index` (`allianceId`,`lastOnlineTime`),
+  KEY `lang_index` (`lang`),
+  KEY `time_level_index` (`regTime`,`level`,`lastOnlineTime`,`pf`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 //账号系统 

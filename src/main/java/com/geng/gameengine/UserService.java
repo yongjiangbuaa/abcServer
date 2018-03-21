@@ -56,7 +56,7 @@ public class UserService {
     private static final String RESOURCE_DEALER_REGISTER_FREQUENCY_KEY_PREFIX  = "user:register:freq:";
     private static final Object RESOURCE_DEALER_REGISTER_FREQUENCY_LOCK = new Object();
     static {
-        namePrefix = PropertyFileReader.getItem("name_prefix", "Empire");
+        namePrefix = PropertyFileReader.getItem("name_prefix", "Candy");
         defaultNameIndex = new AtomicLong(UserProfile.getMaxNameIndex());
     }
 

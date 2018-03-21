@@ -125,6 +125,9 @@ public class ModifyUserNickNameHandler implements IRequestHandler{
                 throw e;
             }
             userProfile.setLastUpdateTime();
+            userProfile.update();
+            //组织返回数据
+            sb.append(com.geng.service.UserService.fillAll(userProfile).toJson());
         } finally {
 //            ServerCommunicationService.unlock(ServerCommunicationService.USER_NAME, nickName);
         }

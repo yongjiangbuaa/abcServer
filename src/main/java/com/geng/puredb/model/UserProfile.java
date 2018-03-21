@@ -1,6 +1,7 @@
 package com.geng.puredb.model;
 
 import com.geng.core.ConcurrentLock;
+import com.geng.core.data.ISFSArray;
 import com.geng.core.data.ISFSObject;
 import com.geng.core.data.SFSObject;
 import com.geng.exceptions.COKException;
@@ -11,11 +12,13 @@ import com.geng.puredb.dao.UserProfileMapper;
 import com.geng.utils.Constants;
 import com.geng.utils.LoggerUtil;
 import com.geng.utils.MyBatisSessionUtil;
+import com.geng.utils.distributed.GlobalDBProxy;
 import com.geng.utils.xml.GameConfigManager;
 import com.google.common.base.Optional;
 import org.apache.commons.lang.StringUtils;
 import org.apache.ibatis.session.SqlSession;
 
+import java.util.Arrays;
 import java.util.Stack;
 
 public class UserProfile {
@@ -802,4 +805,13 @@ public class UserProfile {
         //TODO business logic onRegister called here
         return this;
     }
+
+    public void incrChNameCount(){
+        chNameCount++;
+    }
+
+    public static ISFSArray selectNameByName(String name) {
+        return GlobalDBProxy.selectAccount(Arrays.asList("gameUserName"), name, null);
+    }
+
 }

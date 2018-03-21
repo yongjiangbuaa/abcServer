@@ -18,6 +18,7 @@ import com.geng.puredb.model.UserProfile;
 //import com.geng.utils.filter.BadWordsFilter;
 //import com.geng.utils.myredis.MyRedis、Batch;
 //import com.geng.utils.myredis.R;
+import com.geng.utils.filter.BadWordsFilter;
 import com.geng.utils.xml.GameConfigManager;
 //import com.google.common.base.Joiner;
 import com.geng.core.data.ISFSArray;
@@ -57,7 +58,7 @@ import java.util.regex.Pattern;
  */
 public final class CommonUtils {
 
-//    private static BadWordsFilter badWordsFilter;
+    private static BadWordsFilter badWordsFilter;
 
     public static List<String> BadWordsList = new ArrayList<>();
     public static List<String> regularForbiddenWords = new ArrayList<>();
@@ -66,7 +67,7 @@ public final class CommonUtils {
     public static List<String> weightForbiddenWords = new ArrayList<String>();
     public static long badWordsFileLastModifyTime=-1;
 
-//    private static BadWordsFilter badNameWordsFilter;
+    private static BadWordsFilter badNameWordsFilter;
     public static List<String> badNameWordsList = new ArrayList<>();
     public static long badNameWordsFileLastModifyTime = -1;
 
@@ -140,7 +141,7 @@ public final class CommonUtils {
 		return false;
     }
 
-/**
+
     public static void loadBadNameWorldsList(){
         File file = new File(Constants.GAME_CONFIG_PATH + "/badwords_name.txt");
         if(!file.exists()){
@@ -223,19 +224,19 @@ public final class CommonUtils {
             List<String> tmpWeightForbiddenWords=new ArrayList<>(0);
 //            RedisSession rs = RedisSession.getGlobal(false);
             try{
-                tmpRegularForbiddenWords = R.Global().getRangeList("forbidden_words_regular", 0, -1);
+               /* tmpRegularForbiddenWords = R.Global().getRangeList("forbidden_words_regular", 0, -1);
                 tmpStrictForbiddenWords = R.Global().getRangeList("forbidden_words_strict", 0, -1);
                 tmpPatternForbiddenWrods = R.Global().getRangeList("forbidden_words_pattern", 0, -1);
-                tmpWeightForbiddenWords = R.Global().getRangeList("forbidden_words_weight", 0, -1);
+                tmpWeightForbiddenWords = R.Global().getRangeList("forbidden_words_weight", 0, -1);*/
             }finally {
 //                rs.close();
             }
 
             BadWordsList=tmpBadWordsList;
-            regularForbiddenWords=tmpRegularForbiddenWords;
+/*            regularForbiddenWords=tmpRegularForbiddenWords;
             strictForbiddenWords=tmpStrictForbiddenWords;
             patternForbiddenWrods=tmpPatternForbiddenWrods;
-            weightForbiddenWords=tmpWeightForbiddenWords;
+            weightForbiddenWords=tmpWeightForbiddenWords;*/
 
         }catch (Exception e){
             COKLoggerFactory.monitorException("loading bad words exception", ExceptionMonitorType.CMD, COKLoggerFactory.ExceptionOwner.ZC, e);
@@ -769,7 +770,7 @@ public final class CommonUtils {
         return false;
     }
 
-    /*public static String filterBadWords(String message){
+    public static String filterBadWords(String message){
         if (badWordsFilter != null){
             return badWordsFilter.replaceBadWords(message);
         }
@@ -781,7 +782,7 @@ public final class CommonUtils {
             return badWordsFilter.containsBadWords(nickName);
         }
         return containsBadWordsReg(nickName, false);
-    }*/
+    }
 
     /**
      *
@@ -830,12 +831,12 @@ public final class CommonUtils {
         return false;
     }
 
-    /*public static boolean nicknamecontainsBadWords(String nickName) {
+    public static boolean nicknamecontainsBadWords(String nickName) {
         if(badNameWordsFilter != null){
             return badNameWordsFilter.containsBadWords(nickName);
         }
         return containsBadWordsReg(nickName, true);
-    }*/
+    }
 
 
 
